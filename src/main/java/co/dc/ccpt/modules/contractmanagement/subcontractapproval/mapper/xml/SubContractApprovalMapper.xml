@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.subcontractapproval.mapper.SubContractApprovalMapper">
+    
+	<sql id="subContractApprovalColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.subpro_contract_id AS "subProContract.id",
+		a.status AS "subContractStatus",
+		a.approval_status AS "approvalStatus",
+		
+		spc.subpro_contract_num AS "subProContract.subProContractNum",
+		spc.subpro_contract_name AS "subProContract.subProContractName",
+		spc.subpro_addr AS "subProContract.subProAddr",
+		spc.connector AS "subProContract.connector",
+		spc.phone_num AS "subProContract.phoneNum",
+		
+		spc.start_date AS "subProContract.startDate",
+		spc.complete_date AS "subProContract.completeDate",
+		spc.subpro_total_price AS "subProContract.subProTotalPrice",
+		spc.subpro_contract_date AS "subProContract.subProContractDate",
+		spc.employer AS "subProContract.employer",
+		
+		spc.build_date AS "subProContract.buildDate",
+		o.name AS "subProContract.subpackageProgram.proContract.program.office.name",
+		c.companyname AS "subProContract.subBidCompany.company.companyName",
+		sp.sub_program_type AS "subProContract.subpackageProgram.subProgramType",
+		sp.subpackage_programname AS "subProContract.subpackageProgram.subpackageProgramName",
+		
+		
+		u.id AS "subProContract.user.id",
+		u.name AS "subProContract.user.name",
+		u1.id AS "user.id",
+		u1.name AS "user.name"
+	
+	</sql>
+	
+	<sql id="subContractApprovalJoins">
+		LEFT JOIN ccpt.sub_pro_contract spc ON spc.id = a.subpro_contract_id
+		LEFT JOIN ccpt.subpackage_program sp ON sp.id = spc.subpro_id
+		
+		LEFT JOIN ccpt.program_tab p ON p.id = sp.parent_id
+		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
+		
+		LEFT JOIN ccpt.subbid_company sc ON sc.subpackage_program_id = sp.id
+		LEFT JOIN ccpt.company_tab c ON c.id = sc.company_id
+		
+		LEFT JOIN ccpt.sys_user u ON u.id = spc.user_id
+		LEFT JOIN ccpt.sys_user u1 ON u1.id = a.user_id
+		LEFT JOIN ccpt.clearevaluate_bid cb ON cb.subbid_company_id = sc.id
+	</sql>
+	
+	<select id="get" resultType="subContractApproval" >
+		SELECT 
+			a.id AS "id",
+			spc.subpro_contract_name AS "subProContract.subProContractName"
+		FROM subpro_contract_approval a
+			LEFT JOIN ccpt.sub_pro_contract spc ON spc.id = a.subpro_contract_id
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="subContractApproval" parameterType="List">
+		SELECT 
+			<include refid="subContractApprovalColumns"/>
+		FROM subpro_contract_approval a
+		<include refid="subContractApprovalJoins"/>
+		<where>
+			${dataScope}
+			<if test="subProContract.subProContractName != null and subProContract.subProContractName != ''">
+				AND spc.subpro_contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContract.subProContractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subProContract.subProContractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContract.subProContractName},'%')</if>
+			</if>
+			<if test="subProContract.subpackageProgram.subpackageProgramName != null and subProContract.subpackageProgram.subpackageProgramName != ''">
+				AND sp.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContract.subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subProContract.subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContract.subpackageProgram.subpackageProgramName},'%')</if>
+			</if>
+			<if test="subProContract.subBidCompany.company.companyName != null and subProContract.subBidCompany.company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContract.subBidCompany.company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subProContract.subBidCompany.company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContract.subBidCompany.company.companyName},'%')</if>
+			</if>
+			<if test="subProContract.beginContractDate != null and subProContract.endContractDate != null and subProContract.beginContractDate != '' and subProContract.endContractDate != ''">
+				AND spc.subpro_contract_date BETWEEN #{subProContract.beginContractDate} AND #{subProContract.endContractDate}
+			</if>
+			<if test="subContractStatus != null">
+				AND a.status = #{subContractStatus}
+			</if>
+			<if test="approvalStatus != null">
+				AND a.approval_status = #{approvalStatus}
+			</if>
+				AND cb.isBid=1
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="subContractApproval" >
+		SELECT 
+			<include refid="subContractApprovalColumns"/>
+		FROM subpro_contract_approval a
+		<include refid="subContractApprovalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			AND cb.isBid=1
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO subpro_contract_approval(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			subpro_contract_id,
+			status,
+			approval_status
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			#{subProContract.id},
+			#{subContractStatus},
+			#{approvalStatus}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE subpro_contract_approval SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			subpro_contract_id = #{subProContract.id},
+			status = #{subContractStatus},
+			approval_status = #{approvalStatus}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM subpro_contract_approval
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE subpro_contract_approval SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="subContractApproval" statementType="STATEMENT">
+		select * FROM subpro_contract_approval  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

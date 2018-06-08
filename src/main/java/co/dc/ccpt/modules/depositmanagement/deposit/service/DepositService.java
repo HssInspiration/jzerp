@@ -1,0 +1,98 @@
+/**
+ * Copyright &copy; 2015-2020 <a href="http://www.dingchang.co/">dckj</a> All rights reserved.
+ */
+package co.dc.ccpt.modules.depositmanagement.deposit.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import co.dc.ccpt.core.persistence.Page;
+import co.dc.ccpt.core.service.CrudService;
+import co.dc.ccpt.modules.depositmanagement.deposit.entity.Deposit;
+import co.dc.ccpt.modules.depositmanagement.deposit.mapper.DepositMapper;
+
+/**
+ * 保证金信息管理Service
+ * @author lxh
+ * @version 2018-04-11
+ */
+@Service
+@Transactional(readOnly = true)
+public class DepositService extends CrudService<DepositMapper, Deposit> {
+
+	@Autowired
+	public DepositMapper depositMapper;
+	
+	public Deposit get(String id) {
+		return super.get(id);
+	}
+	
+	public List<Deposit> findList(Deposit deposit) {
+		return super.findList(deposit);
+	}
+	
+	public Page<Deposit> findPage(Page<Deposit> page, Deposit deposit) {
+		return super.findPage(page, deposit);
+	}
+	
+	public String setNewNum(){
+		String oldNum = depositMapper.getLastInsertNum();//获取最新增加的一个编号
+		//设置编号规则：
+		String countStr = "";
+		Integer count = 0;
+		if(oldNum!=null && !oldNum.equals("")){//若不为空
+			String subOldNum = oldNum.substring(oldNum.length()-5, oldNum.length());//截取编号最后五个字符
+			if(subOldNum.substring(0, 1).equals("0")){//若后五位中的前一位是0
+				subOldNum = subOldNum.substring(1, 5);
+				if(subOldNum.substring(0, 1).equals("0")){//若后四位中的前一位是0
+					subOldNum = subOldNum.substring(1, 4);
+					if(subOldNum.substring(0, 1).equals("0")){//若后三位中的前一位是0
+						subOldNum = subOldNum.substring(1, 3);
+						if(subOldNum.substring(0, 1).equals("0")){//若后二位中的前一位是0
+							subOldNum = subOldNum.substring(1, 2);
+						}
+					}
+				}
+			}
+			count = Integer.parseInt(subOldNum)+1;
+			System.out.println(count);
+		}else{
+			count = 1;
+		}
+		if(count<10){//小于10
+			countStr = "0000" + count.toString();
+		}else if(count>=10 & count<100){//大于等于10，小于100
+			countStr = "000" + count.toString();
+		}else if(count>=100 & count<1000){//大于等于100，小于1000
+			countStr = "00" + count.toString();
+		}else if(count>=1000 & count<10000){//大于等于1000，小于10000
+			countStr = "0" + count.toString();
+		}else{
+			countStr = count.toString();
+		}
+		return countStr;
+	}
+	
+	@Transactional(readOnly = false)
+	public void save(Deposit deposit) {
+		super.save(deposit);
+	}
+	
+	@Transactional(readOnly = false)
+	public void delete(Deposit deposit) {
+		super.delete(deposit);
+	}
+	
+	@Transactional(readOnly = false)
+	public List<Deposit> getProNameInDepositByProName(Deposit deposit){
+		return depositMapper.getProNameInDepositByProName(deposit);
+	};
+	
+	//通过项目Id查询出对应的保证金类型集合
+	public List<String> getDepositTypeListById(Deposit deposit){
+		return depositMapper.getDepositTypeListById(deposit);
+	};
+}

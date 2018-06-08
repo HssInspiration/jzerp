@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.mapper.BidCompanyManageMapper">
+    
+	<sql id="bidCompanyManageColumns">
+		a.id AS "id",
+		a.bidprice AS "bidPrice",
+		a.biddate AS "bidDate",
+		a.laborcost AS "laborCost",
+		a.meterialexpense AS "meterialExpense",
+		a.discountrate AS "discountRate",
+		
+		a.tecbid AS "tecBidName.id",
+		a.combid AS "comBidName.id",
+		a.ecobid AS "ecoBidName.id",
+		a.constructorid AS "constructoor.id",
+		a.directorid AS "director.id",
+		
+		a.saverid AS "saver.id",
+		a.constrworkerid AS "constrworker.id",
+		a.inspectorid AS "inspector.id",
+		a.meterialerid AS "meterialer.id",
+		a.costerid AS "coster.id",
+		
+		u1.name AS "tecBidName.user.name",
+		u2.name AS "comBidName.user.name",
+		u3.name AS "ecoBidName.user.name",
+		u4.name AS "constructoor.user.name",
+		u5.name AS "director.user.name",
+		
+		u6.name AS "saver.user.name",
+		u7.name AS "constrworker.user.name",
+		u8.name AS "inspector.user.name",
+		u9.name AS "meterialer.user.name",
+		u10.name AS "coster.user.name",
+		u11.name AS "otherWorkers.user.name",
+		
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy",
+		a.update_by AS "updateBy",
+		a.del_flag AS "delFlag",
+		a.bidtable_id AS "bidtableQuery.id",
+		
+		a.companyid AS "company.id",
+		a.programid AS "program.id",
+		c.companyname AS "company.companyName",
+		p.programname AS "program.programName",
+		a.isbid AS "isBid",
+		
+		s.label AS "dictValue.label",
+		a.deposit AS "deposit",
+		a.depositenclosure AS "depositEnclosure"
+		
+	</sql>
+	
+	<sql id="bidCompanyManageJoins">
+		LEFT JOIN ccpt.bid_tab b ON b.id = a.bidtable_id
+		LEFT JOIN ccpt.program_tab p ON p.id = a.programid
+		LEFT JOIN ccpt.company_tab c on c.id = a.companyid
+		
+		LEFT JOIN ccpt.core_staff AS c1 ON c1.id=a.tecbid 
+		LEFT JOIN ccpt.sys_user AS u1 ON u1.id=c1.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c2 ON c2.id=a.combid 
+		LEFT JOIN ccpt.sys_user AS u2 ON u2.id=c2.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c3 ON c3.id=a.ecobid 
+		LEFT JOIN ccpt.sys_user AS u3 ON u3.id=c3.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c4 ON c4.id=a.constructorid 
+		LEFT JOIN ccpt.sys_user AS u4 ON u4.id=c4.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c5 ON c5.id=a.directorid 
+		LEFT JOIN ccpt.sys_user AS u5 ON u5.id=c5.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c6 ON c6.id=a.saverid 
+		LEFT JOIN ccpt.sys_user AS u6 ON u6.id=c6.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c7 ON c7.id=a.constrworkerid 
+		LEFT JOIN ccpt.sys_user AS u7 ON u7.id=c7.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c8 ON c8.id=a.inspectorid 
+		LEFT JOIN ccpt.sys_user AS u8 ON u8.id=c8.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c9 ON c9.id=a.meterialerid 
+		LEFT JOIN ccpt.sys_user AS u9 ON u9.id=c9.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c10 ON c10.id=a.costerid 
+		LEFT JOIN ccpt.sys_user AS u10 ON u10.id=c10.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c11 ON c11.id=a.otherworkersid 
+		LEFT JOIN ccpt.sys_user AS u11 ON u11.id=c11.user_id 
+		LEFT JOIN ccpt.sys_dict s ON s.type='yes_no' AND s.value=a.isbid
+	</sql>
+	
+    
+	<select id="get" resultType="BidCompanyManage" >
+		SELECT 
+			<include refid="bidCompanyManageColumns"/>
+		FROM bidcomp_manage a
+		<include refid="bidCompanyManageJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BidCompanyManage" >
+		SELECT 
+			<include refid="bidCompanyManageColumns"/>
+		FROM bidcomp_manage a
+		<include refid="bidCompanyManageJoins"/>
+		<where>
+			<!-- a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+			<if test="bidDate != null and bidDate != ''">
+				AND a.biddate = #{bidDate}
+			</if>
+			<if test="isBid != null and isBid != ''">
+				AND a.isbid = #{isBid}
+			</if>
+			<if test="bidtableQuery != null and bidtableQuery.id != null and bidtableQuery.id != ''">
+				AND a.bidtable_id = #{bidtableQuery.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BidCompanyManage" >
+		SELECT 
+			<include refid="bidCompanyManageColumns"/>
+		FROM bidcomp_manage a
+		<include refid="bidCompanyManageJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+<!-- 		INSERT INTO bidcomp_manage( -->
+<!-- 			id, -->
+<!-- 			companyid, -->
+<!-- 			programid, -->
+<!-- 			bidprice, -->
+<!-- 			biddate, -->
+			
+<!-- 			laborcost, -->
+<!-- 			meterialexpense, -->
+<!-- 			discountrate, -->
+<!-- 			tecbid, -->
+<!-- 			combid, -->
+			
+<!-- 			ecobid, -->
+<!-- 			constructorid, -->
+<!-- 			directorid, -->
+<!-- 			saverid, -->
+<!-- 			constrworkerid, -->
+			
+<!-- 			inspectorid, -->
+<!-- 			meterialerid, -->
+<!-- 			costerid, -->
+<!-- 			isbid, -->
+<!-- 			deposit, -->
+			
+<!-- 			depositenclosure, -->
+<!-- 			create_date, -->
+<!-- 			update_date, -->
+<!-- 			create_by, -->
+<!-- 			update_by, -->
+			
+<!-- 			del_flag, -->
+<!-- 			bidtable_id -->
+<!-- 		) VALUES ( -->
+<!-- 			#{id}, -->
+<!-- 			#{companyId}, -->
+<!-- 			#{programId}, -->
+<!-- 			#{bidPrice}, -->
+<!-- 			#{bidDate}, -->
+			
+<!-- 			#{laborCost}, -->
+<!-- 			#{meterialExpense}, -->
+<!-- 			#{discountRate}, -->
+<!-- 			#{tecBid}, -->
+<!-- 			#{comBid}, -->
+			
+<!-- 			#{ecoBid}, -->
+<!-- 			#{constructorId}, -->
+<!-- 			#{directorId}, -->
+<!-- 			#{saverId}, -->
+<!-- 			#{constrworkerId}, -->
+			
+<!-- 			#{inspectorId}, -->
+<!-- 			#{meterialerId}, -->
+<!-- 			#{costerId}, -->
+<!-- 			#{isBid}, -->
+<!-- 			#{deposit}, -->
+			
+<!-- 			#{depositEnclosure}, -->
+<!-- 			#{createDate}, -->
+<!-- 			#{updateDate}, -->
+<!-- 			#{createBy}, -->
+<!-- 			#{updateBy}, -->
+			
+<!-- 			#{delFlag}, -->
+<!-- 			#{bidtableQuery.id} -->
+		)
+	</insert>
+	
+	<update id="update">
+<!-- 		UPDATE bidcomp_manage SET 	 -->
+<!-- 			id = #{id}, -->
+<!-- 			companyid = #{companyId}, -->
+<!-- 			programid = #{programId}, -->
+<!-- 			bidprice = #{bidPrice}, -->
+<!-- 			laborcost = #{laborCost}, -->
+<!-- 			meterialexpense = #{meterialExpense}, -->
+<!-- 			tecbid = #{tecBid}, -->
+<!-- 			combid = #{comBid}, -->
+<!-- 			ecobid = #{ecoBid}, -->
+<!-- 			constructorid = #{constructorId}, -->
+<!-- 			directorid = #{directorId}, -->
+<!-- 			saverid = #{saverId}, -->
+<!-- 			constrworkerid = #{constrworkerId}, -->
+<!-- 			inspectorid = #{inspectorId}, -->
+<!-- 			meterialerid = #{meterialerId}, -->
+<!-- 			discountrate = #{discountRate}, -->
+<!-- 			costerid = #{costerId}, -->
+<!-- 			isbid = #{isBid}, -->
+<!-- 			deposit = #{deposit}, -->
+<!-- 			depositenclosure = #{depositEnclosure}, -->
+<!-- 			create_date = #{createDate}, -->
+<!-- 			update_date = #{updateDate}, -->
+<!-- 			create_by = #{createBy}, -->
+<!-- 			update_by = #{updateBy}, -->
+<!-- 			del_flag = #{delFlag}, -->
+<!-- 			bidtable_id = #{bidtableQuery.id} -->
+<!-- 		WHERE id = #{id} -->
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+<!-- 		DELETE FROM bidcomp_manage -->
+<!-- 		<choose> -->
+<!-- 			<when test="id !=null and id != ''"> -->
+<!-- 				WHERE id = #{id} -->
+<!-- 			</when> -->
+<!-- 			<otherwise> -->
+<!-- 				WHERE bidtable_id = #{bidtableQuery.id} -->
+<!-- 			</otherwise> -->
+<!-- 		</choose> -->
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+<!-- 		UPDATE bidcomp_manage SET  -->
+<!-- 			del_flag = #{DEL_FLAG_DELETE} -->
+<!-- 		<choose> -->
+<!-- 			<when test="id !=null and id != ''"> -->
+<!-- 				WHERE id = #{id} -->
+<!-- 			</when> -->
+<!-- 			<otherwise> -->
+<!-- 				WHERE bidtable_id = #{bidtableQuery.id} -->
+<!-- 			</otherwise> -->
+<!-- 		</choose> -->
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="BidCompanyManage" statementType="STATEMENT">
+		select * FROM bidcomp_manage  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.depositmanagement.depositapproval.mapper.DepositApprovalMapper">
+    
+	<sql id="depositApprovalColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.approval_num AS "approvalNum",
+		d.check_status AS "deposit.checkStatus",
+		a.pay_way AS "payWay",
+		a.receiver AS "receiver",
+		a.receiver_account AS "receiverAccount",
+		a.receiver_bank AS "receiverBank",
+		a.remittance_bank AS "remittanceBank",
+		a.remittance_account AS "remittanceAccount",
+		a.operator AS "operator",
+		a.managing_director AS "managingDirector",
+		a.top_manager AS "topManager",
+		a.chairman AS "chairman",
+		a.group_chairman AS "groupChairman",
+		a.statement_date AS "statementDate",
+		a.refund_date AS "refundDate",
+		a.deposit_id AS "deposit.id",
+		d.deposit_type AS "deposit.depositType",
+		a.deposit_type AS "depositType",
+		d.pay_count AS "deposit.payCount",
+		p.programName AS "deposit.program.programName",
+		d.deposit_name AS "deposit.depositName",
+		p.id AS "deposit.program.id",
+		a.check_class AS "checkClass",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="depositApprovalJoins">
+		LEFT JOIN ccpt.deposit_tab d ON d.id = a.deposit_id
+		LEFT JOIN ccpt.program_tab p ON d.program_id = p.id
+	</sql>
+    
+	<select id="get" resultType="DepositApproval" >
+		SELECT 
+			<include refid="depositApprovalColumns"/>
+		FROM deposit_approval a
+		<include refid="depositApprovalJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getDepositApprovalByDepositId" resultType="DepositApproval">
+		SELECT 
+			<include refid="depositApprovalColumns"/>
+		FROM deposit_approval a
+			<include refid="depositApprovalJoins"/>	
+		WHERE a.deposit_id = #{deposit.id}
+	</select>
+	
+	<select id="getDepositApprovalList" resultType="DepositApproval" >
+		SELECT 
+			a.id AS "id",
+			d.deposit_name AS "deposit.depositName"
+		FROM deposit_approval a
+		<include refid="depositApprovalJoins"/>
+		<where>
+			<if test="deposit.depositName != null and deposit.depositName != ''">
+				AND d.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{deposit.depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{deposit.depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{deposit.depositName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLastInsertNum" resultType="String">
+		SELECT
+			a.approval_num AS "approvalNum"
+		FROM deposit_approval a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM deposit_approval a)
+	</select>
+	
+	<select id="getDepositTypeListByProName" resultType="String" >
+		SELECT 
+			a.deposit_type AS "depositType"
+		FROM deposit_approval a
+		<include refid="depositApprovalJoins"/>
+		<where>
+			<if test="programName != null and programName != ''">
+					AND p.programname = #{programName}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="findList" resultType="DepositApproval" >
+		SELECT 
+			<include refid="depositApprovalColumns"/>
+		FROM deposit_approval a
+		<include refid="depositApprovalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="deposit.depositName != null and deposit.depositName != ''">
+				AND d.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{deposit.depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{deposit.depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{deposit.depositName},'%')</if>
+			</if>
+			<if test="deposit.checkStatus != null and deposit.checkStatus != ''">
+				AND d.check_status = #{deposit.checkStatus}
+			</if>
+			<if test="payWay != null and payWay != ''">
+				AND a.pay_way = #{payWay}
+			</if>
+			<if test="receiver != null and receiver != ''">
+				AND a.receiver LIKE 
+					<if test="dbName == 'oracle'">'%'||#{receiver}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{receiver}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{receiver},'%')</if>
+			</if>
+			<if test="operator != null and operator != ''">
+				AND a.operator = #{operator}
+			</if>
+			<if test="beginStatementDate != null and endStatementDate != null and beginStatementDate != '' and endStatementDate != ''">
+				AND a.statement_date BETWEEN #{beginStatementDate} AND #{endStatementDate}
+			</if>
+			<if test="beginRefundDate != null and endRefundDate != null and beginRefundDate != '' and endRefundDate != ''">
+				AND a.refund_date BETWEEN #{beginRefundDate} AND #{endRefundDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DepositApproval" >
+		SELECT 
+			<include refid="depositApprovalColumns"/>
+		FROM deposit_approval a
+		<include refid="depositApprovalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO deposit_approval(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			approval_num,
+			deposit_id,
+			pay_way,
+			receiver,
+			receiver_account,
+			receiver_bank,
+			remittance_bank,
+			remittance_account,
+			operator,
+			managing_director,
+			top_manager,
+			chairman,
+			group_chairman,
+			statement_date,
+			refund_date,
+			check_class,
+			deposit_type,
+			remarks
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{approvalNum},
+			#{deposit.id},
+			#{payWay},
+			#{receiver},
+			#{receiverAccount},
+			#{receiverBank},
+			#{remittanceBank},
+			#{remittanceAccount},
+			#{operator},
+			#{managingDirector},
+			#{topManager},
+			#{chairman},
+			#{groupChairman},
+			#{statementDate},
+			#{refundDate},
+			#{checkClass},
+			#{depositType},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE deposit_approval SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			approval_num = #{approvalNum},
+			deposit_id = #{deposit.id},
+			pay_way = #{payWay},
+			receiver = #{receiver},
+			receiver_account = #{receiverAccount},
+			receiver_bank = #{receiverBank},
+			remittance_bank = #{remittanceBank},
+			remittance_account = #{remittanceAccount},
+			operator = #{operator},
+			managing_director = #{managingDirector},
+			top_manager = #{topManager},
+			chairman = #{chairman},
+			group_chairman = #{groupChairman},
+			statement_date = #{statementDate},
+			refund_date = #{refundDate},
+			check_class = #{checkClass},
+			deposit_type = #{depositType},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM deposit_approval
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE deposit_approval SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="DepositApproval" statementType="STATEMENT">
+		select * FROM deposit_approval  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

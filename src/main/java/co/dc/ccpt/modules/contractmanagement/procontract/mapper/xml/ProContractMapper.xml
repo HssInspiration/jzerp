@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.procontract.mapper.ProContractMapper">
+    
+	<sql id="proContractColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.contract_num AS "contractNum",
+		a.contract_name AS "contractName",
+		a.program_addr AS "programAddr",
+		a.program_connector AS "programConnector",
+		
+		a.phone_num AS "phoneNum",
+		a.start_date AS "startDate",
+		a.complete_date AS "completeDate",
+		a.contract_total_price AS "contractTotalPrice",
+		a.contract_date AS "contractDate",
+		
+		a.program_id AS "program.id",
+		p.programname AS "program.programName",
+		o.name AS "program.office.name",
+		c.companyname AS "program.company.companyName",
+		p.programtype AS "program.programType",
+		
+		u.name AS "user.name",
+		u.id AS "user.id",
+		a.build_date AS "buildDate",
+		a.approval_status AS "approvalStatus",
+		a.contract_status AS "contractStatus",
+		a.is_stamp AS "isStamp"
+		
+	</sql>
+	
+	<sql id="proContractJoins">
+		LEFT JOIN ccpt.program_tab p ON p.id = a.program_id
+		LEFT JOIN ccpt.sys_user u ON u.id = a.user_id
+		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
+		LEFT JOIN ccpt.company_tab c ON c.id = p.companyid
+	</sql>
+	
+	<select id="get" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 	获取生效或执行中的总包合同集合 -->
+	<select id="getProContractList" resultType="proContract" >
+		SELECT 
+			a.id AS "id",
+			a.contract_name AS "contractName"
+		FROM program_contract a
+		<where>
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<!-- 	获取生效或执行中的总包合同集合 -->
+	<select id="getProContractListByName" resultType="proContract" >
+		SELECT 
+			a.id AS "id",
+			a.contract_name AS "contractName"
+		FROM program_contract a
+		<where>
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getLastProContractNum" resultType="String" >
+		SELECT
+			a.contract_num AS "contractNum"
+		FROM program_contract a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM program_contract a)
+	</select>
+	
+<!-- 	通过项目id获取总包合同记录 -->
+	<select id="getProContractByProgramId" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		<where>
+			<if test="program.id != null and program.id != ''">
+				AND p.id = #{program.id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="proContract" parameterType="List">
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+		<include refid="proContractJoins"/>
+		<where>
+			${dataScope}
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+			<if test="program.programName != null and program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.programName},'%')</if>
+			</if>
+			<if test="user.name != null and user.name != ''">
+				AND u.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+		<include refid="proContractJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO program_contract(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			
+			contract_num,
+			program_addr,
+			program_connector,
+			phone_num,
+			start_date,
+			
+			complete_date,
+			contract_total_price,
+			contract_date,
+			program_id,
+			user_id,
+			
+			build_date,
+			contract_name
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			
+			#{contractNum},
+			#{programAddr},
+			#{programConnector},
+			#{phoneNum},
+			#{startDate},
+			
+			#{completeDate},
+			#{contractTotalPrice},
+			#{contractDate},
+			#{program.id},
+			#{user.id},
+			
+			#{buildDate},
+			#{contractName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE program_contract SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			
+			contract_num = #{contractNum},
+			program_addr = #{programAddr},
+			program_connector = #{programConnector},
+			phone_num = #{phoneNum},
+			start_date = #{startDate},
+			
+			complete_date = #{completeDate},
+			contract_total_price = #{contractTotalPrice},
+			contract_date = #{contractDate},
+			program_id = #{program.id},
+			user_id = #{user.id},
+			
+			build_date = #{buildDate},
+			contract_name = #{contractName},
+			approval_status = #{approvalStatus},
+			contract_status = #{contractStatus},
+			is_stamp = #{isStamp}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM program_contract
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE program_contract SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="proContract" statementType="STATEMENT">
+		select * FROM program_contract  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.mapper.ClearEvaluateMapper">
+    
+	<sql id="clearEvaluateColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.build_date AS "buildDate",
+		a.performance AS "performance",
+		a.bid_price AS "bidPrice",
+		
+		a.design AS "design",
+		a.isBid AS "isBid",
+		a.subbid_company_id AS "subBidCompany.id",
+		sp.subpackage_programnum AS "subBidCompany.tender.subpackageProgram.subpackageProgramNum",
+		sp.subpackage_programname AS "subBidCompany.tender.subpackageProgram.subpackageProgramName",
+		sp.id AS "subBidCompany.tender.subpackageProgram.id",
+		c.companyname AS "subBidCompany.company.companyName",
+		sc.subbid_price AS "subBidCompany.subBidPrice",
+<!-- 		a.access_date AS "accessDate", -->
+		sc.subbid_date AS "subBidCompany.subBidDate",
+		
+		a.certificate AS "certificate",
+		a.write_circumstances AS "writeCircumstances",
+		a.secret_circumstances AS "secretCircumstances"
+	</sql>
+	
+	<sql id="clearEvaluateJoins">
+		LEFT JOIN ccpt.subbid_company sc ON a.subbid_company_id = sc.id
+		
+		LEFT JOIN ccpt.tender_tab t ON sc.tender_id = t.id
+		
+		LEFT JOIN ccpt.subpackage_program sp ON t.subpackage_programid = sp.id
+		
+		LEFT JOIN ccpt.company_tab c ON c.id = sc.company_id 
+		
+	</sql>
+	
+    <select id="getClearEvaluateBySubCompId" resultType="ClearEvaluate" >
+		SELECT 
+			<include refid="clearEvaluateColumns"/>
+		FROM clearevaluate_bid a
+		<include refid="clearEvaluateJoins"/>
+		WHERE a.subbid_company_id = #{subBidCompany.id}
+	</select>
+	
+	 <select id="getClearEvaluateByProId" resultType="ClearEvaluate" >
+		SELECT 
+			sp.id AS "subBidCompany.tender.subpackageProgram.id",
+			c.companyname AS "subBidCompany.company.companyName",
+			sc.subbid_price AS "subBidCompany.subBidPrice",
+			a.build_date AS "buildDate",
+			a.performance AS "performance",
+			a.certificate AS "certificate",
+			a.write_circumstances AS "writeCircumstances",
+			a.secret_circumstances AS "secretCircumstances",
+			sc.subbid_date AS "subBidCompany.subBidDate",
+			sc.subbid_date AS "subBidCompany.subBidCompanyDate",
+			a.design AS "design"
+		FROM clearevaluate_bid a
+			<include refid="clearEvaluateJoins"/>
+		WHERE sp.id = #{subBidCompany.tender.subpackageProgram.id}
+	</select>
+    
+	<select id="get" resultType="ClearEvaluate" >
+		SELECT 
+			<include refid="clearEvaluateColumns"/>
+		FROM clearevaluate_bid a
+		<include refid="clearEvaluateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ClearEvaluate" >
+		SELECT 
+			<include refid="clearEvaluateColumns"/>
+		FROM clearevaluate_bid a
+		<include refid="clearEvaluateJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+			<if test="subBidCompany.subpackageProgram.subpackageProgramName != null and subBidCompany.subpackageProgram.subpackageProgramName != ''">
+			AND sp.subpackage_programname LIKE 
+				<if test="dbName == 'oracle'">'%'||#{subBidCompany.subpackageProgram.subpackageProgramName}||'%'</if>
+				<if test="dbName == 'mssql'">'%'+#{subBidCompany.subpackageProgram.subpackageProgramName}+'%'</if>
+				<if test="dbName == 'mysql'">concat('%',#{subBidCompany.subpackageProgram.subpackageProgramName},'%')</if>
+			</if>
+			<if test="subBidCompany.company.companyName != null and subBidCompany.company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subBidCompany.company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subBidCompany.company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subBidCompany.company.companyName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ClearEvaluate" >
+		SELECT 
+			<include refid="clearEvaluateColumns"/>
+		FROM clearevaluate_bid a
+		<include refid="clearEvaluateJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO clearevaluate_bid(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			subbid_company_id,
+			build_date,
+			performance,
+			design,
+			subpackage_program_id,
+			certificate,
+			write_circumstances,
+			secret_circumstances
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{subBidCompany.id},
+			#{buildDate},
+			#{performance},
+			#{design},
+			#{subpackageProgramId},
+			#{certificate},
+			#{writeCircumstances},
+			#{secretCircumstances}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE clearevaluate_bid SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			subbid_company_id = #{subBidCompany.id},
+			build_date = #{buildDate},
+			performance = #{performance},
+			design = #{design},
+			isBid = #{isBid},
+			subpackage_program_id = #{subpackageProgramId},
+			certificate = #{certificate},
+			write_circumstances = #{writeCircumstances},
+			secret_circumstances = #{secretCircumstances}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM clearevaluate_bid
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE clearevaluate_bid SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="ClearEvaluate" statementType="STATEMENT">
+		select * FROM clearevaluate_bid  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

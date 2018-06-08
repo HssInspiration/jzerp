@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.depositmanagement.depositstatement.mapper.DepositStatementMapper">
+    
+	<sql id="depositStatementColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.del_flag AS "delFlag",
+		a.statement_num AS "statementNum",
+		a.deposit_approval_id AS "depositApproval.id",
+		a.deposit_tab_id AS "depositApproval.deposit.id",
+		a.statement_date AS "statementDate",
+		
+		a.ticket_holder AS "ticketHolder",
+		p.programname AS "depositApproval.deposit.program.programName",
+		p.id AS "depositApproval.deposit.program.id",
+		dt.pay_count AS "depositApproval.deposit.payCount",
+		da.deposit_type AS "depositApproval.depositType",
+		
+		da.receiver AS "depositApproval.receiver",
+		da.receiver_account AS "depositApproval.receiverAccount",
+		da.receiver_bank AS "depositApproval.receiverBank",
+		da.remittance_bank AS "depositApproval.remittanceBank",
+		da.statement_date AS "depositApproval.statementDate",
+		
+		da.pay_way AS "depositApproval.payWay",
+		dt.deposit_type AS "depositApproval.deposit.depositType",
+		dt.deposit_name AS "depositApproval.deposit.depositName",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="depositStatementJoins">
+		LEFT JOIN ccpt.deposit_approval da ON da.id = a.deposit_approval_id
+		LEFT JOIN ccpt.deposit_tab dt ON dt.id = da.deposit_id
+		LEFT JOIN ccpt.program_tab p ON dt.program_id = p.id
+	</sql>
+    
+	<select id="get" resultType="DepositStatement" >
+		SELECT 
+			<include refid="depositStatementColumns"/>
+		FROM deposit_statement a
+		<include refid="depositStatementJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getLastInsertNum" resultType="String">
+		SELECT
+			a.statement_num AS "statementNum"
+		FROM deposit_statement a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM deposit_statement a)
+	</select>
+	
+	<select id="getDepositStatementList" resultType="DepositStatement" >
+		SELECT 
+			a.id AS "id",
+			dt.deposit_name AS "depositApproval.deposit.depositName"
+		FROM deposit_statement a
+		<include refid="depositStatementJoins"/>
+		<where>
+			<if test="depositApproval.deposit.depositName != null and depositApproval.deposit.depositName != ''">
+				AND dt.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{depositApproval.deposit.depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{depositApproval.deposit.depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{depositApproval.deposit.depositName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getDepositStatementByApprovalId" resultType="DepositStatement">
+		SELECT 
+			<include refid="depositStatementColumns"/>
+		FROM deposit_statement a
+		<include refid="depositStatementJoins"/>	
+		WHERE a.deposit_approval_id = #{depositApproval.id}
+	</select>
+	
+	<select id="findList" resultType="DepositStatement" >
+		SELECT 
+			<include refid="depositStatementColumns"/>
+		FROM deposit_statement a
+		<include refid="depositStatementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="depositApproval.deposit.depositName != null and depositApproval.deposit.depositName != ''">
+				AND dt.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{depositApproval.deposit.depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{depositApproval.deposit.depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{depositApproval.deposit.depositName},'%')</if>
+			</if>
+			<if test="beginStatementDate != null and endStatementDate != null and beginStatementDate != '' and endStatementDate != ''">
+				AND a.statement_date BETWEEN #{beginStatementDate} AND #{endStatementDate}
+			</if>
+			<if test="ticketHolder != null and ticketHolder != ''">
+				AND a.ticket_holder LIKE 
+					<if test="dbName == 'oracle'">'%'||#{ticketHolder}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{ticketHolder}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{ticketHolder},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DepositStatement" >
+		SELECT 
+			<include refid="depositStatementColumns"/>
+		FROM deposit_statement a
+		<include refid="depositStatementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO deposit_statement(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			statement_num,
+			deposit_approval_id,
+			deposit_tab_id,
+			statement_date,
+			ticket_holder,
+			remarks
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{statementNum},
+			#{depositApproval.id},
+			#{depositTabId},
+			#{statementDate},
+			#{ticketHolder},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE deposit_statement SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			statement_num = #{statementNum},
+			deposit_approval_id = #{depositApproval.id},
+			deposit_tab_id = #{depositTabId},
+			statement_date = #{statementDate},
+			ticket_holder = #{ticketHolder},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM deposit_statement
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE deposit_statement SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="DepositStatement" statementType="STATEMENT">
+		select * FROM deposit_statement  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

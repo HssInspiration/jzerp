@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.mapper.BidtableQueryMapper">
+    
+	<sql id="bidtableColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.del_flag AS "delFlag",
+		a.bidnum AS "bidNum",
+		a.programid AS "program.id",
+		a.status AS "status",
+		a.bidenclosure AS "bidEnclosure",
+		
+		a.remarks AS "remarks",
+		a.openbiddate AS "openBidDate",
+		a.openbidaddr AS "openBidAddr",
+		a.deposit AS "deposit",
+		a.ctrlprice AS "ctrlPrice",
+		
+		a.floorprice AS "floorPrice",
+		a.provisionprice AS "provisionPrice",
+		a.recordworker AS "recordWorker",
+		a.providemeterial AS "provideMeterial",
+		e.programname AS "program.programName",
+		e.status AS "program.status",
+		
+		e.companyid AS "company.id",
+		c.companyname AS "company.companyName"
+	</sql>
+	
+	<sql id="bidtableJoins">
+		LEFT JOIN ccpt.program_tab AS e on e.id=a.programid
+	    LEFT JOIN ccpt.company_tab c on e.companyid=c.id
+	</sql>
+	
+	<select id="get" resultType="BidtableQuery" >
+		SELECT 
+			<include refid="bidtableColumns"/>
+		FROM bid_tab a
+		<include refid="bidtableJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BidtableQuery" parameterType="List">
+		SELECT 
+			<include refid="bidtableColumns"/>
+		FROM bid_tab a
+			<include refid="bidtableJoins"/>
+		<where>
+			${dataScope}
+			<if test="bidNum != null and bidNum != ''">
+				AND a.bidnum LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bidNum}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bidNum}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bidNum},'%')</if>
+			</if>
+			
+			<if test="program.programName != null and program.programName != ''">
+				AND e.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.programName},'%')</if> 
+			</if>
+			<if test="company.companyName != null and company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{company.companyName},'%')</if> 
+			</if>
+			<if test="programStatus != null and programStatus != '' ">
+				AND e.status in
+				<foreach collection="programStatusList" item="item" index="index" open="(" separator="," close=")" >
+					  #{item}
+				</foreach>
+			</if>
+			<if test="bidCompanyManage.company.companyName !=null and bidCompanyManage.company.companyName != ''">
+				AND a.id IN (
+					select bidtable_id from bidcomp_manage bc
+					LEFT JOIN ccpt.company_tab ct on ct.id = bc.companyid
+					<where>
+						<if test="bidCompanyManage.company.companyName !=null and bidCompanyManage.company.companyName != ''">
+							AND  ct.companyname LIKE concat('%',#{bidCompanyManage.company.companyName},'%')
+						</if>
+					</where>
+					GROUP BY bidtable_id )
+			</if>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BidtableQuery" >
+		SELECT 
+			<include refid="bidtableColumns"/>
+		FROM bid_tab a
+		<include refid="bidtableJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bid_tab(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			bidnum,
+			programid,
+			status,
+			bidenclosure,
+			remarks,
+			openbiddate,
+			openbidaddr,
+			deposit,
+			ctrlprice,
+			floorprice,
+			provisionprice,
+			recordworker,
+			providemeterial
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{bidNum},
+			#{program.id},
+			#{status},
+			#{bidEnclosure},
+			#{remarks},
+			#{openBidDate},
+			#{openBidAddr},
+			#{deposit},
+			#{ctrlPrice},
+			#{floorPrice},
+			#{provisionPrice},
+			#{recordWorker},
+			#{provideMeterial}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bid_tab SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			bidnum = #{bidNum},
+			programid = #{program.id},
+			status = #{status},
+			bidenclosure = #{bidEnclosure},
+			remarks = #{remarks},
+			openbiddate = #{openBidDate},
+			openbidaddr = #{openBidAddr},
+			deposit = #{deposit},
+			ctrlprice = #{ctrlPrice},
+			floorprice = #{floorPrice},
+			provisionprice = #{provisionPrice},
+			recordworker = #{recordWorker},
+			providemeterial = #{provideMeterial}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM bid_tab
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE bid_tab SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="BidtableQuery" statementType="STATEMENT">
+		select * FROM bid_tab  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

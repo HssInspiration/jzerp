@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.mapper.EnclosuretabMapper">
+	<sql id="enclosuretabColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.enclosure_num AS "enclosureNum",
+		a.enclosure_type AS "enclosureType",
+		a.enclosure_cont AS "enclosureCont",
+		a.foregin_id AS "foreginId"
+	</sql>
+	
+	<sql id="enclosuretabJoins">
+		
+	</sql>
+	
+    
+	<select id="get" resultType="Enclosuretab" >
+		SELECT 
+			<include refid="enclosuretabColumns"/>
+		FROM enclosure_tab a
+		<include refid="enclosuretabJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="countEnclosureByType" resultType="Integer" >
+		SELECT 
+			count(*)
+		FROM enclosure_tab a
+		WHERE a.enclosure_type = #{enclosureType}
+	</select>
+	
+	<select id="getByEnclosuretabNum" resultType="Enclosuretab" >
+		SELECT 
+			<include refid="enclosuretabColumns"/>
+		FROM enclosure_tab a
+		<include refid="enclosuretabJoins"/>
+		WHERE a.enclosure_num = #{enclosureNum}
+	</select>
+	
+	<select id = "countEnclosure" resultType="Integer">
+		SELECT
+			COUNT(*)
+		FROM enclosure_tab
+			WHERE foregin_id=#{foreginId}
+	</select>
+	
+	<select id="findList" resultType="Enclosuretab" >
+		SELECT 
+			<include refid="enclosuretabColumns"/>
+		FROM enclosure_tab a
+		<include refid="enclosuretabJoins"/>
+		<where>
+			${dataScope}
+			<if test="enclosureNum != null and enclosureNum != ''">
+				AND a.enclosure_num LIKE 
+					<if test="dbName == 'oracle'">'%'||#{enclosureNum}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{enclosureNum}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{enclosureNum},'%')</if>
+			</if>
+			<if test="enclosureType != null and enclosureType != ''">
+				AND a.enclosure_type = #{enclosureType}
+			</if>
+			<if test="foreginId != null and foreginId != ''">
+				AND a.foregin_id = #{foreginId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Enclosuretab" >
+		SELECT 
+			<include refid="enclosuretabColumns"/>
+		FROM enclosure_tab a
+		<include refid="enclosuretabJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO enclosure_tab(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			enclosure_num,
+			enclosure_type,
+			enclosure_cont,
+			foregin_id
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{enclosureNum},
+			#{enclosureType},
+			#{enclosureCont},
+			#{foreginId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE enclosure_tab SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			enclosure_num = #{enclosureNum},
+			enclosure_type = #{enclosureType},
+			enclosure_cont = #{enclosureCont},
+			foregin_id = #{foreginId}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM enclosure_tab
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE enclosure_tab SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Enclosuretab" statementType="STATEMENT">
+		select * FROM enclosure_tab  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

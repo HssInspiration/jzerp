@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.bid.companymanage.mapper.BidcompanyMapper">
+    
+	<sql id="bidcompanyColumns">
+		a.id AS "id",
+		a.companyid AS "company.id",
+		b.programid AS "bidtable.program.id",
+		a.bidtable_id AS "bidtable.id",
+		a.bidprice AS "bidPrice",
+		a.biddate AS "bidDate",
+		a.laborcost AS "laborCost",
+		a.meterialexpense AS "meterialExpense",
+		a.discountrate AS "discountRate",
+		
+		a.tecbid AS "tecBidName.id",
+		a.combid AS "comBidName.id",
+		a.ecobid AS "ecoBidName.id",
+		a.constructorid AS "constructoor.id",
+		a.directorid AS "director.id",
+		
+		a.saverid AS "saver.id",
+		a.constrworkerid AS "constrworker.id",
+		a.inspectorid AS "inspector.id",
+		a.meterialerid AS "meterialer.id",
+		a.costerid AS "coster.id",
+		a.otherworkersid AS "otherWorkers.id",
+		
+		a.isbid AS "isBid",
+		a.deposit AS "deposit",
+		a.depositenclosure AS "depositEnclosure",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.create_by AS "createBy",
+		a.update_by AS "updateBy",
+		a.del_flag AS "delFlag",
+		c.companyname AS "company.companyName",
+		c.companynum AS "company.companyNum",
+		p.programname AS "program.programName",
+		p.programnum AS "program.programNum",
+		b.bidnum AS "bidtable.bidNum",
+		b.openBidDate AS "bidtable.openBidDate",
+		
+		u1.name AS "tecBidName.user.name",
+		u2.name AS "comBidName.user.name",
+		u3.name AS "ecoBidName.user.name",
+		u4.name AS "constructoor.user.name",
+		u5.name AS "director.user.name",
+		
+		u6.name AS "saver.user.name",
+		u7.name AS "constrworker.user.name",
+		u8.name AS "inspector.user.name",
+		u9.name AS "meterialer.user.name",
+		u10.name AS "coster.user.name",
+		u11.name AS "otherWorkers.user.name"
+	</sql>
+	
+	<sql id="bidcompanyJoins">
+		LEFT JOIN ccpt.company_tab AS c ON c.id=a.companyid
+		LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
+		LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		
+		LEFT JOIN ccpt.core_staff AS c1 ON c1.id=a.tecbid 
+		LEFT JOIN ccpt.sys_user AS u1 ON u1.id=c1.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c2 ON c2.id=a.combid 
+		LEFT JOIN ccpt.sys_user AS u2 ON u2.id=c2.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c3 ON c3.id=a.ecobid 
+		LEFT JOIN ccpt.sys_user AS u3 ON u3.id=c3.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c4 ON c4.id=a.constructorid 
+		LEFT JOIN ccpt.sys_user AS u4 ON u4.id=c4.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c5 ON c5.id=a.directorid 
+		LEFT JOIN ccpt.sys_user AS u5 ON u5.id=c5.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c6 ON c6.id=a.saverid 
+		LEFT JOIN ccpt.sys_user AS u6 ON u6.id=c6.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c7 ON c7.id=a.constrworkerid 
+		LEFT JOIN ccpt.sys_user AS u7 ON u7.id=c7.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c8 ON c8.id=a.inspectorid 
+		LEFT JOIN ccpt.sys_user AS u8 ON u8.id=c8.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c9 ON c9.id=a.meterialerid 
+		LEFT JOIN ccpt.sys_user AS u9 ON u9.id=c9.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c10 ON c10.id=a.costerid 
+		LEFT JOIN ccpt.sys_user AS u10 ON u10.id=c10.user_id 
+		
+		LEFT JOIN ccpt.core_staff AS c11 ON c11.id=a.otherworkersid 
+		LEFT JOIN ccpt.sys_user AS u11 ON u11.id=c11.user_id 
+		
+	</sql>
+	
+	<select id="get" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 	查询中标总数 -->
+	<select id="getTotalIsBidCount" resultType="Integer">
+		SELECT
+			COUNT(*)
+			FROM bidcomp_manage
+		WHERE isbid=1 AND companyid='03ae459404284f17bbd25e78a13397a6'
+	</select>
+	
+	<!-- 	查询出所有已中标劳务 -->
+	<select id="getTotalLaborCost" resultType="Double">
+		SELECT
+			SUM(laborcost)
+			FROM bidcomp_manage
+		WHERE isbid=1 AND companyid='03ae459404284f17bbd25e78a13397a6'
+	</select>
+	
+	<!-- 	查询出所有已中标投标价 -->
+	<select id="getTotalBidPrice" resultType="Double">
+		SELECT
+			SUM(bidprice)
+			FROM bidcomp_manage
+		WHERE isbid=1 AND companyid='03ae459404284f17bbd25e78a13397a6'
+	</select>
+	
+	<select id="getByBidDate" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+		WHERE a.biddate = #{bidDate}
+	</select>
+	
+	<select id="listAllBidtableByProName" resultType="Bidcompany" >
+		SELECT 
+			a.id AS "id",
+			b.programid AS "bidtable.program.id",
+			a.bidtable_id AS "bidtable.id",
+			p.programname AS "program.programName"
+		FROM bidcomp_manage a
+			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		<where>
+			<if test = "program.programName != null and program.programName != ''">
+				AND p.programname LIKE concat('%',#{program.programName},'%')
+			</if>
+		</where>
+	</select>
+	
+	<select id="listBidcompanyByCompId" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+		WHERE a.companyid = #{companyId}
+	</select>
+	
+	<select id="listAllProgramIdByCompanyId" resultType="String" >
+		SELECT 
+			b.programid AS "bidtable.program.id"
+		FROM bidcomp_manage a
+			LEFT JOIN ccpt.company_tab AS c ON c.id=a.companyid
+			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		<where>
+			<if test = "company.id != null and company.id != ''">
+				AND c.id =#{company.id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="listAllIsBidStatusByProId" resultType="Integer" >
+		SELECT 
+		a.isbid AS "isBid"
+		FROM bidcomp_manage a
+			LEFT JOIN ccpt.company_tab AS c ON c.id=a.companyid
+			LEFT JOIN ccpt.bid_tab AS b ON b.id=a.bidtable_id  
+			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		<where>
+			<if test = "bidtable.program.id != null and bidtable.program.id != ''">
+				AND b.programid =#{bidtable.program.id}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	<select id="getBidcompanyByWorkerId" resultType="Bidcompany" >
+		SELECT 
+			a.constructorid AS "constructoor.id",
+			a.directorid AS "director.id",
+			a.saverid AS "saver.id",
+			a.constrworkerid AS "constrworker.id",
+			a.inspectorid AS "inspector.id",
+			p.programname AS "program.programName"
+		FROM bidcomp_manage a
+			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		WHERE a.constructorid = #{corePersonId}
+			  or
+			  a.directorid = #{corePersonId}
+			  or
+			  a.saverid = #{corePersonId}
+			  or
+			  a.constrworkerid = #{corePersonId}
+			  or
+			  a.inspectorid = #{corePersonId}
+	</select>
+	
+	<select id="validateWorkerByCorePersonId" resultType="Bidcompany" >
+		SELECT 
+			a.constructorid AS "constructoor.id",
+			a.directorid AS "director.id",
+			a.saverid AS "saver.id",
+			a.constrworkerid AS "constrworker.id",
+			a.inspectorid AS "inspector.id",
+			a.isbid AS "isBid",
+			p.programname AS "program.programName",
+			p.status AS "program.status" 
+		FROM bidcomp_manage a
+			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		WHERE a.constructorid = #{corePersonId}
+			  or
+			  a.directorid = #{corePersonId}
+			  or
+			  a.saverid = #{corePersonId}
+			  or
+			  a.constrworkerid = #{corePersonId}
+			  or
+			  a.inspectorid = #{corePersonId}
+	</select>
+	
+	<select id="getByBidcompanyId" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+		WHERE a.companyid = #{company.id}
+	</select>
+	
+	<select id="getBidcompanyByBidtableId" resultType="BidCompany" >
+		SELECT 
+			a.id AS "id",
+			a.bidtable_id AS "bidtable.id",
+			a.isbid AS "isBid"
+		FROM bidcomp_manage a
+		LEFT JOIN ccpt.bid_tab AS b ON b.id=a.bidtable_id  
+		WHERE a.bidtable_id = #{bidtable.id}
+	</select>
+	
+<!-- 	通过项目名称查询金卓已中标项目 -->
+	<select id="getBidcompanyByProName" resultType="BidCompany" >
+		SELECT 
+			a.id AS "id",
+			p.programname AS "program.programName"
+		FROM bidcomp_manage a
+		LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id
+		LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid  
+		<where>
+			<if test="program.programName != null and program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.programName},'%')</if> 
+			</if>
+			AND a.companyid = "03ae459404284f17bbd25e78a13397a6" 
+			AND a.isbid= "1"
+		</where>
+	</select>
+	
+	<select id="findList" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+		<where>
+			<!-- a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+			<if test="program.programName != null and program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.programName},'%')</if> 
+			</if>		
+			<if test="company.companyName != null and company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{company.companyName},'%')</if> 
+			</if>		
+			<if test="beginBidDate != null and endBidDate != null and beginBidDate != '' and endBidDate != ''">
+				AND a.bidDate BETWEEN #{beginBidDate} AND #{endBidDate}
+			</if>
+			<if test="isBid != null">
+				AND a.isbid = #{isBid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+<!-- 				ORDER BY a.update_date DESC -->
+				ORDER BY p.programname DESC,
+				a.biddate ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+		<include refid="bidcompanyJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<select id="findJzList" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+				where a.companyid = '03ae459404284f17bbd25e78a13397a6'
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bidcomp_manage (
+			id,
+			companyid,
+			programid,
+			bidtable_id,
+			bidprice,
+			
+			biddate,
+			laborcost,
+			meterialexpense,
+			discountrate,
+			tecbid,
+			
+			combid,
+			ecobid,
+			constructorid,
+			directorid,
+			saverid,
+			
+			constrworkerid,
+			inspectorid,
+			meterialerid,
+			costerid,
+			otherworkersid,
+			
+			isbid,
+			deposit,
+			depositenclosure,
+			create_by,
+			create_date,
+			
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{company.id},
+			#{bidtable.program.id},
+			#{bidtable.id},
+			#{bidPrice},
+			
+			#{bidDate},
+			#{laborCost},
+			#{meterialExpense},
+			#{discountRate},
+			#{tecBidName.id},
+			
+			#{comBidName.id},
+			#{ecoBidName.id},
+			#{constructoor.id},
+			#{director.id},
+			#{saver.id},
+			
+			#{constrworker.id},
+			#{inspector.id},
+			#{meterialer.id},
+			#{coster.id},
+			#{otherWorkers.id},
+			
+			#{isBid},
+			#{deposit},
+			#{depositEnclosure},
+			#{createBy.id},
+			#{createDate},
+			
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bidcomp_manage a SET 	
+			id = #{id},
+			a.companyid = #{company.id},
+			a.programid = #{bidtable.program.id},
+			a.bidtable_id = #{bidtable.id},
+			a.bidprice = #{bidPrice},
+			a.laborcost = #{laborCost},
+			a.meterialexpense = #{meterialExpense},
+			a.discountrate = #{discountRate},
+			
+			a.tecbid = #{tecBidName.id},
+			a.combid = #{comBidName.id},
+			a.ecobid = #{ecoBidName.id},
+			a.constructorid = #{constructoor.id},
+			a.directorid = #{director.id},
+			
+			a.saverid = #{saver.id},
+			a.constrworkerid = #{constrworker.id},
+			a.inspectorid = #{inspector.id},
+			a.meterialerid = #{meterialer.id},
+			a.costerid = #{coster.id},
+			a.otherworkersid = #{otherWorkers.id}, 
+			
+			a.biddate = #{bidDate},
+			a.isbid = #{isBid},
+			a.deposit = #{deposit},
+			a.depositenclosure = #{depositEnclosure},
+			a.create_date = #{createDate},
+			a.update_date = #{updateDate},
+			a.create_by = #{createBy.id},
+			a.update_by = #{updateBy.id},
+			a.del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM bidcomp_manage
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE bidcomp_manage SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Bidcompany" statementType="STATEMENT">
+		select * FROM bidcomp_manage  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.subprocontract.mapper.SubProContractMapper">
+    
+	<sql id="subProContractColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.subpro_contract_num AS "subProContractNum",
+		a.subpro_contract_name AS "subProContractName",
+		u.name AS "user.name",
+		u.id AS "user.id",
+		
+		a.pro_contract_id AS "proContract.id",
+		a.employer AS "employer",
+		a.subpro_addr AS "subProAddr",
+		a.connector AS "connector",
+		a.phone_num AS "phoneNum",
+		
+		a.start_date AS "startDate",
+		a.complete_date AS "completeDate",
+		a.build_date AS "buildDate",
+		a.subpro_total_price AS "subProTotalPrice",
+		a.subpro_contract_date AS "subProContractDate",
+		
+		sp.id AS "subpackageProgram.id",
+		pc.contract_name AS "subpackageProgram.proContract.contractName",
+		o.name AS "subpackageProgram.proContract.program.office.name",
+		sp.sub_program_type AS "subpackageProgram.subProgramType",
+		sp.subpackage_programname AS "subpackageProgram.subpackageProgramName",
+		
+		c.companyname AS "subBidCompany.company.companyName"
+		
+	</sql>
+	
+	<sql id="subProContractJoins">
+		LEFT JOIN ccpt.sys_user u ON u.id = a.user_id
+		LEFT JOIN ccpt.subpackage_program sp ON sp.id = a.subpro_id
+		LEFT JOIN ccpt.program_tab p ON p.id = sp.parent_id
+		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
+		LEFT JOIN ccpt.program_contract pc ON  pc.program_id = sp.parent_id
+		LEFT JOIN ccpt.subbid_company sc ON sc.subpackage_program_id = sp.id
+		LEFT JOIN ccpt.company_tab c ON c.id = sc.company_id
+		LEFT JOIN ccpt.clearevaluate_bid cb ON cb.subbid_company_id = sc.id
+	</sql>
+	
+	<select id="get" resultType="subProContract" >
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+			<include refid="subProContractJoins"/>
+		WHERE a.id = #{id} AND cb.isBid=1
+	</select>
+	
+	<select id="getSubProContractList" resultType="subProContract" >
+		SELECT 
+			a.id AS "id",
+			a.subpro_contract_name AS "subProContractName"
+		FROM sub_pro_contract a
+		<where>
+			<if test="subProContractName != null and subProContractName != ''">
+				AND a.subpro_contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContractName}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContractName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+<!-- 	获取最后一个增加的分包合同编号（为设置编号做准备） -->
+	<select id="getLastSubProContractNum" resultType="String" >
+		SELECT
+			a.subpro_contract_num AS "subProContractNum"
+		FROM sub_pro_contract a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM sub_pro_contract a)
+	</select>
+	
+<!-- 	通过子项目id获取分包合同对象 -->
+	<select id="getSubProContractBySubProId" resultType="subProContract" >
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+			<include refid="subProContractJoins"/>
+		<where>
+			<if test="subpackageProgram.id != null and subpackageProgram.id != ''">
+				AND sp.id = #{subpackageProgram.id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="subProContract" parameterType="List">
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+		<include refid="subProContractJoins"/>
+		<where>
+			${dataScope}
+			<if test="subProContractName != null and subProContractName != ''">
+				AND a.subpro_contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContractName}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContractName},'%')</if>
+			</if>
+			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
+				AND sp.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subpackageProgram.subpackageProgramName},'%')</if>
+			</if>
+			<if test="user.name != null and user.name != ''">
+				AND u.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			AND cb.isBid=1
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="subProContract" >
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+		<include refid="subProContractJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			AND cb.isBid=1
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sub_pro_contract(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			
+			user_id,
+			employer,
+			connector,
+			phone_num,
+			subpro_id,
+			
+			start_date,
+			subpro_addr,
+			subpro_contract_date,
+			complete_date,
+			subpro_total_price,
+			
+			build_date,
+			subpro_contract_num,
+			subpro_contract_name
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			
+			#{user.id},
+			#{employer},
+			#{connector},
+			#{phoneNum},
+			#{subpackageProgram.id},
+			
+			#{startDate},
+			#{subProAddr},
+			#{subProContractDate},
+			#{completeDate},
+			#{subProTotalPrice},
+			
+			#{buildDate},
+			#{subProContractNum},
+			#{subProContractName}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sub_pro_contract SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			
+			user_id = #{user.id},
+			employer = #{employer},
+			connector = #{connector},
+			phone_num = #{phoneNum},
+			subpro_id = #{subpackageProgram.id},
+			
+			start_date = #{startDate},
+			build_date = #{buildDate},
+			subpro_addr = #{subProAddr},
+			subpro_contract_date = #{subProContractDate},
+			complete_date = #{completeDate},
+			
+			subpro_total_price = #{subProTotalPrice},
+			subpro_contract_num = #{subProContractNum},
+			subpro_contract_name = #{subProContractName}
+			
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM sub_pro_contract
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE sub_pro_contract SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="proContract" statementType="STATEMENT">
+		select * FROM sub_pro_contract  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.mapper.TenderMapper">
+    
+	<sql id="tenderColumns">
+		a.id AS "id",
+		a.subpackage_programid AS "subpackageProgramId",
+		a.arrange AS "arrange",
+		a.quality AS "quality",
+		a.build_date AS "buildDate",
+		a.openbid_date AS "openBidDate",
+		a.openbid_addr AS "openBidAddr",
+		a.evaluate_method AS "evaluateMethod",
+		a.remarks AS "remarks",
+		a.tender_director AS "tenderDirector",
+		a.project_profile AS "projectProfile",
+		a.tenderctrl_price AS "tenderCtrlPrice",
+		a.deposit AS "deposit",
+		a.subpackage_programid AS "subpackageProgram.id",
+		s.subpackage_programnum AS "subpackageProgram.subpackageProgramNum",
+		s.subpackage_programname AS "subpackageProgram.subpackageProgramName",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		a.create_by AS "createBy.id",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="tenderJoins">
+		LEFT JOIN ccpt.subpackage_program AS s on s.id=a.subpackage_programid
+	</sql>
+	
+	<select id="get" resultType="Tender" >
+		SELECT 
+			<include refid="tenderColumns"/>
+		FROM tender_tab a
+		    <include refid="tenderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getCompanyNameByTenderId" resultType="Tender" >
+		SELECT 
+			a.subpackage_programid AS "subpackageProgram.id",
+			p.id AS "subpackageProgram.program.id",
+			e.companyname AS "subpackageProgram.programcompany.companyName",
+			e.companynum AS "subpackageProgram.programcompany.companyNum"
+		FROM tender_tab a
+		    LEFT JOIN ccpt.subpackage_program AS s on s.id = a.subpackage_programid
+		    LEFT JOIN ccpt.program_tab AS p on p.id = s.parent_id
+		    LEFT JOIN ccpt.company_tab AS e on e.id=p.companyid
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getTenderBySubProId" resultType="Tender" >
+		SELECT 
+			<include refid="tenderColumns"/>
+		FROM tender_tab a
+		<include refid="tenderJoins"/>
+		WHERE a.subpackage_programid = #{subpackageProgram.id}
+	</select>
+	
+	<!-- 通过分包项目名称查询招标信息 -->
+	<select id="ListTenderBySubproName" resultType="Tender" >
+		SELECT 
+			a.id AS "id",
+			s.subpackage_programname AS "subpackageProgram.subpackageProgramName"
+		FROM tender_tab a
+		LEFT JOIN ccpt.subpackage_program AS s on s.id=a.subpackage_programid
+		<where>
+			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
+				AND s.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subpackageProgram.subpackageProgramName},'%')</if> 
+			</if>
+		</where>
+	</select>
+	
+	<!-- 通过分包项目名称查询招标信息 -->
+	<select id="getSubpackageProgramList" resultType="SubpackageProgram" >
+		SELECT 
+			a.id AS "id",
+			s.subpackage_programname AS "subpackageProgram.subpackageProgramName"
+		FROM tender_tab a
+		LEFT JOIN ccpt.subpackage_program AS s on s.id=a.subpackage_programid
+		<where>
+			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
+				AND s.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subpackageProgram.subpackageProgramName},'%')</if> 
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="Tender" >
+		SELECT 
+			<include refid="tenderColumns"/>
+		FROM tender_tab a
+		<include refid="tenderJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+<!-- 			<if test="tenderiNum != null and tenderiNum != ''"> -->
+<!-- 				AND a.tender_num = #{tenderiNum} -->
+<!-- 			</if> -->
+			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
+				AND s.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subpackageProgram.subpackageProgramName},'%')</if> 
+			</if>
+			<if test="beginOpenBidDate != null and endOpenBidDate != null and beginOpenBidDate != '' and endOpenBidDate != ''">
+				AND a.openbid_date BETWEEN #{beginOpenBidDate} AND #{endOpenBidDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+<!-- 				ORDER BY a.update_date DESC -->
+					ORDER BY a.openbid_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Tender" >
+		SELECT 
+			<include refid="tenderColumns"/>
+		FROM tender_tab a
+		<include refid="tenderJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO tender_tab(
+			id,
+			subpackage_programid,
+			arrange,
+			quality,	
+			tenderctrl_price,
+			build_date,
+			openbid_date,
+			openbid_addr,
+			evaluate_method,
+			tender_director,
+			deposit,
+			remarks,
+			project_profile,
+			create_date,
+			update_date,
+			update_by,
+			create_by,
+			del_flag
+		) VALUES (
+			#{id},
+			#{subpackageProgram.id},
+			#{arrange},
+			#{quality},
+			#{tenderCtrlPrice},
+			#{buildDate},
+			#{openBidDate},
+			#{openBidAddr},
+			#{evaluateMethod},
+			#{tenderDirector},
+			#{deposit},
+			#{remarks},
+			#{projectProfile},
+			#{createDate},
+			#{updateDate},
+			#{updateBy.id},
+			#{createBy.id},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE tender_tab SET 	
+			subpackage_programid = #{subpackageProgram.id},
+			arrange = #{arrange},
+			quality = #{quality},
+			build_date = #{buildDate},
+			openbid_date = #{openBidDate},
+			openbid_addr = #{openBidAddr},
+			tenderctrl_price = #{tenderCtrlPrice},
+			evaluate_method = #{evaluateMethod},
+			deposit = #{deposit},
+			project_profile = #{projectProfile},
+			tender_director = #{tenderDirector},
+			remarks = #{remarks},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM tender_tab
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE tender_tab SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Tender" statementType="STATEMENT">
+		select * FROM tender_tab  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

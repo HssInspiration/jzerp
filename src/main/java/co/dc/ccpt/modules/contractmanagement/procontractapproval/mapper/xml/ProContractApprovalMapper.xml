@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.procontractapproval.mapper.ProContractApprovalMapper">
+    
+	<sql id="proContractApprovalColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.contract_id AS "proContract.id",
+		pc.contract_num AS "proContract.contractNum",
+		pc.contract_name AS "proContract.contractName",
+		pc.program_addr AS "proContract.programAddr",
+		pc.program_connector AS "proContract.programConnector",
+		
+		pc.phone_num AS "proContract.phoneNum",
+		pc.start_date AS "proContract.startDate",
+		pc.complete_date AS "proContract.completeDate",
+		pc.contract_total_price AS "proContract.contractTotalPrice",
+		pc.contract_date AS "proContract.contractDate",
+		
+		pc.program_id AS "proContract.program.id",
+		p.programname AS "proContract.program.programName",
+		o.name AS "proContract.program.office.name",
+		c.companyname AS "proContract.program.company.companyName",
+		p.programtype AS "proContract.program.programType",
+		
+		u1.id AS "user.id",
+		u1.name AS "user.name",
+		a.status AS "contractStatus",
+		a.approval_status AS "approvalStatus",
+		u.name AS "proContract.user.name",
+		
+		u.id AS "proContract.user.id",
+		pc.build_date AS "proContract.buildDate"
+		
+	</sql>
+	
+	<sql id="proContractApprovalJoins">
+		LEFT JOIN ccpt.program_contract pc ON pc.id = a.contract_id
+		LEFT JOIN ccpt.program_tab p ON p.id = pc.program_id
+		LEFT JOIN ccpt.sys_user u ON u.id = pc.user_id
+		LEFT JOIN ccpt.sys_user u1 ON u1.id = a.user_id
+		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
+		LEFT JOIN ccpt.company_tab c ON c.id = p.companyid
+	</sql>
+	
+	<select id="get" resultType="proContractApproval" >
+		SELECT 
+			<include refid="proContractApprovalColumns"/>
+		FROM contract_approval a
+			<include refid="proContractApprovalJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="proContractApproval" parameterType="List">
+		SELECT 
+			<include refid="proContractApprovalColumns"/>
+		FROM contract_approval a
+		<include refid="proContractApprovalJoins"/>
+		<where>
+			${dataScope}
+			<if test="proContract.contractName != null and proContract.contractName != ''">
+				AND pc.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{proContract.contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{proContract.contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{proContract.contractName},'%')</if>
+			</if>
+			<if test="proContract.program.programName != null and proContract.program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{proContract.program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{proContract.program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{proContract.program.programName},'%')</if>
+			</if>
+			<if test="proContract.program.office.name != null and proContract.program.office.name != ''">
+				AND o.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{proContract.program.office.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{proContract.program.office.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{proContract.program.office.name},'%')</if>
+			</if>
+			<if test="proContract.beginContractDate != null and proContract.endContractDate != null and proContract.beginContractDate != '' and proContract.endContractDate != ''">
+				AND pc.contract_date BETWEEN #{proContract.beginContractDate} AND #{proContract.endContractDate}
+			</if>
+			<if test="contractStatus != null">
+				AND a.status = #{contractStatus}
+			</if>
+			<if test="approvalStatus != null">
+				AND a.approval_status = #{approvalStatus}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="proContractApproval" >
+		SELECT 
+			<include refid="proContractApprovalColumns"/>
+		FROM contract_approval a
+		<include refid="proContractApprovalJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO contract_approval(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			contract_id,
+			status,
+			approval_status
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			#{proContract.id},
+			#{contractStatus},
+			#{approvalStatus}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE contract_approval SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			contract_id = #{proContract.id},
+			status = #{contractStatus},
+			approval_status = #{approvalStatus}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM contract_approval
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE contract_approval SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="proContractApproval" statementType="STATEMENT">
+		select * FROM contract_approval  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

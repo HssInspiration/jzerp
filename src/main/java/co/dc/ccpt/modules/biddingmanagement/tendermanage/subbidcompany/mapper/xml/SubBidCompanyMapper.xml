@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.mapper.SubBidCompanyMapper">
+    
+	<sql id="subBidCompanyColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.subbid_num AS "subBidNum",
+		a.subpackage_program_id AS "tender.subpackageProgram.id",
+		
+		s.subpackage_programname AS "tender.subpackageProgram.subpackageProgramName",
+		a.subbid_price AS "subBidPrice",
+		a.subbid_date AS "subBidDate",
+		a.ctrl_price AS "ctrlPrice",
+		
+		a.provision_price AS "provisionPrice",
+		a.meterials AS "meterials",
+		a.saver_id AS "saverId",
+		a.company_id AS "company.id",
+		c.companyname AS "company.companyName",
+		
+		a.present_director_id AS "presentDireId",
+		a.present_director_tel AS "presentDireTel",
+		a.program_director_id AS "programDireId",
+		a.program_director_tel AS "programDireTel",
+		a.saver_tel AS "saverTel",
+		
+		a.submiter AS "submiter",
+		a.submit_tel AS "submitTel",
+		a.tender_id AS "tender.id",
+		a.labor_cost AS "laborCost"
+	</sql>
+	
+	<sql id="subBidCompanyJoins">
+		LEFT JOIN ccpt.company_tab c on a.company_id = c.id
+		LEFT JOIN ccpt.tender_tab t on a.tender_id = t.id
+		LEFT JOIN ccpt.subpackage_program s on s.id = t.subpackage_programid
+	</sql>
+    
+	<select id="get" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getSubBidCompanyByTenderId" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		WHERE a.tender_id = #{tender.id}
+	</select>
+	
+	
+	<select id="listSubBidCompanyForSubmit" resultType="SubBidCompany" >
+		SELECT 
+			c.companyname AS "company.companyName",
+			a.submiter AS "submiter",
+			a.submit_tel AS "submitTel",
+			a.subbid_date AS "subBidDate"
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="listSubBidCompanyByCompId" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		WHERE a.company_id = #{companyId}
+	</select>
+	
+	<select id="listAllSubBidProIdByCompId" resultType="String" >
+		SELECT 
+			a.subpackage_program_id AS "tender.subpackageProgram.id"
+		FROM subbid_company a
+		LEFT JOIN ccpt.company_tab c on a.company_id = c.id
+		LEFT JOIN ccpt.tender_tab t on a.tender_id = t.id
+		LEFT JOIN ccpt.subpackage_program s on s.id = t.subpackage_programid
+		<where>
+			<if test = "company.id != null and company.id != ''">
+				AND c.id =#{company.id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="getAlreadyBidCompanyList" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		<where>
+			<if test="tender.subpackageProgram.subpackageProgramName != null and tender.subpackageProgram.subpackageProgramName != ''">
+				AND s.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{tender.subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{tender.subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{tender.subpackageProgram.subpackageProgramName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getBidCompanyList" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		<where>
+			<if test="tender.subpackageProgram.subpackageProgramName != null and tender.subpackageProgram.subpackageProgramName != ''">
+				AND s.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{tender.subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{tender.subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{tender.subpackageProgram.subpackageProgramName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	<select id="getBidCompanyListByProId" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		<where>
+			<if test="tender.subpackageProgram.id != null and tender.subpackageProgram.id != ''">
+				AND a.subpackage_program_id = #{tender.subpackageProgram.id}
+			</if>
+		</where>
+	</select>
+	
+	
+	<select id="findList" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+			<include refid="subBidCompanyJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+			<if test="company.companyName != null and company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{company.companyName},'%')</if>
+			</if>
+			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
+				AND s.subpackage_programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subpackageProgram.subpackageProgramName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subpackageProgram.subpackageProgramName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subpackageProgram.subpackageProgramName},'%')</if>
+			</if>
+			<if test="beginSubBidDate != null and endSubBidDate != null and beginSubBidDate != '' and endSubBidDate != ''">
+				AND a.subbid_date BETWEEN #{beginSubBidDate} AND #{endSubBidDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+<!-- 				ORDER BY a.update_date DESC -->
+					ORDER BY s.subpackage_programname DESC,
+									a.subbid_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SubBidCompany" >
+		SELECT 
+			<include refid="subBidCompanyColumns"/>
+		FROM subbid_company a
+		<include refid="subBidCompanyJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO subbid_company(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			subbid_num,
+			saver_tel,
+			company_id,
+			tender_id,
+			subpackage_program_id,
+			subbid_price,
+			subbid_date,
+<!-- 			meterial_cost, -->
+			ctrl_price,
+<!-- 			floor_price, -->
+			provision_price,
+			meterials,
+			saver_id,
+			submiter,
+			submit_tel,
+			present_director_id,
+			present_director_tel,
+			program_director_id,
+			program_director_tel,
+			labor_cost
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{subBidNum},
+			#{saverTel},
+			#{company.id},
+			#{tender.id},
+			#{tender.subpackageProgram.id},
+			#{subBidPrice},
+			#{subBidDate},
+<!-- 			#{meterialCost}, -->
+			#{ctrlPrice},
+<!-- 			#{floorPrice}, -->
+			#{provisionPrice},
+			#{meterials},
+			#{saverId},
+			#{submiter},
+			#{submitTel},
+			#{presentDireId},
+			#{presentDireTel},
+			#{programDireId},
+			#{programDireTel},
+			#{laborCost}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE subbid_company SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			subbid_num = #{subBidNum},
+			subbid_price = #{subBidPrice},
+			subbid_date = #{subBidDate},
+			ctrl_price = #{ctrlPrice},
+			company_id = #{company.id},
+			tender_id = #{tender.id},
+			subpackage_program_id = #{tender.subpackageProgram.id},
+			provision_price = #{provisionPrice},
+			meterials = #{meterials},
+			saver_id = #{saverId},
+			saver_tel = #{saverTel},
+			submiter = #{submiter},
+			submit_tel = #{submitTel},
+			present_director_id = #{presentDireId},
+			present_director_tel = #{presentDireTel},
+			program_director_id = #{programDireId},
+			program_director_tel = #{programDireTel},
+			labor_cost = #{laborCost}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM subbid_company
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE subbid_company SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="SubBidCompany" statementType="STATEMENT">
+		select * FROM subbid_company  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

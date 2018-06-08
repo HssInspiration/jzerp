@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.constructormanagement.buildingpro.mapper.BuildingMapper">
+    
+	<sql id="buildingColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.staff_id AS "coreStaff.id",
+		u.name AS "coreStaff.user.name",
+		s.id_num AS "coreStaff.identityNum",
+		
+		s.phone_num AS "coreStaff.phoneNum",
+		so.name AS "coreStaff.user.office.name",
+		a.certificate_id AS "staffCertificate.id",
+		p.programname AS "bidcompany.program.programName",
+		a.bid_comp_id AS "bidcompany.id",
+		
+		sc.certificate_name AS "staffCertificate.certificateName"
+		
+	</sql>
+	
+	<sql id="buildingJoins">
+		LEFT JOIN ccpt.core_staff s ON s.id = a.staff_id
+		LEFT JOIN ccpt.core_staff_certificate sc ON sc.id = a.certificate_id
+		LEFT JOIN ccpt.sys_user u ON u.id = s.user_id
+		LEFT JOIN ccpt.sys_office so ON so.id = u.office_id 
+		LEFT JOIN ccpt.bidcomp_manage b ON b.id = a.bid_comp_id 
+		AND b.companyid = '03ae459404284f17bbd25e78a13397a6'
+		AND b.isbid = '1'
+		LEFT JOIN ccpt.program_tab p ON p.id = b.programid
+	</sql>
+	
+	<select id="get" resultType="building" >
+		SELECT 
+			<include refid="buildingColumns"/>
+		FROM is_build a
+		<include refid="buildingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getBuildingByCoreStaffId" resultType="building" >
+		SELECT 
+			<include refid="buildingColumns"/>
+		FROM is_build a
+			<include refid="buildingJoins"/>
+		WHERE a.staff_id = #{coreStaff.id}
+	</select>
+	
+	<select id="findList" resultType="building" parameterType="List">
+		SELECT 
+			<include refid="buildingColumns"/>
+		FROM is_build a
+		<include refid="buildingJoins"/>
+		<where>
+			${dataScope}
+			<if test="bidcompany.program.programName != null and bidcompany.program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bidcompany.program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bidcompany.program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bidcompany.program.programName},'%')</if>
+			</if>
+			<if test="coreStaff.user.name != null and coreStaff.user.name != ''">
+				AND u.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{coreStaff.user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{coreStaff.user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{coreStaff.user.name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="building" >
+		SELECT 
+			<include refid="buildingColumns"/>
+		FROM is_build a
+		<include refid="buildingJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO is_build(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			staff_id,
+			bid_comp_id,
+			certificate_id
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{coreStaff.id},
+			#{bidcompany.id},
+			#{staffCertificate.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE is_build SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			staff_id = #{coreStaff.id},
+			bid_comp_id = #{bidcompany.id},
+			certificate_id = #{staffCertificate.id}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM is_build
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE is_build SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="building" statementType="STATEMENT">
+		select * FROM is_build  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

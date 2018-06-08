@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.mapper.EvaluateWorkerMapper">
+    
+	<sql id="evaluateWorkerColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		a.clearevaluate_bid_id AS "clearEvaluate.id",
+		su.id AS "user.id",
+		su.name AS "user.name",
+		sur.role_id AS "user.role.id",
+		sr.name AS "user.role.name",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="evaluateWorkerJoins">
+		LEFT JOIN clearevaluate_bid b ON b.id = a.clearevaluate_bid_id
+		LEFT JOIN sys_user su ON su.id = a.user_id
+		LEFT JOIN sys_user_role sur ON sur.user_id = su.id
+		LEFT JOIN sys_role sr ON sr.id = sur.role_id
+	</sql>
+	
+	<select id="get" resultType="EvaluateWorker" >
+		SELECT 
+			<include refid="evaluateWorkerColumns"/>
+		FROM evaluate_worker a
+		<include refid="evaluateWorkerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getUserList" resultType="EvaluateWorker" >
+		SELECT
+			su.name AS "user.name",
+			sr.name AS "user.role.name",
+			a.remarks AS "remarks"
+		FROM evaluate_worker a
+		LEFT JOIN clearevaluate_bid b ON b.id = a.clearevaluate_bid_id
+		LEFT JOIN ccpt.subbid_company sc ON b.subbid_company_id = sc.id
+		LEFT JOIN ccpt.tender_tab t ON sc.tender_id = t.id
+		LEFT JOIN ccpt.subpackage_program sp ON t.subpackage_programid = sp.id
+		LEFT JOIN sys_user su ON su.id = a.user_id
+		LEFT JOIN sys_user_role sur ON sur.user_id = su.id
+		LEFT JOIN sys_role sr ON sr.id = sur.role_id
+		WHERE sp.id = #{subpackageProgramId}
+		GROUP BY su.name
+	</select>
+	
+	<select id="findList" resultType="EvaluateWorker" >
+		SELECT 
+			<include refid="evaluateWorkerColumns"/>
+		FROM evaluate_worker a
+		<include refid="evaluateWorkerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="clearEvaluate != null and clearEvaluate.id != null and clearEvaluate.id != ''">
+				AND a.clearevaluate_bid_id = #{clearEvaluate.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EvaluateWorker" >
+		SELECT 
+			<include refid="evaluateWorkerColumns"/>
+		FROM evaluate_worker a
+		<include refid="evaluateWorkerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO evaluate_worker(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			clearevaluate_bid_id,
+			user_id,
+			remarks
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{clearEvaluate.id},
+			#{user.id},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE evaluate_worker SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			clearevaluate_bid_id = #{clearEvaluate.id},
+			user_id = #{user.id},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM evaluate_worker
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE clearevaluate_bid_id = #{clearEvaluate.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE evaluate_worker SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		<choose>
+			<when test="id !=null and id != ''">
+				WHERE id = #{id}
+			</when>
+			<otherwise>
+				WHERE clearevaluate_bid_id = #{clearEvaluate.id}
+			</otherwise>
+		</choose>
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="EvaluateWorker" statementType="STATEMENT">
+		select * FROM evaluate_worker  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

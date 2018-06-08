@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.depositmanagement.depositreturn.mapper.DepositReturnMapper">
+    
+	<sql id="depositReturnColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.return_num AS "returnNum",
+		a.return_date AS "returnDate",
+		
+		a.returner_name AS "returnName",
+		a.returner_number AS "returnNumber",
+		a.isreturn AS "isReturn",
+		a.statement_id AS "depositStatement.id",
+		ds.deposit_approval_id AS "depositStatement.depositApproval.id",
+		da.deposit_id AS "depositStatement.depositApproval.depsoit.id",
+		
+		p.programname AS "depositStatement.depositApproval.deposit.program.programName",
+		dt.pay_count AS "depositStatement.depositApproval.deposit.payCount",
+		dt.deposit_type AS "depositStatement.depositApproval.deposit.depositType",
+		dt.deposit_name AS "depositStatement.depositApproval.deposit.depositName",
+		da.receiver AS "depositStatement.depositApproval.receiver",
+		da.receiver_account AS "depositStatement.depositApproval.receiverAccount",
+		
+		da.receiver_bank AS "depositStatement.depositApproval.receiverBank",
+		da.remittance_bank AS "depositStatement.depositApproval.remittanceBank",
+		da.statement_date AS "depositStatement.depositApproval.statementDate",
+		da.pay_way AS "depositStatement.depositApproval.payWay",
+		ds.ticket_holder AS "depositStatement.ticketHolder",
+		
+		p.plan_to_start AS "depositStatement.depositApproval.deposit.program.planToStart",
+		a.return_cont AS "returnCont"
+	</sql>
+	
+	<sql id="depositReturnJoins">
+		LEFT JOIN ccpt.deposit_statement ds ON ds.id = a.statement_id
+		LEFT JOIN ccpt.deposit_approval da ON da.id = ds.deposit_approval_id
+		LEFT JOIN ccpt.deposit_tab dt ON dt.id = da.deposit_id
+		LEFT JOIN ccpt.program_tab p ON dt.program_id = p.id
+	</sql>
+    
+	<select id="get" resultType="DepositReturn" >
+		SELECT 
+			<include refid="depositReturnColumns"/>
+		FROM deposit_return a
+		<include refid="depositReturnJoins"/>
+		WHERE a.id = #{id}
+	</select>
+<!-- 	查询未中标的待退保证金个数 -->
+	<select id="countDeposit" resultType="Integer">
+		SELECT
+			count(*)
+		FROM deposit_return where isreturn = 0
+	</select>
+<!-- 	查询未中标的待退保证金总金额 -->
+	<select id="countDepositTotalPrice" resultType="Double">
+		SELECT
+			SUM(dt.pay_count)
+		FROM deposit_return a
+			<include refid="depositReturnJoins"/>
+		WHERE isreturn = 0
+	</select>
+	
+	<select id="getLastInsertNum" resultType="String">
+		SELECT
+			a.return_num AS "returnNum"
+		FROM deposit_return a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM deposit_return a)
+	</select>
+	
+	<select id="getDepositReturnById" resultType="DepositReturn">
+		SELECT 
+			<include refid="depositReturnColumns"/>
+		FROM deposit_return a
+			<include refid="depositReturnJoins"/>	
+		WHERE a.statement_id = #{depositStatement.id}
+	</select>
+	
+	<select id="findList" resultType="DepositReturn" >
+		SELECT 
+			<include refid="depositReturnColumns"/>
+		FROM deposit_return a
+		<include refid="depositReturnJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+			<if test="depositStatement.depositApproval.deposit.depositName != null and depositStatement.depositApproval.deposit.depositName != ''">
+				AND dt.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{depositStatement.depositApproval.deposit.depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{depositStatement.depositApproval.deposit.depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{depositStatement.depositApproval.deposit.depositName},'%')</if>
+			</if>
+<!-- 			<if test="depositStatement.depositApproval.deposit.program.beginPlanToStart != null and depositStatement.depositApproval.deposit.program.endPlanToStart != null and depositStatement.depositApproval.deposit.program.beginPlanToStart != '' and depositStatement.depositApproval.deposit.program.endPlanToStart != ''"> -->
+<!-- 				AND p.plan_to_start BETWEEN #{depositStatement.depositApproval.deposit.program.beginPlanToStart} AND #{depositStatement.depositApproval.deposit.program.endPlanToStart} -->
+<!-- 			</if> -->
+			<if test="beginReturnDate != null and beginReturnDate != '' and endReturnDate != null and endReturnDate != ''">
+				AND a.return_date BETWEEN #{beginReturnDate} AND #{endReturnDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DepositReturn" >
+		SELECT 
+			<include refid="depositReturnColumns"/>
+		FROM deposit_return a
+		<include refid="depositReturnJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO deposit_return(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			return_num,
+			statement_id,
+			returner_name,
+			returner_number,
+			isreturn,
+			return_date,
+			return_cont
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{returnNum},
+			#{depositStatement.id},
+			#{returnName},
+			#{returnNumber},
+			#{isReturn},
+			#{returnDate},
+			#{returnCont}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE deposit_return SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			return_num = #{returnNum},
+			statement_id = #{depositStatement.id},
+			returner_name = #{returnName},
+			returner_number = #{returnNumber},
+			isreturn = #{isReturn},
+			return_date = #{returnDate},
+			return_cont = #{returnCont}
+		WHERE id = #{id}
+	</update>
+	
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM deposit_return
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE deposit_return SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="DepositReturn" statementType="STATEMENT">
+		select * FROM deposit_return  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

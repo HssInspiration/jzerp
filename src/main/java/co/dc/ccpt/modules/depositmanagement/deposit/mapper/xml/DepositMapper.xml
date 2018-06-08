@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.depositmanagement.deposit.mapper.DepositMapper">
+    
+	<sql id="depositColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.deposit_num AS "depositNum",
+		a.deposit_name AS "depositName",
+		a.program_id AS "program.id",
+		p.programname AS "program.programName",
+		a.deposit_type AS "depositType",
+		a.check_status AS "checkStatus",
+		a.applyer AS "applyer",
+		a.apply_date AS "applyDate",
+		a.pay_count AS "payCount"
+	</sql>
+	
+	<sql id="depositJoins">
+		LEFT JOIN ccpt.program_tab p ON a.program_id = p.id 
+	</sql>
+    
+	<select id="get" resultType="Deposit" >
+		SELECT 
+			<include refid="depositColumns"/>
+		FROM deposit_tab a
+			<include refid="depositJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 	获取最后一条新增的编号 -->
+	<select id="getLastInsertNum" resultType="String">
+		SELECT
+			a.deposit_num AS "depositNum"
+		FROM deposit_tab a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM deposit_tab a)
+	</select>
+	
+	<!-- 	获取项目名称 -->
+	<select id="getProNameInDepositByProName" resultType="Deposit">
+		SELECT
+			a.id AS "id",
+			a.deposit_name AS "depositName"
+		FROM deposit_tab a	
+		<where>
+			<if test="depositName != null and depositName != ''">
+				AND a.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{depositName},'%')</if>
+			</if>
+		</where>
+	</select>
+	
+	
+	<!-- 	通过项目id获取保证金类型集合 -->
+	<select id="getDepositTypeListById" resultType="String">
+		SELECT
+			a.deposit_type AS "depositType"
+		FROM deposit_tab a	
+			<include refid="depositJoins"/>
+		<where>
+			<if test="program.id != null and program.id != ''">
+				AND p.id = #{program.id}
+			</if>
+		</where>
+	</select>
+	
+	<select id="findList" resultType="Deposit" >
+		SELECT 
+			<include refid="depositColumns"/>
+		FROM deposit_tab a
+		<include refid="depositJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+			<if test="depositNum != null and depositNum != ''">
+				AND a.deposit_num LIKE 
+					<if test="dbName == 'oracle'">'%'||#{depositNum}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{depositNum}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{depositNum},'%')</if>
+			</if>
+			<if test="program.programName != null and program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.programName},'%')</if>
+			</if>
+			<if test="depositName != null and depositName != ''">
+				AND a.deposit_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{depositName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{depositName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{depositName},'%')</if>
+			</if>
+			<if test="beginApplyDate != null and endApplyDate != null and beginApplyDate != '' and endApplyDate != ''">
+				AND a.apply_date BETWEEN #{beginApplyDate} AND #{endApplyDate}
+			</if>
+			<if test="depositType != null and depositType != ''">
+				AND a.deposit_type = #{depositType}
+			</if>
+			<if test="checkStatus != null and checkStatus != ''">
+				AND a.check_status = #{checkStatus}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Deposit" >
+		SELECT 
+			<include refid="depositColumns"/>
+		FROM deposit_tab a
+			<include refid="depositJoins"/>
+		<where>
+<!-- 			a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO deposit_tab(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag,
+			deposit_num,
+			deposit_name,
+			program_id,
+			deposit_type,
+			applyer,
+			apply_date,
+			pay_count
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag},
+			#{depositNum},
+			#{depositName},
+			#{program.id},
+			#{depositType},
+			#{applyer},
+			#{applyDate},
+			#{payCount}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE deposit_tab SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			deposit_num = #{depositNum},
+			deposit_name = #{depositName},
+			program_id = #{program.id},
+			deposit_type = #{depositType},
+			applyer = #{applyer},
+			apply_date = #{applyDate},
+			pay_count = #{payCount},
+			check_status = #{checkStatus}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM deposit_tab
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE deposit_tab SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Deposit" statementType="STATEMENT">
+		select * FROM deposit_tab  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

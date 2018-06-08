@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.biddingmanagement.bid.programmanage.mapper.ProgramMapper">
+    
+	<sql id="programColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.plan_to_start AS "planToStart",
+		a.programnum AS "programNum",
+		a.programname AS "programName",
+		a.companyid AS "company.id",
+		a.sys_officeid AS "office.id",
+		a.programtype AS "programType",
+		a.prodescription AS "proDescription", 
+		a.status AS "status",
+		a.enclosure AS "enclosure",
+		a.programno AS "programNo",
+		a.call_bid_date AS "callBidDate",
+		e.companyname AS "company.companyName",
+		a.get_method AS "getMethod",
+		o.name AS "office.name"
+	</sql>
+	
+	<sql id="programJoins">
+		LEFT JOIN ccpt.company_tab AS e on e.id=a.companyid
+		LEFT JOIN ccpt.sys_office AS o on o.id = a.sys_officeid
+	</sql>
+	<!-- 查询所有项目 -->
+     <select id="listAllProgram" resultType="Program">
+    	SELECT 
+		    a.id AS "id",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.programnum AS "programNum",
+			a.programname AS "programName",
+			a.companyid AS "company.id",
+			a.programtype AS "programType",
+			a.prodescription AS "proDescription",
+			a.status AS "status",
+			a.enclosure AS "enclosure",
+			a.programno AS "programNo",
+			a.call_bid_date AS "callBidDate"
+    	FROM program_tab a
+    </select>
+<!--    	通过项目名称查询对应项目（模糊匹配） -->
+    <select id="listAllProgramByName" resultType="Program">
+    	SELECT 
+		    a.id AS "id",
+			a.programnum AS "programNum",
+			a.programname AS "programName"
+    	FROM program_tab a
+    	<where>
+			<if test="programName != null and programName != ''">
+				AND a.programname LIKE concat('%',#{programName},'%')
+			</if>
+    	</where>
+    </select>
+    
+    <select id="listProgramByCompId" resultType="Program">
+    	SELECT 
+			<include refid="programColumns"/>
+		FROM program_tab a
+			<include refid="programJoins"/>
+		WHERE a.companyid = #{companyId}
+    </select>
+    
+<!--     金卓且已中标 -->
+    <select id="listProgramByisBid" resultType="Program">
+    	SELECT 
+			a.id AS "id",
+			a.programname AS "programName",
+			a.programtype AS "programType",
+			a.status AS "status"
+<!-- 			p.isbid AS "bidCompany.isBid" -->
+		FROM program_tab a
+<!-- 		LEFT JOIN ccpt.bidcomp_manage AS p on p.programid=a.id -->
+		<where>
+			<if test="programName != null and programName != ''">
+				AND a.programname LIKE concat('%',#{programName},'%')
+			</if>
+<!-- 			    AND p.isbid = 1  -->
+				AND a.status = 2 or a.status = 4
+<!-- 			    AND p.companyid= '03ae459404284f17bbd25e78a13397a6' -->
+    	</where>
+    </select>
+    
+    <select id="getProgramTypeById" resultType="Program">
+		SELECT 
+			a.programtype AS "programType"
+		FROM program_tab a 
+		WHERE a.id=#{id}  
+    </select>
+    
+<!--     通过项目名称获取已中标的项目集合 -->
+    <select id="getProgramByName" resultType="Program" >
+		SELECT 
+			<include refid="programColumns"/>
+		FROM program_tab a
+			<include refid="programJoins"/>
+		WHERE a.status = 2
+	</select>
+	
+	<select id="get" resultType="Program" >
+		SELECT 
+			<include refid="programColumns"/>
+		FROM program_tab a
+			<include refid="programJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByProgramNum" resultType="Program" >
+		SELECT 
+			<include refid="programColumns"/>
+		FROM program_tab a
+		<include refid="programJoins"/>
+		WHERE a.programnum = #{programNum}
+	</select>
+	
+	<select id="findList" resultType="Program" >
+		SELECT 
+			<include refid="programColumns"/>
+		FROM program_tab a
+		<include refid="programJoins"/>
+		<where>
+			<!-- a.del_flag = #{DEL_FLAG_NORMAL} -->
+			${dataScope}
+			<if test="programNum != null and programNum != ''">
+				AND a.programnum LIKE 
+					<if test="dbName == 'oracle'">'%'||#{programNum}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{programNum}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{programNum},'%')</if>
+			</if>
+			<if test="programName != null and programName != ''">
+				AND a.progranname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{programName},'%')</if>
+			</if>
+			<if test="company.companyName != null and company.companyName != ''">
+				AND e.companyname  LIKE 
+					<if test="dbName == 'oracle'">'%'||#{company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{company.companyName},'%')</if>
+			</if>
+			<if test="programType != null">
+				AND a.programtype = #{programType}
+			</if>
+			<if test="status != null">
+				AND a.status = #{status}
+			</if>
+			<if test="programNo != null and programNo != ''">
+				AND a.programno LIKE 
+					<if test="dbName == 'oracle'">'%'||#{programNo}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{programNo}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{programNo},'%')</if>
+			</if>
+			<if test="beginPlanToStart != null and endPlanToStart != null and beginPlanToStart != '' and endPlanToStart != ''">
+				AND a.plan_to_start BETWEEN #{beginPlanToStart} AND #{endPlanToStart}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+<!-- 				ORDER BY a.programnum ASC -->
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Program" >
+		SELECT 
+			<include refid="programColumns"/>
+		FROM program_tab a
+		<include refid="programJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.programnum ASC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO program_tab(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			
+			remarks,
+			del_flag,
+			programnum,
+			programname,
+			companyid,
+			
+			sys_officeid,
+			programtype,
+			prodescription,
+			enclosure,
+			programno,
+			
+			plan_to_start,
+			plan_to_end,
+			get_method,
+			call_bid_date
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			
+			#{remarks},
+			#{delFlag},
+			#{programNum},
+			#{programName},
+			#{company.id},
+			
+			#{office.id},
+			#{programType},
+			#{proDescription},
+			#{enclosure},
+			#{programNo},
+			
+			#{planToStart},
+			#{planToEnd},
+			#{getMethod},
+			#{callBidDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE program_tab SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			programnum = #{programNum},
+			programname = #{programName},
+			companyid = #{company.id},
+			status = #{status},
+			plan_to_start = #{planToStart},
+			plan_to_end = #{planToEnd},
+			sys_officeid = #{office.id},
+			programtype = #{programType},
+			prodescription = #{proDescription},
+			enclosure = #{enclosure},
+			programno = #{programNo},
+			get_method = #{getMethod},
+			call_bid_date = #{callBidDate}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM program_tab
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE program_tab SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="Program" statementType="STATEMENT">
+		select * FROM program_tab  where ${propertyName} = '${value}'
+	</select>
+</mapper>
