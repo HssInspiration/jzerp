@@ -25,6 +25,7 @@ import co.dc.ccpt.common.json.AjaxJson;
 import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
 import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
@@ -45,6 +46,9 @@ public class CorePersonController extends BaseController {
 	
 	@Autowired
 	private DictTypeService dictTypeService;
+	
+	@Autowired
+	private EnclosuretabService enclosuretabService;
 	
 	@ModelAttribute
 	public CorePerson get(@RequestParam(required=false) String id) {
@@ -322,6 +326,7 @@ public class CorePersonController extends BaseController {
 			return j;
 		}
 		corePersonService.deletePersonCertificate(new PersonCertificate(personCertificateId));
+		enclosuretabService.deleteEnclosureByForeginId(personCertificateId);//同步删除对应附件
 		j.setSuccess(true);
 		j.setMsg("删除成功！");
 		return j;
@@ -352,6 +357,7 @@ public class CorePersonController extends BaseController {
 					return j;
 				}else{
 					corePersonService.delete(corePerson);
+//					enclosuretabService.deleteEnclosureByForeginId(corePerson.getId());//同步删除对应附件
 					j.setSuccess(true);
 					j.setMsg("删除成功!");
 					return j;

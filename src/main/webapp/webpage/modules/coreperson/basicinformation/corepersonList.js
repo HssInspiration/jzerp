@@ -241,10 +241,12 @@ $(document).ready(function() {
 			        title: '专业分类',
 			        sortable: true,
 			        formatter:function(value, row , index){
-			        	var valueArray = value.split(",");
 			        	var labelArray = [];
-			        	for(var i =0 ; i<valueArray.length-1; i++){
-			        		labelArray[i] = jp.getDictLabel(${fns:toJson(fns:getDictList('certificate_major'))}, valueArray[i], "-");
+			        	if(value != null){
+			        		var valueArray = value.split(",");
+				        	for(var i =0 ; i<valueArray.length-1; i++){
+				        		labelArray[i] = jp.getDictLabel(${fns:toJson(fns:getDictList('certificate_major'))}, valueArray[i], "-");
+				        	}
 			        	}
 			        	return labelArray.join(",");
 			        }
@@ -319,19 +321,22 @@ $(document).ready(function() {
 			        sortable:true,
 			       
 			    }
-			    
 			    , {
                     field: 'operate',
                     title: '操作',
 			        sortable:true,
                     align: 'center',
                     events: {
-                    	 'click .edit': function (e, value, row, index) {
-            		        	
-                    		 jp.openDialog('编辑', '${ctx}/basicinformation/personCertificateForm?corePersonId=' + $("#corePersonId").val()+"&personCertificateId="+row.id,'800px', '500px', $personCertificateTable);
-            		        },
+                    	'click .showView': function (e, value, row, index) {
+        		        	jp.openTab("${ctx}/enclosuremanage/enclosuretab/list?personCertificateId="+row.id,"证书附件",false);
+        		        },
+        		        'click .enclosureedit': function (e, value, row, index) {
+        		        	jp.openDialog('编辑人员证书附件', '${ctx}/enclosuremanage/enclosuretab/form?personCertificateId='+row.id,'1000px', '600px');
+        		        },
+                    	'click .edit': function (e, value, row, index) {
+                    		jp.openDialog('编辑', '${ctx}/basicinformation/personCertificateForm?corePersonId=' + $("#corePersonId").val()+"&personCertificateId="+row.id,'800px', '500px', $personCertificateTable);
+            		    },
         		        'click .del': function (e, value, row, index) {
-        		        	
         		        	jp.confirm('确认要删除该证书吗？',function(){
         		        		jp.loading();
         		        		$.get('${ctx}/basicinformation/deletePersonCertificate?personCertificateId='+row.id+'&corePersonId=' + $("#corePersonId").val(), function(data){
@@ -346,19 +351,37 @@ $(document).ready(function() {
         		        }
         		    },
                     formatter:  function operateFormatter(value, row, index) {
-        		        return [
+                    	var foreginId = row.id;//获取当前行id
+                    	var count;
+                    	$.ajax({
+                    		url:"${ctx}/programmanage/program/getEnclosureCount",
+                    		type:"post",
+                    		async : false,//此处设置异步请求为false，将异步改成同步即可为全局变量count赋值。
+                    		data:JSON.stringify({"id":foreginId}),
+                    		contentType:"application/json;charset=utf-8",
+                    		dataType:"json",
+                    		success:function(data){
+                    			count = data;
+                    		},
+                    		error:function(){
+                    			console.log("获取附件数量失败！")
+                    		}
+                    	});
+                    	return [
+                    		'<a href="#" class="showView" title="查看附件" >',
+							count,
+							'</a> ',
+							'<a href="#" class="enclosureedit" title="编辑附件" > <i class="glyphicon glyphicon-paperclip"></i> </a>',
 //        		        	<shiro:hasPermission name="sys:dict:edit">
     						'<a href="#" class="edit" title="编辑" ><i class="glyphicon glyphicon-edit"></i> </a>',
 //    						</shiro:hasPermission>
 //        		        	<shiro:hasPermission name="sys:dict:edit">
-    						'<a href="#" class="del" title="删除" ><i class="glyphicon glyphicon-remove"> </a>'
+    						'<a href="#" class="del" title="删除" ><i class="glyphicon glyphicon-remove"> </a>',
 //    						</shiro:hasPermission>
-        		        ].join('');
+    					].join('');
         		    }
                 }]
-			
 			});
-		
 		  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 			  $('#personCertificateTable').bootstrapTable("toggleView");
 		  }

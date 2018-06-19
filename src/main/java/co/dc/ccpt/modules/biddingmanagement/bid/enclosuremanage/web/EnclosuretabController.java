@@ -45,12 +45,16 @@ import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.Subpa
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.service.SubpackageProgramService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity.Tender;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.service.TenderService;
+import co.dc.ccpt.modules.contractmanagement.contracttemp.entity.ContractTemp;
+import co.dc.ccpt.modules.contractmanagement.contracttemp.service.ContractTempService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
+import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.contractmanagement.procontractapproval.entity.ProContractApproval;
 import co.dc.ccpt.modules.contractmanagement.procontractapproval.service.ProContractApprovalService;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.service.SubProContractService;
+import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
+import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
 
 /**
  * 附件信息管理Controller
@@ -93,6 +97,36 @@ public class EnclosuretabController extends BaseController {
 	
 	@Autowired
 	private ProContractApprovalService proContractApprovalService;
+	
+	@Autowired
+	private CorePersonService personCertificateService;
+	
+	@Autowired
+	private ContractTempService contractTempService; 
+	
+	@ModelAttribute
+	public ContractTemp getContractTemp(@RequestParam(required=false) String contractTempId) {
+		ContractTemp entity = null;
+		if (StringUtils.isNotBlank(contractTempId)){
+			entity = contractTempService.get(contractTempId);
+		}
+		if (entity == null){
+			entity = new ContractTemp();
+		}
+		return entity;
+	}
+	
+	@ModelAttribute
+	public PersonCertificate getPersonCertificate(@RequestParam(required=false) String personCertificateId) {
+		PersonCertificate entity = null;
+		if (StringUtils.isNotBlank(personCertificateId)){
+			entity = personCertificateService.getPersonCertificate(personCertificateId);
+		}
+		if (entity == null){
+			entity = new PersonCertificate();
+		}
+		return entity;
+	}
 	
 	@ModelAttribute
 	public ProContractApproval getProContractApproval(@RequestParam(required=false) String proContractId) {
@@ -233,9 +267,9 @@ public class EnclosuretabController extends BaseController {
 	@RequestMapping(value = {"list", ""})
 	public String list(Program program, Bidtable bidtable, 
 			ClearEvaluate clearEvaluate, SubBidCompany subBidCompany, 
-			Bidcompany bidCompany, SubpackageProgram subpackageProgram, 
+			Bidcompany bidCompany, SubpackageProgram subpackageProgram, ContractTemp contractTemp,
 			Tender tender, ProContract proContract, SubProContract subProContract, 
-			ProContractApproval proContractApproval, Model model) {
+			ProContractApproval proContractApproval, PersonCertificate personCertificate, Model model) {
 		System.out.println(program);
 		String foreginId = null;
 		if(StringUtils.isNotBlank(program.getId())){
@@ -258,6 +292,10 @@ public class EnclosuretabController extends BaseController {
 			foreginId = subProContract.getId();
 		}else if(StringUtils.isNotBlank(proContractApproval.getId())){
 			foreginId = proContractApproval.getId();
+		}else if(StringUtils.isNotBlank(personCertificate.getId())){
+			foreginId = personCertificate.getId();
+		}else if(StringUtils.isNotBlank(contractTemp.getId())){
+			foreginId = contractTemp.getId();
 		}
 		model.addAttribute("foreginId",foreginId);
 		return "modules/biddingmanagement/bid/enclosuremanage/enclosuretabList";
@@ -292,8 +330,8 @@ public class EnclosuretabController extends BaseController {
 	public String form(Enclosuretab enclosuretab, ClearEvaluate clearEvaluate, 
 			SubpackageProgram subpackageProgram, SubBidCompany subBidCompany, 
 			Tender tender, Program program, Bidtable bidtable, SubProContract subProContract,
-			Bidcompany bidCompany, ProContract proContract,
-			ProContractApproval proContractApproval, Model model) {
+			Bidcompany bidCompany, ProContract proContract,ContractTemp contractTemp,
+			ProContractApproval proContractApproval, PersonCertificate personCertificate, Model model) {
 		
 		if(StringUtils.isBlank(enclosuretab.getId())){//如果ID是空为添加
 			model.addAttribute("isAdd", true);
@@ -356,6 +394,18 @@ public class EnclosuretabController extends BaseController {
 			}else if(StringUtils.isNotBlank(proContractApproval.getId())){
 				model.addAttribute("proContractApproval", proContractApproval);
 				enclosureType = 10;
+				enclosuretab.setEnclosureType(enclosureType);
+				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
+				enclosuretab.setEnclosureNum(enclosureNum);
+			}else if(StringUtils.isNotBlank(personCertificate.getId())){
+			model.addAttribute("personCertificate", personCertificate);
+			enclosureType = 11;
+			enclosuretab.setEnclosureType(enclosureType);
+			enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
+			enclosuretab.setEnclosureNum(enclosureNum);
+			}else if(StringUtils.isNotBlank(contractTemp.getId())){
+				model.addAttribute("contractTemp", contractTemp);
+				enclosureType = 12;
 				enclosuretab.setEnclosureType(enclosureType);
 				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
 				enclosuretab.setEnclosureNum(enclosureNum);
@@ -510,5 +560,5 @@ public class EnclosuretabController extends BaseController {
 		}
 		return "redirect:"+Global.getAdminPath()+"/enclosuretab/enclosuretab/?repage";
     }
-
+    
 }

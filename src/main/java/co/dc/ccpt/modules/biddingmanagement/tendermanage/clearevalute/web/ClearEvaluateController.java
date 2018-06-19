@@ -283,7 +283,11 @@ public class ClearEvaluateController extends BaseController {
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
 		for(String id : idArray){
-			clearEvaluateService.delete(clearEvaluateService.get(id));
+			ClearEvaluate clearEvaluate = clearEvaluateService.get(id);
+			if(clearEvaluate != null){
+				clearEvaluateService.delete(clearEvaluate);
+				enclosuretabService.deleteEnclosureByForeginId(clearEvaluate.getId());//同步删除对应附件
+			}
 		}
 		j.setMsg("删除清评标管理成功");
 		return j;

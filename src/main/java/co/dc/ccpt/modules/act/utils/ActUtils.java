@@ -40,6 +40,9 @@ public class ActUtils {
 	 */
 	public static final String[] PD_LEAVE = new String[]{"leave", "oa_leave"};
 	public static final String[] PD_TEST_AUDIT = new String[]{"test_audit", "oa_test_audit"};
+	public static final String[] PD_ACT_CONTRACT = new String[]{"act_contract", "oa_act_contract"};//总包合同（市场投标）审批
+	public static final String[] PD_ATTACH_CONTRACT = new String[]{"attach_contract_approval", "oa_attach_contract"};//总包合同（业主指定）审批
+	public static final String[] PD_SUB_ACT_CONTRACT = new String[]{"sub_act_contract", "oa_sub_contract"};//分包合同审批
 	public static final String[] PD_EXPENSE_ACCOUNT = new String[]{"expense_account", "oa_expense_account"};//网上报销流程
 	public static final String[] PD_NETWORK_SERVICE = new String[]{"network_service", "oa_network_service"};//网络报修流程
 //	/**

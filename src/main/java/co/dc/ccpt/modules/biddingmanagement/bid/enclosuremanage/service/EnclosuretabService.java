@@ -1,6 +1,7 @@
 package co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -97,6 +98,18 @@ public class EnclosuretabService extends CrudService<EnclosuretabMapper, Enclosu
 	@Transactional(readOnly = false)
 	public void delete(Enclosuretab enclosuretab) {
 		super.delete(enclosuretab);
+	}
+	
+	@Transactional(readOnly = false)
+	public List<Enclosuretab> getEnclosureContByForeginId(String foreginId){
+		List<Enclosuretab> enclosuretabList = new ArrayList<Enclosuretab>();
+		enclosuretabList = enclosuretabMapper.getEnclosureContByForeginId(foreginId);
+		return enclosuretabList;
+	}
+	
+	@Transactional(readOnly = false)
+	public Integer deleteEnclosureByForeginId(String foreginId){
+		return enclosuretabMapper.deleteEnclosureByForeginId(foreginId);
 	}
 	
 }

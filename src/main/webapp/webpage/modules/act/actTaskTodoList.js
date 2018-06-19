@@ -2,7 +2,6 @@
 <script>
 $(document).ready(function() {
 	$('#actTable').bootstrapTable({
-		 
 		  //请求方法
                method: 'get',
                //类型json
@@ -116,9 +115,7 @@ $(document).ready(function() {
 
                            </shiro:hasPermission>
                            arra.push('<a  href="javascript:jp.openDialogView(\'跟踪\',\'${ctx}/act/task/trace/photo/'+row['task.processDefinitionId']+'/'+row['task.executionId']+'\',\'1000px\', \'600px\')">【跟踪】</a>');
-
 							return arra.join("");
-
                        }
                    }
 		     ]
@@ -137,7 +134,6 @@ $(document).ready(function() {
             $('#remove').prop('disabled', ! $('#actTable').bootstrapTable('getSelections').length);
             $('#edit').prop('disabled', $('#actTable').bootstrapTable('getSelections').length!=1);
         });
-		  
 
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#actTable').bootstrapTable('refresh');
@@ -176,11 +172,10 @@ $(document).ready(function() {
          	  		}else{
          	  			jp.error(data.msg);
          	  		}
-         	  	})
-          	   
+     	  	})
 		})
   }
-function claim(taskId) {
+  function claim(taskId) {
     $.post('${ctx}/act/task/claim' ,{taskId: taskId}, function(data) {
         if (data == 'true'){
             jp.success('签收完成');
@@ -189,6 +184,6 @@ function claim(taskId) {
             jp.error('签收失败');
         }
     });
-}
+  }
 
 </script>

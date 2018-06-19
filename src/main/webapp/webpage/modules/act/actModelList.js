@@ -2,8 +2,7 @@
 <script>
 $(document).ready(function() {
 	$('#actModelTable').bootstrapTable({
-		 
-		  //请求方法
+		  		//请求方法
                method: 'get',
                //类型json
                dataType: "json",
@@ -116,63 +115,63 @@ $(document).ready(function() {
 		        field: 'lastUpdateTime',
 		        title: '最后更新时间',
 		        sortable: false,
-			   formatter:function (value, row, index) {
+			    formatter:function (value, row, index) {
 				   return jp.dateFormat(value,"yyyy-MM-dd hh:mm:ss");
 			   }
 		       
-		    }, {
-                       field: 'operate',
-                       title: '操作',
-                       align: 'center',
-                       events: {
-                           'click .deploy': function (e, value, row, index) {
-								   jp.confirm('确认要部署该模型吗？',function () {
-                                       jp.get("${ctx}/act/model/deploy?id="+row.id,function (data) {
-                                           if(data.success){
-                                               jp.success(data.msg);
-                                               $('#actModelTable').bootstrapTable('refresh');
+		    }
+			,{
+                field: 'operate',
+                title: '操作',
+                align: 'center',
+                events: {
+                   'click .deploy': function (e, value, row, index) {
+					   jp.confirm('确认要部署该模型吗？',function () {
+                           jp.get("${ctx}/act/model/deploy?id="+row.id,function (data) {
+                               if(data.success){
+                                   jp.success(data.msg);
+                                   $('#actModelTable').bootstrapTable('refresh');
 
-                                           }else{
-                                               jp.error(data.msg);
-                                           }
+                               }else{
+                                   jp.error(data.msg);
+                               }
 
-                                       })
-                                   })
-
-                           },
-                           'click .del': function (e, value, row, index) {
-                               jp.confirm('确认要删除该模型记录吗？', function() {
-                                   jp.loading();
-                                   jp.get("${ctx}/act/model/delete?id=" + row.id, function (data) {
-                                       if (data.success) {
-                                           $('#actModelTable').bootstrapTable('refresh');
-                                           jp.success(data.msg);
-                                       } else {
-                                           jp.error(data.msg);
-                                       }
-                                   })
-                               })
-                           }
-                       },
-                       formatter:  function operateFormatter(value, row, index) {
-                           return [
-                               <shiro:hasPermission name="act:model:edit">
-								   '<a class="" href="${pageContext.request.contextPath}/act/rest/modeler.html?modelId='+row.id+'" target="_blank">【在线设计】</a>',
-							   </shiro:hasPermission>
-							   <shiro:hasPermission name="act:model:deploy">
-								   '<a  class="deploy" href="#">【部署】</a>',
-						       </shiro:hasPermission>
-							   <shiro:hasPermission name="act:model:export">
-								   '<a class="" href="${ctx}/act/model/export?id='+row.id+'" target="_blank">【导出】</a>',
-							   </shiro:hasPermission>
-							   <shiro:hasPermission name="act:model:del">
-								   '<a href="#" class="del">【删除】</a>'
-                               </shiro:hasPermission>
-                           ].join('');
-                       }
-                   }
-		     ]
-		
+                           })
+                       })
+                   },
+                   
+                   'click .del': function (e, value, row, index) {
+                       jp.confirm('确认要删除该模型记录吗？', function() {
+                           jp.loading();
+                           jp.get("${ctx}/act/model/delete?id=" + row.id, function (data) {
+                               if (data.success) {
+                                   $('#actModelTable').bootstrapTable('refresh');
+                                   jp.success(data.msg);
+                               } else {
+                                   jp.error(data.msg);
+                               }
+                           });
+                       });
+                    }
+                },
+               formatter:  function operateFormatter(value, row, index) {
+                   return [
+                       <shiro:hasPermission name="act:model:edit">
+						   '<a class="" href="${pageContext.request.contextPath}/act/rest/modeler.html?modelId='+row.id+'" target="_blank">【在线设计】</a>',
+					   </shiro:hasPermission>
+					   <shiro:hasPermission name="act:model:deploy">
+						   '<a  class="deploy" href="#">【部署】</a>',
+				       </shiro:hasPermission>
+					   <shiro:hasPermission name="act:model:export">
+						   '<a class="" href="${ctx}/act/model/export?id='+row.id+'" target="_blank">【导出】</a>',
+					   </shiro:hasPermission>
+					   <shiro:hasPermission name="act:model:del">
+						   '<a href="#" class="del">【删除】</a>'
+                       </shiro:hasPermission>
+                   ].join('');
+               }
+             }
+		   ]
 		});
 		
 		  
@@ -203,28 +202,27 @@ $(document).ready(function() {
 		
 	});
 
-Date.prototype.format = function(format) {
+  Date.prototype.format = function(format) {
 
-};
+  };
+  
   function getIdSelections() {
         return $.map($("#actModelTable").bootstrapTable('getSelections'), function (row) {
             return row.id
         });
-    }
+  }
   
   function deleteAll(){
-
 		jp.confirm('确认要删除该模型记录吗？', function(){
 			jp.loading();  	
 			jp.get("${ctx}/act/model/deleteAll?ids=" + getIdSelections(), function(data){
-         	  		if(data.success){
-         	  			$('#actModelTable').bootstrapTable('refresh');
-         	  			jp.success(data.msg);
-         	  		}else{
-         	  			jp.error(data.msg);
-         	  		}
-         	  	})
-          	   
+	 	  		if(data.success){
+	 	  			$('#actModelTable').bootstrapTable('refresh');
+	 	  			jp.success(data.msg);
+	 	  		}else{
+	 	  			jp.error(data.msg);
+	 	  		}
+	 	  	})
 		})
   }
 

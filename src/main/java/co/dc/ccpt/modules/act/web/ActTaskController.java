@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import co.dc.ccpt.common.json.AjaxJson;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import co.dc.ccpt.common.json.AjaxJson;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.act.entity.Act;
 import co.dc.ccpt.modules.act.service.ActTaskService;
 import co.dc.ccpt.modules.act.utils.ActUtils;
+import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
+import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 
 /**
@@ -40,6 +45,12 @@ public class ActTaskController extends BaseController {
 
 	@Autowired
 	private ActTaskService actTaskService;
+
+	@Autowired
+	private ProContractService proContractService;
+	
+	@Autowired
+	private SubProContractService subProContractService;
 	
 	/**
 	 * 获取待办列表
@@ -110,8 +121,29 @@ public class ActTaskController extends BaseController {
 	 * @param category 流程分类
 	 */
 	@RequestMapping(value = "process")
-	public String processList(String category, HttpServletRequest request, HttpServletResponse response, Model model) {
-	    Page<Object[]> page = new Page<Object[]>(request, response);
+	public String processList(String category, String id, HttpServletRequest request, HttpServletResponse response, Model model) {
+		logger.info("###########################:"+id);
+		//如果id不为空，利用id找到对应的对象（ProContract）和对应的类别（总包中的市场投标，）
+		if(id!=null){
+			ProContract proContract = proContractService.get(id);
+			SubProContract subProContract = subProContractService.get(id);
+			if(proContract != null){
+				Program pro = proContract.getProgram();
+				if(pro != null){
+					Integer getMethod = pro.getGetMethod();
+					if(getMethod == 0){//"业主指定"
+						logger.info("###########################:"+"业主指定");
+					}else if(getMethod == 1){//市场投标
+						logger.info("###########################:"+"市场投标");
+					}
+				}
+			}else if(subProContract != null){
+				logger.info("###########################:"+"分包合同");
+			}else{
+				logger.info("###########################:"+"another");
+			}
+		}
+		Page<Object[]> page = new Page<Object[]>(request, response);
 	    page = actTaskService.processList(page, category);
 		model.addAttribute("page", page);
 		model.addAttribute("category", category);
@@ -122,7 +154,9 @@ public class ActTaskController extends BaseController {
 	 * 获取流程表单
 	 */
 	@RequestMapping(value = "form")
+//	@ResponseBody
 	public String form(Act act, HttpServletRequest request, Model model){
+//		public String form(Act act, HttpServletRequest request, Model model, String proContractId){
 		// 获取流程XML上的表单KEY
 		String formKey = actTaskService.getFormKey(act.getProcDefId(), act.getTaskDefKey());   
 		// 获取流程实例对象
@@ -132,10 +166,19 @@ public class ActTaskController extends BaseController {
 			}else{
 				act.setFinishedProcIns(actTaskService.getFinishedProcIns(act.getProcInsId()));
 			}
-		
 		}
-		return "redirect:" + ActUtils.getFormUrl(formKey, act);
-				
+		String url = ActUtils.getFormUrl(formKey, act);
+		System.out.println("###############URL###############"+url);
+//		ActContract actContract = new ActContract();
+//		if(proContractId!=null){
+//			ProContract proContract = proContractService.get(proContractId);
+//			if(proContract!=null){
+//				actContract.setProContract(proContract);
+//				model.addAttribute("proContract", proContract);
+//			}
+//		}
+//		model.addAttribute("actContract", actContract);
+		return "redirect:" + url;
 		// 传递参数到视图
 //		String formUrl = ActUtils.getFormUrl(formKey, act);
 //		model.addAttribute("act", act);

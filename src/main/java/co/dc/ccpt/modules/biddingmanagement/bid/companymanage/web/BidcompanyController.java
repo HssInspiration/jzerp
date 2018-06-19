@@ -643,6 +643,7 @@ public class BidcompanyController extends BaseController {
 								return j;
 							}else if(programId!=null && !programId.equals("")){
 								bidcompanyService.delete(bidcompany);
+								enclosuretabService.deleteEnclosureByForeginId(bidcompany.getId());//同步删除对应附件
 								program = programService.get(programId);
 								program.setStatus(1);//参投删除项目状态更改为投标
 								programService.save(program);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="co.dc.ccpt.modules.contractmanagement.subprocontract.mapper.SubProContractMapper">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.procontract.mapper.SubProContractMapper">
     
 	<sql id="subProContractColumns">
 		a.id AS "id",
@@ -34,7 +34,9 @@
 		sp.sub_program_type AS "subpackageProgram.subProgramType",
 		sp.subpackage_programname AS "subpackageProgram.subpackageProgramName",
 		
-		c.companyname AS "subBidCompany.company.companyName"
+		c.companyname AS "subBidCompany.company.companyName",
+		a.approval_status AS "approvalStatus",
+		a.contract_status AS "contractStatus"
 		
 	</sql>
 	
@@ -92,6 +94,23 @@
 		</where>
 	</select>
 	
+<!-- 	获取未审批的分包合同集合 -->
+	<select id="getAppointSubProContractByName" resultType="subProContract" >
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+			<include refid="subProContractJoins"/>
+		<where>
+			<if test="subProContractName != null and subProContractName != ''">
+				AND a.subpro_contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subProContractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContractName},'%')</if>
+			</if>
+				AND a.approval_status=0
+		</where>
+	</select>
+	
 	<select id="findList" resultType="subProContract" parameterType="List">
 		SELECT 
 			<include refid="subProContractColumns"/>
@@ -113,6 +132,20 @@
 				AND u.name LIKE 
 					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			<if test="beginContractDate != null and endContractDate != null and beginContractDate != '' and endContractDate != ''">
+				AND a.subpro_contract_date BETWEEN #{beginContractDate} AND #{endContractDate}
+			</if>
+			<if test="contractStatus != null and contractStatus != ''">
+				AND a.contract_status = #{contractStatus}
+			</if>
+			<if test="approvalStatus != null and approvalStatus != ''">
+				AND a.approval_status = #{approvalStatus}
+			</if>
+			<if test="subBidCompany.company.companyName != null and subBidCompany.company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subBidCompany.company.companyName}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subBidCompany.company.companyName},'%')</if>
 			</if>
 			AND cb.isBid=1
 		</where>
@@ -170,7 +203,8 @@
 			
 			build_date,
 			subpro_contract_num,
-			subpro_contract_name
+			subpro_contract_name,
+			pro_contract_id
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -194,7 +228,8 @@
 			
 			#{buildDate},
 			#{subProContractNum},
-			#{subProContractName}
+			#{subProContractName},
+			#{proContract.id}
 		)
 	</insert>
 	
@@ -218,8 +253,16 @@
 			
 			subpro_total_price = #{subProTotalPrice},
 			subpro_contract_num = #{subProContractNum},
-			subpro_contract_name = #{subProContractName}
-			
+			subpro_contract_name = #{subProContractName},
+			pro_contract_id = #{proContract.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateSubProContractStatus">
+		UPDATE sub_pro_contract SET 
+			approval_status = #{approvalStatus},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
 	

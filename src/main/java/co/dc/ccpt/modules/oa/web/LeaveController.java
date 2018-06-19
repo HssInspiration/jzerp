@@ -86,19 +86,19 @@ public class LeaveController extends BaseController {
 			if(leave.getAct().isFinishTask()){
 				view = "leaveView";
 			}
-			// 修改环节
+			// 审核环节
 			else if ("deptLeaderAudit".equals(taskDefKey)){
 				view = "leaveAudit";
 			}
-			// 审核环节
+			// 审核环节2
 			else if ("hrAudit".equals(taskDefKey)){
 				view = "leaveAudit";
 			}
-			// 审核环节2
+			// 审核环节3
 			else if ("reportBack".equals(taskDefKey)){
 				view = "leaveAudit";
 			}
-			// 审核环节3
+			// 修改环节
 			else if ("modifyApply".equals(taskDefKey)){
 				view = "leaveAudit";
 			}

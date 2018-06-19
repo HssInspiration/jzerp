@@ -278,6 +278,7 @@ public class BidtableController extends BaseController {
 				j.setMsg("删除失败！当前所删项目在参投信息中有记录！");
 			}else{
 				bidtableService.delete(bidtable);
+				enclosuretabService.deleteEnclosureByForeginId(bidtable.getId());//同步删除对应附件
 				//删除时将对应的项目状态做更改-->自由
 				Program program = bidtable.getProgram();
 				if(program!=null){

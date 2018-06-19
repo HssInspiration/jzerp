@@ -301,6 +301,7 @@ public class SubBidCompanyController extends BaseController {
 					}
 				}else if(subBidCompany!=null){
 					subBidCompanyService.delete(subBidCompany);
+					enclosuretabService.deleteEnclosureByForeginId(subBidCompany.getId());//同步删除对应附件
 					j.setSuccess(true);
 					j.setMsg("删除成功!");
 				}

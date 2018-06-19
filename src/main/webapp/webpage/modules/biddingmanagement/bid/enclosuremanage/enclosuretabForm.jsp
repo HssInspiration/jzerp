@@ -127,6 +127,14 @@
 						<c:if test="${not empty proContractApproval.id}">
 							<form:input path="foreginId" type="hidden" class="form-control" value = "${proContractApproval.id}"/>
 						</c:if>
+						
+						<c:if test="${not empty personCertificate.id}">
+							<form:input path="foreginId" type="hidden" class="form-control" value = "${personCertificate.id}"/>
+						</c:if>
+						
+						<c:if test="${not empty contractTemp.id}">
+							<form:input path="foreginId" type="hidden" class="form-control" value = "${contractTemp.id}"/>
+						</c:if>
 					</c:if>
 					<c:if test = "${edit}">
 						<form:input path="foreginId" type="hidden" class="form-control" value = "${enclosuretab.foreginId}"/>

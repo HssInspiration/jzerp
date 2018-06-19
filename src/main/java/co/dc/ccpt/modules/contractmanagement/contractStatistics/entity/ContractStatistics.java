@@ -2,7 +2,7 @@ package co.dc.ccpt.modules.contractmanagement.contractStatistics.entity;
 
 import co.dc.ccpt.core.persistence.DataEntity;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 /**
  * 合同统计查询实体ContractStatistics
  * @author Administrator

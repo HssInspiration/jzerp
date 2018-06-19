@@ -1,10 +1,16 @@
 package co.dc.ccpt.modules.contractmanagement.procontract.entity;
 
 import java.util.Date;
+import java.util.Map;
+
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import co.dc.ccpt.core.persistence.DataEntity;
+import co.dc.ccpt.core.persistence.ActEntity;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.sys.entity.User;
 
@@ -14,7 +20,7 @@ import co.dc.ccpt.modules.sys.entity.User;
  * @author Administrator
  * @version 2018-05-11
  */
-public class ProContract extends DataEntity<ProContract> {
+public class ProContract extends ActEntity<ProContract> {
 	private static final long serialVersionUID = 1L;
 	private Integer approvalStatus;// 审批状态
 	private Date beginContractDate;// 开始 合同签订日期
@@ -33,6 +39,20 @@ public class ProContract extends DataEntity<ProContract> {
 	private String programConnector;// 工程联系人
 	private Date startDate;// 开工日期
 	private User user;// 用户对象（合同拟草人）
+	
+	
+	
+	//-- 临时属性 --//
+	// 流程任务
+	private Task task;
+	private Map<String, Object> variables;
+	// 运行中的流程实例
+	private ProcessInstance processInstance;
+	// 历史的流程实例
+	private HistoricProcessInstance historicProcessInstance;
+	// 流程定义
+	private ProcessDefinition processDefinition;
+	
 
 	public ProContract() {
 		super();
@@ -180,5 +200,45 @@ public class ProContract extends DataEntity<ProContract> {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	//临时属性get/set
+	public Task getTask() {
+		return task;
+	}
 
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	public Map<String, Object> getVariables() {
+		return variables;
+	}
+
+	public void setVariables(Map<String, Object> variables) {
+		this.variables = variables;
+	}
+
+	public ProcessInstance getProcessInstance() {
+		return processInstance;
+	}
+
+	public void setProcessInstance(ProcessInstance processInstance) {
+		this.processInstance = processInstance;
+	}
+
+	public HistoricProcessInstance getHistoricProcessInstance() {
+		return historicProcessInstance;
+	}
+
+	public void setHistoricProcessInstance(HistoricProcessInstance historicProcessInstance) {
+		this.historicProcessInstance = historicProcessInstance;
+	}
+
+	public ProcessDefinition getProcessDefinition() {
+		return processDefinition;
+	}
+
+	public void setProcessDefinition(ProcessDefinition processDefinition) {
+		this.processDefinition = processDefinition;
+	}
 }

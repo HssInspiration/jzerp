@@ -23,4 +23,13 @@ public interface ProContractMapper extends BaseMapper<ProContract> {
 	public List<ProContract> getProContractList(@Param("contractName") String proContractName);// 获取已生效或执行的总包合同集合（分包合同中的模糊匹配）
 	
 	public List<ProContract> getProContractListByName(@Param("contractName") String proContractName);// 获取总包合同集合（总包合同审核中的模糊匹配）
+
+	//通过合同名称获得未审批且为市场投标的合同
+	public List<ProContract> getMarketProContractByName(ProContract proContract);
+
+	//通过合同名称获得未审批且为业主指定的合同
+	public List<ProContract> getAppointProContractByName(ProContract proContract);
+	
+	//更新合同审批状态
+	public int updateProContractStatus(ProContract proContract);
 }

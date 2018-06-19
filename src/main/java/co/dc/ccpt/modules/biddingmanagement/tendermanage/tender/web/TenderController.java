@@ -221,8 +221,9 @@ public class TenderController extends BaseController {
 					j.setMsg("删除失败！投标记录中存在关联信息");
 				}else if(tender!=null){
 					tenderService.delete(tender);
-						j.setSuccess(true);
-						j.setMsg("删除成功!");
+					enclosuretabService.deleteEnclosureByForeginId(tender.getId());//同步删除对应附件
+					j.setSuccess(true);
+					j.setMsg("删除成功!");
 				}
 			}
 		}

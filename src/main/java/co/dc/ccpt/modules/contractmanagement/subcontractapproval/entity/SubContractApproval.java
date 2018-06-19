@@ -1,7 +1,7 @@
 package co.dc.ccpt.modules.contractmanagement.subcontractapproval.entity;
 
 import co.dc.ccpt.core.persistence.DataEntity;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.sys.entity.User;
 
 /**

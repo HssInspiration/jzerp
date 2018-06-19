@@ -34,6 +34,7 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.depositmanagement.deposit.entity.Deposit;
@@ -68,6 +69,9 @@ public class DepositReturnController extends BaseController {
 	
 	@Autowired
 	private DepositApprovalService depositApprovalService;
+	
+	@Autowired
+	private EnclosuretabService enclosuretabService;
 	
 	@ModelAttribute
 	public DepositReturn get(@RequestParam(required=false) String id) {
@@ -321,6 +325,7 @@ public class DepositReturnController extends BaseController {
 					return j;
 				}else if(status==1){//已退回
 					depositReturnService.delete(depositreturn);
+					enclosuretabService.deleteEnclosureByForeginId(depositreturn.getId());//同步删除对应附件
 					//删除后执行审批中的退还时间的还原：
 					DepositStatement depositStatement = depositreturn.getDepositStatement();
 					depositStatement = depositStatementService.get(depositStatement);

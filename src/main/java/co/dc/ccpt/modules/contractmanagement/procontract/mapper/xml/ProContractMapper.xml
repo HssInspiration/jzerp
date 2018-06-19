@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.dc.ccpt.modules.contractmanagement.procontract.mapper.ProContractMapper">
-    
 	<sql id="proContractColumns">
 		a.id AS "id",
 		a.create_by AS "createBy.id",
@@ -33,7 +32,8 @@
 		a.build_date AS "buildDate",
 		a.approval_status AS "approvalStatus",
 		a.contract_status AS "contractStatus",
-		a.is_stamp AS "isStamp"
+		a.is_stamp AS "isStamp",
+		p.get_method AS "program.getMethod"
 		
 	</sql>
 	
@@ -84,6 +84,40 @@
 		</where>
 	</select>
 	
+	<select id="getMarketProContractByName" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		<where>
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+				AND p.get_method=1
+				AND a.approval_status=0
+		</where>
+	</select>
+	
+	<select id="getAppointProContractByName" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		<where>
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+				AND p.get_method=0
+				AND a.approval_status=0
+		</where>
+	</select>
+	
 	<select id="getLastProContractNum" resultType="String" >
 		SELECT
 			a.contract_num AS "contractNum"
@@ -99,7 +133,7 @@
 			<include refid="proContractJoins"/>
 		<where>
 			<if test="program.id != null and program.id != ''">
-				AND p.id = #{program.id}
+				AND a.program_id = #{program.id}
 			</if>
 		</where>
 	</select>
@@ -127,6 +161,21 @@
 				AND u.name LIKE 
 					<if test="dbName == 'oracle'">'%'||#{user.name}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+			</if>
+			<if test="beginContractDate != null and endContractDate != null and beginContractDate != '' and endContractDate != ''">
+				AND a.contract_date BETWEEN #{beginContractDate} AND #{endContractDate}
+			</if>
+			<if test="contractStatus != null and contractStatus != ''">
+				AND a.contract_status = #{contractStatus}
+			</if>
+			<if test="approvalStatus != null and approvalStatus != ''">
+				AND a.approval_status = #{approvalStatus}
+			</if>
+			<if test="program.office.name != null and program.office.name != ''">
+				AND o.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.office.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.office.name}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
 			</if>
 		</where>
@@ -232,6 +281,14 @@
 			approval_status = #{approvalStatus},
 			contract_status = #{contractStatus},
 			is_stamp = #{isStamp}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateProContractStatus">
+		UPDATE program_contract SET 
+			approval_status = #{approvalStatus},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
 	

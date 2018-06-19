@@ -95,6 +95,8 @@
 				//思路：
 				//1.下拉变化时获取id;
 				var id = keyword.id;
+				var name = keyword.key;
+				
 				var jsonData = JSON.stringify({"id":id});
 // 				2.获取完id传入后台获取对应的数据;
 				$.ajax({
@@ -188,7 +190,9 @@
 						console.log("获取失败！");
 					}
 				});
-				//若项目已选给出提示
+				//项目已选将保证金名称设为“项目名称+保证金”
+				$("#depositName").val(name+"保证金");
+				
 // 				$("#choosePro").remove();//移除未选择时提示
 			});//下拉框值选中时调用
 			
@@ -293,7 +297,7 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>保证金名称：</label></td>
 					<td class="width-35">
-						<form:input path="depositName" htmlEscape="false"  class="form-control required readOnly"/>
+						<form:input path="depositName" htmlEscape="false" class="form-control required readOnly"/>
 					</td>
 				</tr>
 				<tr>

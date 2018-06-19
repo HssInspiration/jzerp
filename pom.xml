@@ -122,7 +122,6 @@
 		<profile>
 			<!-- 测试环境 -->
 			<id>test</id>
-
 			<build>
 				<filters>
 					<filter>${basedir}/profile/test/ccpt.properties</filter>

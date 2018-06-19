@@ -36,6 +36,10 @@ public class SubpackageProgramService extends CrudService<SubpackageProgramMappe
 		return subpackageProgramMapper.getSubpackageProgramList(subpackageProgramName);
 	}
 	
+	public List<SubpackageProgram> getSubpackageProgramListByName(String subpackageProgramName){
+		return subpackageProgramMapper.getSubpackageProgramListByName(subpackageProgramName);
+	}
+	
 	public List<Integer> getTypeByParentId(SubpackageProgram subpackageProgram){
 		System.out.println("id:"+subpackageProgram.getProgram().getId());
 		return subpackageProgramMapper.getTypeByParentId(subpackageProgram);

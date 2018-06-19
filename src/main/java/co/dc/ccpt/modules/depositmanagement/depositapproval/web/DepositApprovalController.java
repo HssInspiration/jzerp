@@ -33,6 +33,7 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.depositmanagement.deposit.entity.Deposit;
@@ -70,6 +71,9 @@ public class DepositApprovalController extends BaseController {
 	
 	@Autowired
 	private SystemService userService; 
+	
+	@Autowired
+	private EnclosuretabService enclosuretabService;
 	
 	@ModelAttribute
 	public DepositApproval get(@RequestParam(required=false) String id) {
@@ -496,6 +500,7 @@ public class DepositApprovalController extends BaseController {
 					if(status!=null){
 						if(status == 0 || status == 3){//待审核或未通过
 							depositApprovalService.delete(depositApproval);
+							enclosuretabService.deleteEnclosureByForeginId(depositApproval.getId());//同步删除对应附件
 							//删除之后将状态更改为待审核
 							deposit = depositApproval.getDeposit();
 							String depositId = "";

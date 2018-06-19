@@ -1,4 +1,4 @@
-package co.dc.ccpt.modules.contractmanagement.subprocontract.web;
+package co.dc.ccpt.modules.contractmanagement.procontract.web;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,12 +31,14 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
+import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.service.SubpackageProgramService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.service.SubProContractService;
+import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.service.SystemService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
@@ -52,6 +54,9 @@ public class SubProContractController extends BaseController{
 	
 	@Autowired
 	public ProContractService proContractService;
+
+	@Autowired
+	public EnclosuretabService enclosuretabService;
 	
 	@Autowired
 	public SubpackageProgramService subpackageProgramService;
@@ -73,7 +78,7 @@ public class SubProContractController extends BaseController{
 	 */
 	@RequestMapping(value = {"list", ""})
 	public String list() {
-		return "modules/contractmanagement/subprocontract/subprocontractList";
+		return "modules/contractmanagement/procontract/subprocontractList";
 	}
 	
 	/**
@@ -118,17 +123,17 @@ public class SubProContractController extends BaseController{
 			model.addAttribute("subProContract", subProContract);
 			model.addAttribute("edit",true);
 		}
-		return "modules/contractmanagement/subprocontract/subprocontractForm";
+		return "modules/contractmanagement/procontract/subprocontractForm";
 	}
 
 	/**
 	 * 通过分包项目名称查询出所有的单位
 	 */
 	@ResponseBody
-	@RequestMapping(value = "getSubpackageProgramList",method = RequestMethod.POST)
-	public List<SubpackageProgram> getSubpackageProgramList(@RequestParam String subpackageProgramName) {
+	@RequestMapping(value = "getSubpackageProgramListByName",method = RequestMethod.POST)
+	public List<SubpackageProgram> getSubpackageProgramListByName(@RequestParam String subpackageProgramName) {
 		List<SubpackageProgram> subpackageProgramList = new ArrayList<SubpackageProgram>();
-		subpackageProgramList = subpackageProgramService.getSubpackageProgramList(subpackageProgramName);
+		subpackageProgramList = subpackageProgramService.getSubpackageProgramListByName(subpackageProgramName);
 		return subpackageProgramList;
 	}
 	
@@ -173,6 +178,24 @@ public class SubProContractController extends BaseController{
 			subProContract.setBuildDate(i.toString());
 		}
 		//新增或编辑表单保存
+		//新增保存之前联动保存对应的proContractId到表中
+//		if(StringUtils.isBlank(subProContract.getId())){
+		SubpackageProgram subPro = subProContract.getSubpackageProgram();
+		ProContract proContract = new ProContract();
+		if(subPro != null){//分包项目非空，获取整个分包项目信息
+			subPro = subpackageProgramService.get(subPro);
+			if(subPro != null){
+				Program pro = subPro.getProgram();//获取主项目
+				if(pro != null){
+					proContract.setProgram(pro);
+					proContract = proContractService.getProContractByProgramId(proContract);
+					if(proContract != null){
+						subProContract.setProContract(proContract);
+					}
+				}
+			}
+		}
+//		}
 		subProContractService.save(subProContract);//保存
 		j.setSuccess(true);
 		j.setMsg("保存分包合同信息成功！");
@@ -216,7 +239,11 @@ public class SubProContractController extends BaseController{
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
 		for(String id : idArray){
-			subProContractService.delete(subProContractService.get(id));
+			SubProContract subProContract = subProContractService.get(id);
+			if(subProContract!=null){
+				subProContractService.delete(subProContract);
+				enclosuretabService.deleteEnclosureByForeginId(subProContract.getId());//同步删除对应附件
+			}
 		}
 		j.setMsg("删除分包合同信息成功!");
 		return j;

@@ -35,6 +35,7 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.entity.Bidtable;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.service.BidtableService;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.depositmanagement.deposit.entity.Deposit;
@@ -59,6 +60,9 @@ public class DepositController extends BaseController {
 	
 	@Autowired
 	private BidtableService bidtableService;
+	
+	@Autowired
+	private EnclosuretabService enclosuretabService;
 	
 	/**
 	 * 项目业务处理层对象
@@ -266,6 +270,7 @@ public class DepositController extends BaseController {
 					}
 				}else if(deposit != null){
 					depositService.delete(deposit);
+					enclosuretabService.deleteEnclosureByForeginId(deposit.getId());//同步删除对应附件
 					j.setSuccess(true);
 					j.setMsg("删除成功!");
 				}

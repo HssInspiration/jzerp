@@ -35,6 +35,14 @@
 		WHERE a.enclosure_type = #{enclosureType}
 	</select>
 	
+<!-- 	通过关联id获得对应的附件内容集合 -->
+	<select id="getEnclosureContByForeginId" resultType="Enclosuretab" >
+		SELECT 
+			<include refid="enclosuretabColumns"/>
+		FROM enclosure_tab a
+		WHERE foregin_id=#{foreginId}
+	</select>
+	
 	<select id="getByEnclosuretabNum" resultType="Enclosuretab" >
 		SELECT 
 			<include refid="enclosuretabColumns"/>
@@ -144,6 +152,11 @@
 	<update id="delete">
 		DELETE FROM enclosure_tab
 		WHERE id = #{id}
+	</update>
+
+	<update id="deleteEnclosureByForeginId">
+		DELETE FROM enclosure_tab
+		WHERE foregin_id = #{foreginId}
 	</update>
 	
 	<!--逻辑删除-->

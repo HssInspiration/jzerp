@@ -12,6 +12,8 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.mapper.ProContractMapper;
+import co.dc.ccpt.modules.oa.entity.ActContract;
+import co.dc.ccpt.modules.oa.entity.AttachContract;
 /**
  * 总包项目合同Service
  * @author Administrator
@@ -96,6 +98,52 @@ public class ProContractService extends CrudService<ProContractMapper, ProContra
 	//通过主项目id获取一个总包合同信息
 	public ProContract getProContractByProgramId(ProContract proContract){
 		return proContractMapper.getProContractByProgramId(proContract);
+	};
+	
+	//通过合同名称获得未审批且为市场投标的合同
+	public List<ProContract> getMarketProContractByName(String contractName){
+		ProContract proContract = new ProContract();
+		proContract.setContractName(contractName);
+		return proContractMapper.getMarketProContractByName(proContract);
+	}
+	
+	//通过合同名称获得未审批且为业主指定的合同
+	public List<ProContract> getAppointProContractByName(String contractName){
+		ProContract proContract = new ProContract();
+		proContract.setContractName(contractName);
+		return proContractMapper.getAppointProContractByName(proContract);
+	}
+	
+	//更新市场投标合同审批状态
+	@Transactional(readOnly = false)
+	public int updateProContractStatus(ActContract actContract, Integer approvalStatus){
+		ProContract proContract = actContract.getProContract();
+		int i = 0;
+		if(proContract != null){
+			proContract = proContractMapper.get(proContract);
+			if(proContract != null){
+				//设置对应的合同审批状态为审批中
+				proContract.setApprovalStatus(approvalStatus);
+				i = proContractMapper.updateProContractStatus(proContract);
+			}
+		}
+		return i;
+	};
+	
+	//更新小合同审批状态
+	@Transactional(readOnly = false)
+	public int updateProContractStatus(AttachContract attachContract, Integer approvalStatus){
+		ProContract proContract = attachContract.getProContract();
+		int i = 0;
+		if(proContract != null){
+			proContract = proContractMapper.get(proContract);
+			if(proContract != null){
+				//设置对应的合同审批状态为审批中
+				proContract.setApprovalStatus(approvalStatus);
+				i = proContractMapper.updateProContractStatus(proContract);
+			}
+		}
+		return i;
 	};
 	
 }

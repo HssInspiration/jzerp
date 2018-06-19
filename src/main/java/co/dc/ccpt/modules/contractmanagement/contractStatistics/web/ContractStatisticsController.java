@@ -31,8 +31,8 @@ import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.service.SubpackageProgramService;
 import co.dc.ccpt.modules.contractmanagement.contractStatistics.entity.ContractStatistics;
 import co.dc.ccpt.modules.contractmanagement.contractStatistics.service.ContractStatisticsService;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
 import co.dc.ccpt.modules.sys.service.SystemService;
 
 @Controller

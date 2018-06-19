@@ -349,6 +349,7 @@ public class SubpackageProgramController extends BaseController {
 					}
 				}
 				subpackageProgramService.delete(subpackageProgram);
+				enclosuretabService.deleteEnclosureByForeginId(subpackageProgram.getId());//同步删除对应附件
 				j.setSuccess(true);
 				j.setMsg("删除子项目工程管理成功!");
 				return j;

@@ -24,4 +24,7 @@ public interface SubpackageProgramMapper extends BaseMapper<SubpackageProgram> {
 	
 	// 通过分包项目名称查询出对应集合，模糊匹配
 	public List<SubpackageProgram> getSubpackageProgramList(@Param("subpackageProgramName") String subpackageProgramName);
+
+	// 通过分包项目名称查询出对应集合，模糊匹配--分包合同（已中标的分包项目）
+	public List<SubpackageProgram> getSubpackageProgramListByName(@Param("subpackageProgramName") String subpackageProgramName);
 }

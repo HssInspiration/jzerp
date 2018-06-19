@@ -1,10 +1,9 @@
-package co.dc.ccpt.modules.contractmanagement.subprocontract.service;
+package co.dc.ccpt.modules.contractmanagement.procontract.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,8 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.mapper.SubProContractMapper;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.mapper.SubProContractMapper;
+import co.dc.ccpt.modules.oa.entity.ActSubContract;
 
 /**
  * 建造师在建项目管理Service
@@ -94,6 +94,29 @@ public class SubProContractService extends CrudService<SubProContractMapper, Sub
 	// 根据名称模糊匹配
 	public List<SubProContract> getSubProContractList(String subProContractName){
 		return subProContractMapper.getSubProContractList(subProContractName);
+	};
+	
+	//通过合同名称获得未审批的分包合同
+	public List<SubProContract> getAppointSubProContractByName(String subProContractName){
+		SubProContract subProContract = new SubProContract();
+		subProContract.setSubProContractName(subProContractName);
+		return subProContractMapper.getAppointSubProContractByName(subProContract);
+	}
+	
+	//更新分包合同审批状态
+	@Transactional(readOnly = false)
+	public int updateSubProContractStatus(ActSubContract actSubContract, Integer approvalStatus){
+		SubProContract subProContract = actSubContract.getSubProContract();
+		int i = 0;
+		if(subProContract != null){
+			subProContract = subProContractMapper.get(subProContract);
+			if(subProContract != null){
+				//设置对应的合同审批状态为审批中
+				subProContract.setApprovalStatus(approvalStatus);
+				i = subProContractMapper.updateSubProContractStatus(subProContract);
+			}
+		}
+		return i;
 	};
 	
 }

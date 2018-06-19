@@ -223,13 +223,13 @@
 		          </td>
 		      </tr>
 		      <tr>
-		          <td  class="width-15 active">	<label class="pull-right">承接分公司:</label></td>
+		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>承接分公司:</label></td>
 		          <td  class="width-35" >
 <%-- 			          <form:select path="branchCompany.id" class="form-control required">  --%>
 <%-- 								<form:option value="" label="--请选择承接分公司--"/> --%>
 <%-- 								<form:options items="${branchCompanyList}" itemLabel="branchCompanyname" itemValue="id" htmlEscape="false"/> --%>
 <%-- 					  </form:select> --%>
-				<input type="hidden" class="form-control" name= "office.id" id = "officeId" value = "${program.office.id}">
+				<input type="hidden" class="form-control required" name= "office.id" id = "officeId" value = "${program.office.id}">
 					<div class="row">
 		                <div class="col-lg-2">
 		                    <div class="input-group">

@@ -82,9 +82,9 @@
 <!-- 						</form> -->
 <!-- 				</div> -->
 <%-- 			</shiro:hasPermission> --%>
-	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-					<i class="fa fa-search"></i> 检索
-				</a>
+<!-- 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo"> -->
+<!-- 					<i class="fa fa-search"></i> 检索 -->
+<!-- 				</a> -->
 		    </div>
 		
 	<!-- 表格 -->

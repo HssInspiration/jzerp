@@ -68,6 +68,23 @@
 			</if>
     	</where>
     </select>
+<!--     查询已中标 （c.isBid=1）且总包合同审批已通过（pc.approval_status = 2）的分包项目 -->
+	 <select id="getSubpackageProgramListByName" resultType="SubpackageProgram">
+    	SELECT 
+			a.id AS "id",
+			a.subpackage_programname AS "subpackageProgramName"
+		FROM subpackage_program a
+		LEFT JOIN ccpt.subbid_company s ON s.subpackage_program_id = a.id
+		LEFT JOIN ccpt.clearevaluate_bid c ON c.subbid_company_id = s.id
+		LEFT JOIN ccpt.program_contract pc ON pc.program_id = a.parent_id
+    	<where>
+			<if test="subpackageProgramName != null and subpackageProgramName != ''">
+				AND a.subpackage_programname LIKE concat('%',#{subpackageProgramName},'%')
+			</if>
+				AND c.isBid=1
+				AND pc.approval_status = 2
+    	</where>
+    </select>
 	
 	<select id="findList" resultType="SubpackageProgram" >
 		SELECT 

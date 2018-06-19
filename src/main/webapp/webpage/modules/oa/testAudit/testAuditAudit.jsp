@@ -8,6 +8,7 @@
 		var validateForm;
 		function doSubmit(){//回调函数，在编辑和保存动作时，供openDialog调用提交表单。
 		  if(validateForm.form()){
+			  jp.loading();
 			  $("#inputForm").submit();
 			  return true;
 		  }
@@ -18,7 +19,7 @@
 			$("#name").focus();
 			validateForm = $("#inputForm").validate({
 				submitHandler: function(form){
-					loading('正在提交，请稍等...');
+// 					jp.loading('正在提交，请稍等...');
 					form.submit();
 				},
 				errorContainer: "#messageBox",

@@ -30,6 +30,7 @@ import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.entity.Bidtable;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.depositmanagement.deposit.entity.Deposit;
 import co.dc.ccpt.modules.depositmanagement.depositapproval.entity.DepositApproval;
@@ -53,6 +54,9 @@ public class DepositStatementController extends BaseController {
 	
 	@Autowired
 	private DepositApprovalService depositApprovalService;
+	
+	@Autowired
+	private EnclosuretabService enclosuretabService;
 	
 	@ModelAttribute
 	public DepositStatement get(@RequestParam(required=false) String id) {
@@ -190,6 +194,7 @@ public class DepositStatementController extends BaseController {
 				}
 			}
 			depositStatementService.delete(depositStatement);
+			enclosuretabService.deleteEnclosureByForeginId(depositStatement.getId());//同步删除对应附件
 			//出账记录删除后将原先的审批中的出账记录时间还原（清空）
 			
 		}

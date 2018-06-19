@@ -135,6 +135,9 @@ public class ProgramController extends BaseController {
 	
 	/**
 	 * 查询出对应id的附件数量
+	 * 其他js中的都调用此接口，
+	 * 此时的program,临时充当接收参数--id--的对象，
+	 * 接收之后，获取，此时的foreginId即为前台所传的row.id
 	 * @return
 	 */
 	@ResponseBody
@@ -303,9 +306,13 @@ public class ProgramController extends BaseController {
 		//2.判断是否为金卓
 		if(companyId.equals("03ae459404284f17bbd25e78a13397a6")){
 			j.setSuccess(false);
-			j.setMsg( "保存项目 失败,发标单位不能为本公司！");
+			j.setMsg( "保存项目失败,发标单位不能为本公司！");
 			return j;
 		}else{
+			Integer getMethod = program.getGetMethod();
+			if(getMethod == 0){//业主指定时
+				program.setStatus(2);//默认施工状态
+			}
 			programService.save(program);//保存
 			j.setSuccess(true);
 			j.setMsg("保存项目'" + program.getProgramName() + "'成功！");
@@ -375,36 +382,38 @@ public class ProgramController extends BaseController {
 						return j;
 					}
 				}else if(program!=null){
-					if(program.getStatus() == 0){//只能删除自由状态下的项目
-						programService.delete(program);
-						j.setSuccess(true);
-						j.setMsg("删除项目工程\""+program.getProgramName()+"\"成功!");
-						return j;
-					}else if(program.getStatus() == 1){//招标
-						j.setSuccess(false);
-						j.setMsg("删除失败！项目招标中不可删除！");
-						return j;
-					}else if(program.getStatus() == 2){//施工
-						j.setSuccess(false);
-						j.setMsg("删除失败！项目施工中不可删除！");
-						return j;
-					}else if(program.getStatus() == 3){//竣工
-						j.setSuccess(false);
-						j.setMsg("删除失败！项目已竣工不可删除！");
-						return j;
-					}else if(program.getStatus() == 4){//停工
-						j.setSuccess(false);
-						j.setMsg("删除失败！项目已停工不可删除！");
-						return j;
-					}else if(program.getStatus() == 5){//结案
-						j.setSuccess(false);
-						j.setMsg("删除失败！项目已结案不可删除！");
-						return j;
-					}else if(program.getStatus() == 6){//未中标
-						j.setSuccess(false);
-						j.setMsg("删除失败！项目未中标不可删除！");
-						return j;
-					}
+//					if(program.getStatus() == 0){//只能删除自由状态下的项目
+					programService.delete(program);
+					enclosuretabService.deleteEnclosureByForeginId(program.getId());//同步删除对应附件
+					j.setSuccess(true);
+					j.setMsg("删除项目工程\""+program.getProgramName()+"\"成功!");
+					return j;
+//					}
+//					else if(program.getStatus() == 1){//招标
+//						j.setSuccess(false);
+//						j.setMsg("删除失败！项目招标中不可删除！");
+//						return j;
+//					}else if(program.getStatus() == 2){//施工
+//						j.setSuccess(false);
+//						j.setMsg("删除失败！项目施工中不可删除！");
+//						return j;
+//					}else if(program.getStatus() == 3){//竣工
+//						j.setSuccess(false);
+//						j.setMsg("删除失败！项目已竣工不可删除！");
+//						return j;
+//					}else if(program.getStatus() == 4){//停工
+//						j.setSuccess(false);
+//						j.setMsg("删除失败！项目已停工不可删除！");
+//						return j;
+//					}else if(program.getStatus() == 5){//结案
+//						j.setSuccess(false);
+//						j.setMsg("删除失败！项目已结案不可删除！");
+//						return j;
+//					}else if(program.getStatus() == 6){//未中标
+//						j.setSuccess(false);
+//						j.setMsg("删除失败！项目未中标不可删除！");
+//						return j;
+//					}
 				}
 			}
 		}

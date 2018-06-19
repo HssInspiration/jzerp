@@ -6,11 +6,11 @@
 	<meta name="decorator" content="ani"/>
 	<script type="text/javascript">
 		var validateForm;
-		var $table; // 父页面table表格id
+		var $personCertificateTable; // 父页面table表格id
 		var $topIndex;//弹出窗口的 index
-		function doSubmit(table, index){//回调函数，在编辑和保存动作时，供openDialog调用提交表单。
+		function doSubmit(personCertificateTable, index){//回调函数，在编辑和保存动作时，供openDialog调用提交表单。
 		  if(validateForm.form()){
-			  $table = table;
+			  $personCertificateTable = personCertificateTable;
 			  $topIndex = index;
 			  $("#inputForm").submit();
 			  return true;
@@ -65,7 +65,7 @@
 					jp.loading();
 					jp.post("${ctx}/basicinformation/savePersonCertificate",$('#inputForm').serialize(),function(data){
 		                    if(data.success){
-		                    	$table.bootstrapTable('refresh');
+		                    	$personCertificateTable.bootstrapTable('refresh');
 		                    	jp.success(data.msg);
 		                    	jp.close($topIndex);//关闭dialog
 		                    }else{

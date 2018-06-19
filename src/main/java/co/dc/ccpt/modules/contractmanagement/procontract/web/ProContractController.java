@@ -31,12 +31,11 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
-import co.dc.ccpt.modules.contractmanagement.subprocontract.entity.SubProContract;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.service.SystemService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
@@ -49,6 +48,9 @@ public class ProContractController extends BaseController{
 	
 	@Autowired
 	public ProgramService programService;
+	
+	@Autowired
+	public EnclosuretabService enclosuretabService;
 	
 	@Autowired
 	public SystemService userService;
@@ -101,7 +103,7 @@ public class ProContractController extends BaseController{
 			proContract.setUser(user);
 			String num = proContractService.setProContractNum();
 			proContract.setContractNum(num);
-			model.addAttribute("ProContract", proContract);
+			model.addAttribute("proContract", proContract);
 			model.addAttribute("isAdd", true);
 		}else{
 			name = proContract.getUser().getName();
@@ -112,10 +114,54 @@ public class ProContractController extends BaseController{
 					user = userService.getOnlyOneUser(id);//通过ID获取user信息
 				}
 			}
-			model.addAttribute("ProContract", proContract);
+			model.addAttribute("proContract", proContract);
 			model.addAttribute("edit",true);
 		}
 		return "modules/contractmanagement/procontract/procontractForm";
+	}
+	
+	/**
+	 * 查看，增加，编辑总包合同表单页面
+	 */
+	@RequestMapping(value = "confirmValid")
+	public String confirmValid(ProContract proContract, Model model) {
+		model.addAttribute("proContract", proContract);
+		return "modules/contractmanagement/procontract/confirmValidForm";
+	}
+	
+	@RequestMapping(value = {"checkForm"})
+	public String checkForm(ProContract proContract, Model model) {
+		String view = "actContractForm";
+		// 查看审批申请单
+		if (StringUtils.isNotBlank(proContract.getId())){//.getAct().getProcInsId())){
+
+			// 环节编号
+			String taskDefKey = proContract.getAct().getTaskDefKey();
+			
+			// 查看工单
+			if(proContract.getAct().isFinishTask()){
+				view = "actContractView";
+			}
+			// 审核环节
+			else if ("deptLeaderAudit".equals(taskDefKey)){
+				view = "actContractAudit";
+			}
+			// 审核环节2
+			else if ("hrAudit".equals(taskDefKey)){
+				view = "actContractAudit";
+			}
+			// 审核环节3
+			else if ("reportBack".equals(taskDefKey)){
+				view = "actContractAudit";
+			}
+			// 修改环节
+			else if ("modifyApply".equals(taskDefKey)){
+				view = "actContractAudit";
+			}
+		}
+
+		model.addAttribute("proContract", proContract);
+		return "modules/contractmanagement/procontract/"+view;
 	}
 
 	/**
@@ -202,7 +248,12 @@ public class ProContractController extends BaseController{
 		AjaxJson j = new AjaxJson();
 		String idArray[] =ids.split(",");
 		for(String id : idArray){
-			proContractService.delete(proContractService.get(id));
+			//删除前判断：分包有关联不可删；状态为审批中不可删，审批通过不可删，合同已生效不可删
+			ProContract proContract = proContractService.get(id);
+			if(proContract != null){
+				proContractService.delete(proContract);
+				enclosuretabService.deleteEnclosureByForeginId(proContract.getId());//同步删除对应附件
+			}
 		}
 		j.setMsg("删除总包合同信息成功!");
 		return j;

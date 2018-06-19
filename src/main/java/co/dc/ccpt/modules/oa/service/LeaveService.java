@@ -65,13 +65,15 @@ public class LeaveService extends BaseService {
 	public Leave get(String id) {
 		Leave leave = leaveMapper.get(id);
 		Map<String,Object> variables=null;
-		HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(leave.getProcessInstanceId()).singleResult();
-		if(historicProcessInstance!=null) {
-			variables = Collections3.extractToMap(historyService.createHistoricVariableInstanceQuery().processInstanceId(historicProcessInstance.getId()).list(), "variableName", "value");
-		} else {
-			variables = runtimeService.getVariables(runtimeService.createProcessInstanceQuery().processInstanceId(leave.getProcessInstanceId()).active().singleResult().getId());
+		if(leave != null){
+			HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(leave.getProcessInstanceId()).singleResult();
+			if(historicProcessInstance!=null) {
+				variables = Collections3.extractToMap(historyService.createHistoricVariableInstanceQuery().processInstanceId(historicProcessInstance.getId()).list(), "variableName", "value");
+			} else {
+				variables = runtimeService.getVariables(runtimeService.createProcessInstanceQuery().processInstanceId(leave.getProcessInstanceId()).active().singleResult().getId());
+			}
+			leave.setVariables(variables);
 		}
-		leave.setVariables(variables);
 		return leave;
 	}
 	
@@ -96,7 +98,7 @@ public class LeaveService extends BaseService {
 		identityService.setAuthenticatedUserId(leave.getCurrentUser().getLoginName());
 		
 		// 启动流程
-		String businessKey = leave.getId().toString();
+		String businessKey = "oa_leave:"+leave.getId().toString();
 		variables.put("type", "leave");
 		variables.put("busId", businessKey);
 		variables.put("title", leave.getReason());//设置标题；
