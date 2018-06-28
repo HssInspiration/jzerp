@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.printingmanagement.mapper.ContractPrintingMapper">
+	<sql id="contractPrintingColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		u.id AS "proContract.user.id",
+		u.name AS "proContract.user.name",
+		a.contract_id AS "proContract.id",
+		
+		a.print_num AS "printNum",
+		a.print_date AS "printDate",
+		a.print_type AS "printType",
+		a.times AS "times",
+		pc.contract_name AS "proContract.contractName",
+		pc.contract_date AS "proContract.contractDate",
+		pc.contract_total_price AS "proContract.contractTotalPrice"
+		
+	</sql>
+	
+	<sql id="contractPrintingJoins">
+		LEFT JOIN ccpt.program_contract pc ON pc.id=a.contract_id
+		LEFT JOIN ccpt.sys_user u ON u.id = pc.user_id
+	</sql>
+	
+	<select id="get" resultType="contractPrinting" >
+		SELECT 
+			<include refid="contractPrintingColumns"/>
+		FROM contract_printing a
+			<include refid="contractPrintingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getContractPrintingByProId" resultType="ContractPrinting" >
+		SELECT 
+			<include refid="contractPrintingColumns"/>
+		FROM contract_printing a
+			<include refid="contractPrintingJoins"/>
+		WHERE a.contract_id = #{proContract.id}
+	</select>
+	
+<!-- 	获取最后一个增加的编号 -->
+	<select id="getLastInsertNum" resultType="String" >
+		SELECT
+			a.print_num AS "printNum"
+		FROM contract_printing a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM contract_printing a)
+	</select>
+	
+	<select id="findList" resultType="contractPrinting" parameterType="List">
+		SELECT 
+			<include refid="contractPrintingColumns"/>
+		FROM contract_printing a
+			<include refid="contractPrintingJoins"/>
+		<where>
+			${dataScope}
+			<if test="proContract.contractName != null and proContract.contractName != ''">
+				AND pc.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{proContract.contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{proContract.contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{proContract.contractName},'%')</if>
+			</if>
+			<if test="proContract.user.name != null and proContract.user.name != ''">
+				AND u.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{proContract.user.name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{proContract.user.name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{proContract.user.name},'%')</if>
+			</if>
+			<if test="beginPrintDate != null and endPrintDate != null and beginPrintDate != '' and endPrintDate != ''">
+				AND a.print_date BETWEEN #{beginPrintDate} AND #{endPrintDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC	
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="contractPrinting" >
+		SELECT 
+			<include refid="contractPrintingColumns"/>
+		FROM contract_printing a
+			<include refid="contractPrintingJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO contract_printing(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			print_date,
+			print_num,
+			print_type,
+			times,
+			contract_id 
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			#{printDate},
+			#{printNum},
+			#{printType},
+			#{times},
+			#{proContract.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE contract_printing SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			print_date = #{printDate},
+			print_type = #{printType},
+			times = #{times},
+			contract_id = #{proContract.id}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM contract_printing
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE contract_printing SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="contractPrinting" statementType="STATEMENT">
+		select * FROM contract_printing  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

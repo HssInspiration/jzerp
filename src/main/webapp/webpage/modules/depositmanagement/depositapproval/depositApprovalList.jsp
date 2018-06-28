@@ -28,7 +28,7 @@
 			</div>
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="审批状态：">审批状态：</label>
-				<form:select path="checkStatus"  class="form-control m-b">
+				<form:select path="deposit.checkStatus"  class="form-control m-b">
 					<form:option value="" label="--请选择审批状态--"/>
 					<form:options items="${fns:getDictList('deposit_checkstatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>

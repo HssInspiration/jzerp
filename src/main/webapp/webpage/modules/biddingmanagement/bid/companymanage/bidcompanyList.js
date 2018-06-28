@@ -216,7 +216,6 @@ $(document).ready(function() {
 		        title: '是否中标',
 		        sortable: true,
 		        formatter:function(value, row , index){
-		        	//return jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-");
 		        	if(value == '0'){
 		        		return '<font color="red">'+jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-")+'</font>';
 		        	}else{
@@ -328,6 +327,10 @@ $(document).ready(function() {
 		 var beginDate = $('#searchForm input:eq(2)').val();// 开始日期
 		 var endDate = $('#searchForm input:eq(3)').val();  // 结束日期
 		 var isBid = $('#searchForm select').val();         // 是否中标
+		 
+		 console.log("1:"+proName+"2:"+compName+"3:"
+				 	+isBid+"5:"+beginDate+"6:"
+				 	+endDate);
 		 jp.openDialogView('数据统计', '${ctx}/companymanage/bidcompany/statisticsForm?programName='+proName
 									+'&companyName='+compName
 									+'&beginBidDate='+beginDate

@@ -52,6 +52,8 @@
 				var id = keyword.id;
 				console.log("id:"+id);
 				var jsonData = JSON.stringify({"id":id});
+				var str= JSON.stringify(id);
+			   	console.log("id:"+id+"jsonData:"+jsonData+typeof(id)+"6666:"+str);
 				//2.获取完id传入后台获取对应主项目信息;
 				$.ajax({
 					url:"${ctx}/procontract/getProContractByProgramId",

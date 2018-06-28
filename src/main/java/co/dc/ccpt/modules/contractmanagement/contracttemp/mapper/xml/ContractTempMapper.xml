@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.contracttemp.mapper.ContractTempMapper">
+	<sql id="contractTempColumns">
+		a.id AS "id",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		a.contract_temp_num AS "tempNum",
+		a.contract_temp_name AS "tempName",
+		a.temp_type AS "tempType"
+	</sql>
+	
+	<sql id="contractTempJoins">
+		
+	</sql>
+	
+	<select id="get" resultType="contractTemp" >
+		SELECT 
+			<include refid="contractTempColumns"/>
+		FROM contract_temp a
+			<include refid="contractTempJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getLastContractTempNum" resultType="String" >
+		SELECT
+			a.contract_temp_num AS "tempNum"
+		FROM contract_temp a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM contract_temp a)
+	</select>
+	
+	<select id="findList" resultType="contractTemp" parameterType="List">
+		SELECT 
+			<include refid="contractTempColumns"/>
+		FROM contract_temp a
+		<include refid="contractTempJoins"/>
+		<where>
+			${dataScope}
+			<if test="tempName != null and tempName != ''">
+				AND a.contract_temp_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{tempName}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{tempName},'%')</if>
+			</if>
+			<if test="tempType != null">
+				AND a.temp_type = #{tempType}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC	
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="contractTemp" >
+		SELECT 
+			<include refid="contractTempColumns"/>
+		FROM contract_temp a
+		<include refid="contractTempJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO contract_temp(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag,
+			remarks,
+			
+			contract_temp_num,
+			contract_temp_name,
+			temp_type
+			
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag},
+			#{remarks},
+			
+			#{tempNum},
+			#{tempName},
+			#{tempType}
+		
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE contract_temp SET 	
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			
+			contract_temp_num = #{tempNum},
+			contract_temp_name = #{tempName},
+			temp_type = #{tempType}
+		WHERE id = #{id}
+	</update>
+	
+	<!--物理删除-->
+	<update id="delete">
+		DELETE FROM contract_temp
+		WHERE id = #{id}
+	</update>
+	
+	<!--逻辑删除-->
+	<update id="deleteByLogic">
+		UPDATE contract_temp SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据实体名称和字段名称和字段值获取唯一记录 -->
+	<select id="findUniqueByProperty" resultType="contractTemp" statementType="STATEMENT">
+		select * FROM contract_temp  where ${propertyName} = '${value}'
+	</select>
+	
+</mapper>

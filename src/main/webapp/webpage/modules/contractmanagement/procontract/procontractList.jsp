@@ -68,16 +68,22 @@
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<label class="label-item single-overflow pull-left" title="审批状态：">审批状态：</label>
 					<form:select path="approvalStatus"  class="form-control m-b">
-						<form:option value="" label="--请选择审批状态--"/>
+						<form:option value="" label="请选择审批状态"/>
 						<form:options items="${fns:getDictList('procontract_approval')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
 				</div>
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<label class="label-item single-overflow pull-left" title="合同状态：">合同状态：</label>
 					<form:select path="contractStatus"  class="form-control m-b">
-						<form:option value="" label="--请选择合同状态--"/>
+						<form:option value="" label="请选择合同状态"/>
 						<form:options items="${fns:getDictList('contract_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
+					
+<!-- 					<label class="label-item single-overflow pull-left" title="项目状态：">项目状态：</label> -->
+<%-- 					<form:select path="status"  class="form-control m-b"> --%>
+<%-- 						<form:option value="" label=""/> --%>
+<%-- 						<form:options items="${fns:getDictList('programstatus')}" itemLabel="label" itemValue="value" htmlEscape="false"/> --%>
+<%-- 					</form:select> --%>
 				</div>
 		 <div class="col-xs-12 col-sm-6 col-md-4">
 			<div style="margin-top:26px">

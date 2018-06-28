@@ -150,5 +150,17 @@ public abstract class CrudService<M extends BaseMapper<T>, T extends DataEntity<
 	public void executeDeleteSql(String sql){
 		mapper.execDeleteSql(sql);
 	}
+	
+	//对Double集合转换转换成数组后进行处理,得到需要的数据(参投与合同统计时用到)
+	public Double doubleListToArray(List<Double> list){
+		Double doubleNum = (double) 0;
+		if(list!=null && list.size()>0){
+			Double[] doubleArr = list.toArray(new Double[0]);//将集合转成Double数组
+			for(int i=0;i<=doubleArr.length-1;i++){
+				doubleNum += doubleArr[i] ;
+			}
+		}
+		return doubleNum;
+	}
 
 }

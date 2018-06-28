@@ -389,6 +389,6 @@ $(document).ready(function() {
 		  $("#personCertificateButton").click(function(){
 				jp.openDialog('添加证书', '${ctx}/basicinformation/personCertificateForm?corePersonId=' + $("#corePersonId").val(),'1000px', '600px', $personCertificateTable);
 			});
-		  });
+		});
 		
 	</script>

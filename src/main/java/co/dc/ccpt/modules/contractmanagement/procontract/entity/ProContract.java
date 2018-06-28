@@ -1,6 +1,7 @@
 package co.dc.ccpt.modules.contractmanagement.procontract.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -9,6 +10,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.Lists;
 
 import co.dc.ccpt.core.persistence.ActEntity;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
@@ -39,6 +41,8 @@ public class ProContract extends ActEntity<ProContract> {
 	private String programConnector;// 工程联系人
 	private Date startDate;// 开工日期
 	private User user;// 用户对象（合同拟草人）
+	private SubProContract subProContract;//子表对象
+	private List<SubProContract> subProContractList = Lists.newArrayList();		// 子表列表
 	
 	
 	
@@ -241,4 +245,22 @@ public class ProContract extends ActEntity<ProContract> {
 	public void setProcessDefinition(ProcessDefinition processDefinition) {
 		this.processDefinition = processDefinition;
 	}
+
+	public SubProContract getSubProContract() {
+		return subProContract;
+	}
+
+	public void setSubProContract(SubProContract subProContract) {
+		this.subProContract = subProContract;
+	}
+
+	public List<SubProContract> getSubProContractList() {
+		return subProContractList;
+	}
+
+	public void setSubProContractList(List<SubProContract> subProContractList) {
+		this.subProContractList = subProContractList;
+	}
+	
+	
 }

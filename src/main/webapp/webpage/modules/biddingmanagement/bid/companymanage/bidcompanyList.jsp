@@ -68,7 +68,7 @@
 			<div style="margin-top:26px">
 			  <a  id="search" class="btn btn-primary btn-rounded  btn-bordered btn-sm"><i class="fa fa-search"></i> 查询</a>
 			  <a  id="reset" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-refresh"></i> 重置</a>
-			  <a  id="openStatistics" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa fa-eye"></i> 数据统计 </a>
+			  <a  id="openStatistics" class="btn btn-primary btn-rounded  btn-bordered btn-sm" ><i class="fa  fa-area-chart "></i> 数据统计 </a>
 			 </div>
 	    </div>	
 	</form:form>

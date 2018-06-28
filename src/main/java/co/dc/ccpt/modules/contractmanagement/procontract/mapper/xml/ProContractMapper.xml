@@ -137,6 +137,58 @@
 			</if>
 		</where>
 	</select>
+	<!-- 	查询所有的总包合同 -->
+	<select id="getTotalProContractCount" resultType="Integer">
+		SELECT COUNT(*) FROM program_contract
+	</select>
+	<!-- 	查询所有的审批通过总包合同 -->
+	<select id="getProContractCountAlreadyPass" resultType="Integer">
+		SELECT COUNT(*) FROM program_contract
+		WHERE approval_status = 2
+<!-- 		<where> -->
+<!-- 			<if test="approvalStatus != null"> -->
+<!-- 				AND a.approval_status = #{approvalStatus} -->
+<!-- 			</if> -->
+<!-- 		</where> -->
+	</select>
+	<!-- 	查询所有的审批通过且已生效的总包合同 -->
+	<select id="getProContractCountPassAndEffect" resultType="Integer">
+		SELECT COUNT(*) FROM program_contract
+		WHERE approval_status = 2 AND contract_status = 1
+	</select>
+	
+	<!-- 	统计总包合同总价 -->
+	<select id="getTotalProContractPrice" resultType="Double">
+		SELECT SUM(contract_total_price) FROM program_contract
+	</select>
+	
+<!-- 	获取已生效的合同集合 -->
+	<select id="getEffectList" resultType="proContract" parameterType="List">
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		WHERE contract_status = #{contractStatus}
+	</select>
+<!-- 	获取业主指定的合同集合 -->
+	<select id="getAppointList" resultType="proContract" parameterType="List">
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		WHERE p.get_method = #{program.getMethod}
+	</select>
+<!-- 	获取市场投标的合同集合 -->
+	<select id="getMarketList" resultType="proContract" parameterType="List">
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		WHERE p.get_method = #{program.getMethod}
+	</select>
+	
+	
+	
 	
 	<select id="findList" resultType="proContract" parameterType="List">
 		SELECT 
@@ -166,10 +218,10 @@
 			<if test="beginContractDate != null and endContractDate != null and beginContractDate != '' and endContractDate != ''">
 				AND a.contract_date BETWEEN #{beginContractDate} AND #{endContractDate}
 			</if>
-			<if test="contractStatus != null and contractStatus != ''">
+			<if test="contractStatus != null">
 				AND a.contract_status = #{contractStatus}
 			</if>
-			<if test="approvalStatus != null and approvalStatus != ''">
+			<if test="approvalStatus != null">
 				AND a.approval_status = #{approvalStatus}
 			</if>
 			<if test="program.office.name != null and program.office.name != ''">

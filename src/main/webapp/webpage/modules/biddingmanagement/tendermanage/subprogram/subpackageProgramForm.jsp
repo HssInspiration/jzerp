@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>子项目工程管理管理</title>
+	<title>子项目工程管理</title>
 	<meta name="decorator" content="ani"/>
 	<link id="bscss" href="${ctxStatic}/common/css/bootstrap.min.css" rel="stylesheet">
 	<script type="text/javascript">

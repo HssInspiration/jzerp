@@ -117,6 +117,10 @@ public class SubProContractService extends CrudService<SubProContractMapper, Sub
 			}
 		}
 		return i;
+	}
+	//模糊匹配
+	public List<SubProContract> getSubProContractListByName(String subProContractName) {
+		return subProContractMapper.getSubProContractList(subProContractName);
 	};
 	
 }

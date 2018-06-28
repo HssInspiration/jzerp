@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.oa.mapper.AttachContractMapper">
+    
+    <sql id="attachContractColumns">
+		a.id AS "id", 
+		a.exe_date AS "exeDate",
+		a.lead_text AS "leadText",
+		a.sub_lead_text AS "subLeadText",
+		a.main_lead_text AS "mainLeadText",
+		
+		a.proc_ins_id , 
+		a.create_by AS "createBy.id", 
+		a.create_date ,
+		a.update_by AS "updateBy.id", 
+		a.update_date, 
+
+		a.remarks, 
+		a.del_flag,
+		a.contract_id AS "proContract.id",
+		pc.contract_name AS "proContract.contractName",
+		a.enclosure_cont AS "enclosureCont"
+		
+	</sql>
+	
+	<sql id="attachContractJoins">
+		LEFT JOIN ccpt.program_contract pc ON pc.id = a.contract_id
+    </sql>
+    
+    <select id="get" resultType="AttachContract">
+		SELECT 
+			<include refid="attachContractColumns"/>
+		FROM oa_attach_contract a
+		<include refid="attachContractJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+    <select id="getByProcInsId" resultType="AttachContract">
+		SELECT 
+			<include refid="attachContractColumns"/>
+		FROM oa_attach_contract a
+		<include refid="attachContractJoins"/>
+		WHERE a.proc_ins_id = #{procInsId}
+	</select>
+	
+	<select id="findList" resultType="AttachContract">
+		SELECT 
+			<include refid="attachContractColumns"/>
+		FROM oa_attach_contract a
+			<include refid="attachContractJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<select id="findAllList" resultType="AttachContract">
+		SELECT 
+			<include refid="attachContractColumns"/>
+		FROM oa_attach_contract a
+		<include refid="attachContractJoins"/>
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL} 
+		ORDER BY a.update_date DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO oa_attach_contract(
+			id, 
+			exe_date,
+			create_by, 
+			create_date, 
+			update_by, 
+			update_date, 
+			remarks, 
+			contract_id,
+			enclosure_cont,
+			del_flag
+		) VALUES (
+			#{id}, 
+			#{exeDate},
+			#{createBy.id}, 
+			#{createDate}, 
+			#{updateBy.id}, 
+			#{updateDate}, 
+			#{remarks}, 
+			#{proContract.id},
+			#{enclosureCont},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE oa_attach_contract SET 
+			exe_date = #{exeDate},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}, 
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+<!-- 	更新流程实例id -->
+	<update id="updateInsId">
+		UPDATE oa_attach_contract SET 
+			proc_ins_id = #{procInsId},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+<!-- 	分公司领导审核 -->
+	<update id="updateSubLeadText">
+		UPDATE oa_attach_contract SET 
+			sub_lead_text = #{subLeadText},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+<!-- 	分管领导（经营部领导）审批 -->
+	<update id="updateLeadText">
+		UPDATE oa_attach_contract SET 
+			lead_text = #{leadText},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+<!-- 	总经理审批 -->
+	<update id="updateMainLeadText">
+		UPDATE oa_attach_contract SET 
+			main_lead_text = #{mainLeadText},
+			update_by = #{updateBy.id}, 
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM oa_attach_contract 
+		WHERE id = #{id}
+	</update>
+	
+	<update id="deleteByLogic">
+		UPDATE oa_attach_contract SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

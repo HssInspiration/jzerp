@@ -29,7 +29,7 @@
 		a.subpro_contract_date AS "subProContractDate",
 		
 		sp.id AS "subpackageProgram.id",
-		pc.contract_name AS "subpackageProgram.proContract.contractName",
+		pc.contract_name AS "proContract.contractName",
 		o.name AS "subpackageProgram.proContract.program.office.name",
 		sp.sub_program_type AS "subpackageProgram.subProgramType",
 		sp.subpackage_programname AS "subpackageProgram.subpackageProgramName",
@@ -45,7 +45,8 @@
 		LEFT JOIN ccpt.subpackage_program sp ON sp.id = a.subpro_id
 		LEFT JOIN ccpt.program_tab p ON p.id = sp.parent_id
 		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
-		LEFT JOIN ccpt.program_contract pc ON  pc.program_id = sp.parent_id
+		LEFT JOIN ccpt.program_contract pc ON  pc.id = a.pro_contract_id
+<!-- 		LEFT JOIN ccpt.program_contract pc ON  pc.program_id = sp.parent_id -->
 		LEFT JOIN ccpt.subbid_company sc ON sc.subpackage_program_id = sp.id
 		LEFT JOIN ccpt.company_tab c ON c.id = sc.company_id
 		LEFT JOIN ccpt.clearevaluate_bid cb ON cb.subbid_company_id = sc.id
@@ -111,11 +112,21 @@
 		</where>
 	</select>
 	
+	
+<!-- 	通过总包合同ID获取分包合同集合 -->
+	<select id="getSubProContractListById" resultType="subProContract" >
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+			<include refid="subProContractJoins"/>
+		WHERE a.pro_contract_id = #{proContract.id}
+	</select>
+	
 	<select id="findList" resultType="subProContract" parameterType="List">
 		SELECT 
 			<include refid="subProContractColumns"/>
 		FROM sub_pro_contract a
-		<include refid="subProContractJoins"/>
+			<include refid="subProContractJoins"/>
 		<where>
 			${dataScope}
 			<if test="subProContractName != null and subProContractName != ''">
@@ -136,10 +147,10 @@
 			<if test="beginContractDate != null and endContractDate != null and beginContractDate != '' and endContractDate != ''">
 				AND a.subpro_contract_date BETWEEN #{beginContractDate} AND #{endContractDate}
 			</if>
-			<if test="contractStatus != null and contractStatus != ''">
+			<if test="contractStatus != null">
 				AND a.contract_status = #{contractStatus}
 			</if>
-			<if test="approvalStatus != null and approvalStatus != ''">
+			<if test="approvalStatus != null">
 				AND a.approval_status = #{approvalStatus}
 			</if>
 			<if test="subBidCompany.company.companyName != null and subBidCompany.company.companyName != ''">
@@ -159,11 +170,33 @@
 		</choose>
 	</select>
 	
+	<select id="getList" resultType="subProContract" parameterType="List">
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+			<include refid="subProContractJoins"/>
+		<where>
+			${dataScope}
+			<if test="proContract != null and proContract.id != null and proContract.id != ''">
+				AND a.pro_contract_id = #{proContract.id}
+			</if>
+			AND cb.isBid=1
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
 	<select id="findAllList" resultType="subProContract" >
 		SELECT 
 			<include refid="subProContractColumns"/>
 		FROM sub_pro_contract a
-		<include refid="subProContractJoins"/>
+			<include refid="subProContractJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}

@@ -61,6 +61,7 @@ public class UserController extends BaseController {
 	
 	@Autowired
 	private SystemService systemService;
+	
 	@Autowired
 	private UserMapper userMapper;
 	

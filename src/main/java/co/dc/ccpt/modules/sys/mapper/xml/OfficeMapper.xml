@@ -91,6 +91,24 @@
 		WHERE a.code = #{code}
 	</select>
 	
+	<!-- 通过当前机构Id获取父级机构Id-->
+	<select id="getParentId" resultType="String">
+		SELECT
+			a.parent_id AS "parent.id"
+		FROM sys_office a
+		LEFT JOIN sys_office p ON p.id = a.parent_id
+		WHERE a.id = #{officeId}
+	</select>
+	
+	<!-- 通过officeId(此时为parentId)获取负责人id-->
+	<select id="getPrimaryPersonId" resultType="String">
+		SELECT
+			a.primary_person 
+		FROM sys_office a
+		LEFT JOIN sys_office p ON p.id = a.parent_id
+		WHERE a.id = #{parentId}
+	</select>
+	
 <!-- 	查询承接分公司排除集团、总公司和部门 -->
 	<select id = "listAllOfficeByName" resultType="Office">
 		SELECT	

@@ -27,7 +27,7 @@
 </head>
 <!-- dialog风格 -->
  <body class="bg-white">
-	<form:form id="inputForm" modelAttribute="bidStatistics" action="${ctx}/companymanage/bidcompany/save" method="post" class="form-horizontal">
+	<form:form id="inputForm" modelAttribute="bidStatistics"  method="post" class="form-horizontal">
 		<sys:message content="${message}"/>
 		<table class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
 		   <tbody>

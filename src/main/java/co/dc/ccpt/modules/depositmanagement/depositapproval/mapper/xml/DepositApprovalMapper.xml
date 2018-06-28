@@ -106,7 +106,7 @@
 					<if test="dbName == 'mssql'">'%'+#{deposit.depositName}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{deposit.depositName},'%')</if>
 			</if>
-			<if test="deposit.checkStatus != null and deposit.checkStatus != ''">
+			<if test="deposit.checkStatus != null">
 				AND d.check_status = #{deposit.checkStatus}
 			</if>
 			<if test="payWay != null and payWay != ''">

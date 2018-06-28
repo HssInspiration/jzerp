@@ -73,6 +73,20 @@
 		WHERE a.id = #{id}
 	</select>
 	
+	<select id="getUserListByRoleId" resultType="User">
+		SELECT 
+			a.id AS "id",
+	    	a.company_id AS "company.id",
+	    	a.office_id AS "office.id",
+	    	a.login_name AS "loginName",
+	    	a.password,
+	    	a.no,
+			a.name AS "name"
+		FROM sys_user a
+		LEFT JOIN sys_user_role sur ON sur.user_id = a.id
+		WHERE sur.role_id = #{roleId} 
+	</select>
+	
 	<!-- 根据编号获得用户 -->
 	<select id="get" resultType="User">
 		SELECT
@@ -107,6 +121,15 @@
 		FROM sys_user a
 			<include refid="userJoins"/>
 		WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+
+	<!-- 通过当前机构id获取父级机构负责人对象 -->
+	<select id="getPrimaryPersonById" resultType="User">
+		SELECT
+			<include refid="userColumns"/>
+		FROM sys_user a
+			<include refid="userJoins"/>
+		WHERE a.id = #{primaryId}
 	</select>
 	
 	<!-- 分页查询用户信息 -->

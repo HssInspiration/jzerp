@@ -32,6 +32,7 @@ import co.dc.ccpt.modules.sys.entity.Office;
 import co.dc.ccpt.modules.sys.entity.Role;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.mapper.MenuMapper;
+import co.dc.ccpt.modules.sys.mapper.OfficeMapper;
 import co.dc.ccpt.modules.sys.mapper.RoleMapper;
 import co.dc.ccpt.modules.sys.mapper.UserMapper;
 import co.dc.ccpt.modules.sys.utils.LogUtils;
@@ -58,6 +59,8 @@ public class SystemService extends BaseService implements InitializingBean {
 	private RoleMapper roleMapper;
 	@Autowired
 	private MenuMapper menuMapper;
+	@Autowired
+	private OfficeMapper officeMapper;
 	@Autowired
 	private SessionDAO sessionDao;
 	public SessionDAO getSessionDao() {
@@ -582,6 +585,23 @@ public class SystemService extends BaseService implements InitializingBean {
 	public List<User>  getAllUserList(User user){
 		List<User> userList = userMapper.getAllUserList(user);
 		return userList;
+	};
+	
+	public List<User>  getUserListByRoleId(String roleId){
+		List<User> userList = userMapper.getUserListByRoleId(roleId);
+		return userList;
+	}
+
+	public User getPrimaryPersonById(String officeId) {
+		String parentId = officeMapper.getParentId(officeId);//先获取父级id
+		User user = new User();
+		if(parentId!=null && !parentId.equals("")){
+			String primaryId = officeMapper.getPrimaryPersonId(parentId);//再获父级id中对应的负责人id
+			if(primaryId!=null && !primaryId.equals("")){
+				user = userMapper.getPrimaryPersonById(primaryId);//通过负责人id获取人员对象
+			}
+		}
+		return user;
 	};
 	
 }

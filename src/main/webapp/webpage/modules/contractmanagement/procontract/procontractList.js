@@ -349,9 +349,6 @@ $(document).ready(function() {
 	  if(contractStatus == undefined){
 		  contractStatus = getContractStatus();
 	  }
-//	  if(isKnocked == undefined){
-//		  isKnocked = getIsKnocked();
-//	  }
 	  if(approvalStatus == undefined){
 		  approvalStatus = getApprovalStatus();
 	  }
@@ -363,11 +360,9 @@ $(document).ready(function() {
 	  if(contractStatus==0 && approvalStatus==0 && getMethod==1){
 		  console.log("已进入审批状态！");
 		  jp.openTab("${ctx}/act/task/process?id=" + getIdSelections(),"发起流程",false);//新开单位信息管理tab
-//		  jp.openTab("${ctx}/act/task/form?procDefId=act_contract:2:8f671a80bc3b4039a3e797f2ed0785d2&proContractId="+getIdSelections(),"总包合同（市场投标）审批流程",false);//新开单位信息管理tab
 	   }else if(contractStatus==0 && approvalStatus==0 && getMethod==0){
 			  console.log("已进入审批状态！");
 			  jp.openTab("${ctx}/act/task/process?id=" + getIdSelections(),"发起流程",false);//新开单位信息管理tab
-//			  jp.openTab("${ctx}/act/task/form?procDefId=attach_contract_approval:1:65ac57aa9f824134aaa879bcc87204d8&attachContractId="+getIdSelections(),"总包合同（业主指定）审批流程",false);//新开单位信息管理tab
 	   }else{
 		  jp.info("当前合同非待审批状态，请检查！");
 	   }
@@ -388,12 +383,34 @@ $(document).ready(function() {
   	  if(id == undefined){
 		 id = getIdSelections();
 	  }
+  	  console.log("type:"+typeof(id));
   	  if(approvalStatus == undefined){
 		  approvalStatus = getApprovalStatus();
 	  }
   	  if(approvalStatus == 2){//审批通过
 		console.log("审批通过，可用印！");
-//		jp.openDialog('编辑管理', "${ctx}/procontract/form?id=" + id,'1000px', '600px', $('#table'));
+		jp.openDialog('编辑管理', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
+		//验证是否已添加（不可重复申请用印时使用）
+//		var str= id.toString();
+//    	var jsonData = JSON.stringify({"id":str});
+//		$.ajax({
+//			url:"${ctx}/contractprint/proprinting/getContractPrinting",
+//    		type:"post",
+//    		data:jsonData,
+//    		contentType:"application/json;charset=utf-8",
+//    		dataType:"json",
+//    		success:function(data){
+//    			console.log(data);
+//    			if(data.length>0){
+//    				jp.openDialogView('查看', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
+//    			}else{
+//    				jp.openDialog('编辑管理', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
+//    			}
+//    		},
+//			error:function(){
+//				console.log("回调失败！")
+//			}
+//		})
 	  }else{
 		console.log("不可用印！"); 
 		jp.info("非审批通过状态，不可用印！")

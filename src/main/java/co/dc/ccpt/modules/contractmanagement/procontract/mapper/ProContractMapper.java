@@ -31,5 +31,18 @@ public interface ProContractMapper extends BaseMapper<ProContract> {
 	public List<ProContract> getAppointProContractByName(ProContract proContract);
 	
 	//更新合同审批状态
-	public int updateProContractStatus(ProContract proContract);
+	public Integer updateProContractStatus(ProContract proContract);
+	
+	public Integer getTotalProContractCount();//查询所有的总包合同数量
+
+	public Integer getProContractCountEffect();//查询已生效的总包合同数量
+	
+	public Double getTotalProContractPrice();//查询所有的总包合同总价
+	
+	public List<ProContract> getEffectList(ProContract proContract);//根据合同生效状态获取合同集合
+	
+	public List<ProContract> getAppointList(ProContract proContract);//获取业主指定的合同集合
+	
+	public List<ProContract> getMarketList(ProContract proContract);//获取市场投标的合同集合
+	
 }

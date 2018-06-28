@@ -45,6 +45,10 @@ public class SubProContract extends DataEntity<SubProContract> {
 		super(id);
 	}
 
+	public SubProContract(ProContract proContract) {
+		this.proContract = proContract;
+	}
+
 	public Integer getApprovalStatus() {
 		return approvalStatus;
 	}

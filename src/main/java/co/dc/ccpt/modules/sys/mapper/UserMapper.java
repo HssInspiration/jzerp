@@ -127,4 +127,16 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	public List<User>  getAllUserList(User user);
+	
+	/**
+	 * 通过角色id获取用户集合
+	 * @param user
+	 * @return
+	 */
+	public List<User>  getUserListByRoleId(@Param("roleId") String roleId);
+	
+	/**
+	 * 通过当前机构id获取父级机构负责人对象
+	 */
+	public User getPrimaryPersonById(@Param("primaryId") String primaryId);
 }
