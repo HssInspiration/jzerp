@@ -71,7 +71,8 @@ public class OfficeService extends TreeService<OfficeMapper, Office> {
 		super.delete(office);
 		UserUtils.removeCache(UserUtils.CACHE_OFFICE_LIST);
 	}
-	
-	
-	
+
+	public String getByName(String officeName) {
+		return officeMapper.getByName(officeName);
+	}
 }

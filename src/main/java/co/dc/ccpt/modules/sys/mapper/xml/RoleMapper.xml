@@ -49,6 +49,14 @@
 		WHERE a.id = #{id}
 	</select>
 	
+	<select id="getRole" resultType="Role">
+		SELECT
+			<include refid="roleColumns"/>
+		FROM sys_role a
+		LEFT JOIN sys_office o ON o.id = a.office_id
+		WHERE a.id = #{id}
+	</select>
+	
 	<select id="getByName" resultType="Role">
 		SELECT
 			<include refid="roleColumns"/>

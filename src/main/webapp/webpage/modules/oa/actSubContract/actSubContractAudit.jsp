@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>总包合同（业主指定）审批申请</title>
+	<title>分包合同审批申请</title>
 	<meta name="decorator" content="ani"/>
 	<link id="bscss" href="${ctxStatic}/common/css/bootstrap.min.css" rel="stylesheet">
 	<script type="text/javascript">
@@ -74,9 +74,9 @@
 			</div>
 			<div class="panel-body">
 				<div class="form-group text-center">
-				<h3>总包合同（业主指定）审批申请</h3>
+				<h3>分包合同审批申请</h3>
 				</div>
-			<form:form id="inputForm" modelAttribute="attachContract" action="${ctx}/oa/attachContract/saveAudit" method="post" class="form-horizontal">
+			<form:form id="inputForm" modelAttribute="actSubContract" action="${ctx}/oa/actSubContract/saveAudit" method="post" class="form-horizontal">
 				<form:hidden path="id"/>
 				<form:hidden path="act.taskId"/>
 				<form:hidden path="act.taskName"/>
@@ -88,7 +88,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">合同名称：</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" readonly="readonly" id="test_data" value = "${attachContract.proContract.contractName}">
+							<input type="text" class="form-control" readonly="readonly" id="test_data" value = "${actSubContract.subProContract.subProContractName}">
 						</div>
 					</div>
 					<div class="form-group">
@@ -112,7 +112,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label"></label>
 						<div class="col-sm-10">
-							<c:if test="${attachContract.act.taskDefKey ne 'apply_end'}">
+							<c:if test="${actSubContract.act.taskDefKey ne 'apply_end'}">
 								<input id="btnSubmit" class="btn btn-primary" type="submit" value="同 意" onclick="$('#flag').val('yes')"/>&nbsp;
 								<input id="btnSubmit" class="btn btn-inverse" type="submit" value="驳 回" onclick="$('#flag').val('no')"/>&nbsp;
 							</c:if>

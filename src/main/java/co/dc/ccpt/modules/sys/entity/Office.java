@@ -32,6 +32,10 @@ public class Office extends TreeEntity<Office> {
 	private String useable;//是否可用
 	private User primaryPerson;//主负责人
 	private User deputyPerson;//副负责人
+	//****新增字段开始*****
+	private User tecPerson;//技术负责人
+	private User accPerson;//财务负责人
+	//****新增字段结束*****
 	private List<String> childDeptList;//快速添加子部门
 	
 	public Office(){
@@ -176,4 +180,21 @@ public class Office extends TreeEntity<Office> {
 	public String toString() {
 		return name;
 	}
+
+	public User getTecPerson() {
+		return tecPerson;
+	}
+
+	public void setTecPerson(User tecPerson) {
+		this.tecPerson = tecPerson;
+	}
+
+	public User getAccPerson() {
+		return accPerson;
+	}
+
+	public void setAccPerson(User accPerson) {
+		this.accPerson = accPerson;
+	}
+	
 }

@@ -18,7 +18,7 @@
 		a.remarks, 
 		a.del_flag,
 		a.contract_id AS "subProContract.id",
-		spc.contract_name AS "subProContract.subProContractName",
+		spc.subpro_contract_name AS "subProContract.subProContractName",
 		a.enclosure_cont AS "enclosureCont"
 		
 	</sql>

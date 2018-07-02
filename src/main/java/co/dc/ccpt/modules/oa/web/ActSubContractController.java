@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.RuntimeService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,6 @@ import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.act.entity.Act;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.entity.Enclosuretab;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
-import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.oa.entity.ActSubContract;
@@ -51,6 +51,9 @@ public class ActSubContractController extends BaseController {
 	
 	@Autowired 
 	private EnclosuretabService enclosuretabService;
+	
+	@Autowired
+	private RuntimeService runtimeService;
 	
 	@ModelAttribute
 	public ActSubContract get(@RequestParam(required=false) String id){//, 
@@ -104,18 +107,13 @@ public class ActSubContractController extends BaseController {
 				view = "actSubContractForm";
 			}
 			// 审核环节
-			else if ("subLead".equals(taskDefKey)){
-				view = "actSubContractAudit";
-//				String formKey = "/oa/testAudit";
-//				return "redirect:" + ActUtils.getFormUrl(formKey, testAudit.getAct());
-			}
-			else if ("lead".equals(taskDefKey)){
+			else if ("parallel".equals(taskDefKey)){
 				view = "actSubContractAudit";
 //				String formKey = "/oa/testAudit";
 //				return "redirect:" + ActUtils.getFormUrl(formKey, testAudit.getAct());
 			}
 			// 审核环节2
-			else if ("mainLead".equals(taskDefKey)){
+			else if ("manage_approval".equals(taskDefKey)){
 				view = "actSubContractAudit";
 			}
 			//审核环节3
@@ -184,7 +182,9 @@ public class ActSubContractController extends BaseController {
 			Act act = actSubContract.getAct();
 			if(act!=null){
 				String taskKey = act.getTaskDefKey();
-				if(taskKey.equals("chairman_approval")){
+				if(taskKey.equals("parallel")){//会签节点
+					System.out.println("会签节点！");
+				}else if(taskKey.equals("chairman_approval")){//董事长审批
 					actSubContractService.updateSubProContractStatus(actSubContract, 2);
 				}else if(taskKey.equals("modify")){//若为合同修改
 					if(act.getFlag().equals("no")){//销毁
@@ -209,7 +209,6 @@ public class ActSubContractController extends BaseController {
 		addMessage(redirectAttributes, "删除审批成功");
 		return "redirect:" + adminPath + "/oa/actSubContract/?repage";
 	}
-	
 	
 	/**
 	 * 通过合同名称查询出所有未审批的分包合同

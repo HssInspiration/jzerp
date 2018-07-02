@@ -109,6 +109,16 @@
 		         <td class="width-15"  class="active"><label class="pull-right">联系地址:</label></td>
 		         <td class="width-35"><form:input path="address" htmlEscape="false" maxlength="50" cssClass="form-control" /></td>
 		      </tr>
+		      <c:if test="${office.type eq 1 && office.grade eq 3}">
+		      <tr>
+		         <td class="width-15 active"><label class="pull-right">技术负责人:</label></td>
+		         <td class="width-35"><sys:userselect id="tecPerson" name="tecPerson.id" value="${office.tecPerson.id}" labelName="office.tecPerson.name" labelValue="${office.tecPerson.name}"
+					  cssClass="form-control" isMultiSelected="false"/></td>
+		         <td class="width-15 active"><label class="pull-right">财务负责人:</label></td>
+		         <td class="width-35"><sys:userselect id="accPerson" name="accPerson.id" value="${office.accPerson.id}" labelName="office.accPerson.name" labelValue="${office.accPerson.name}"
+					  cssClass="form-control" isMultiSelected="false"/></td>
+		      </tr>
+		      </c:if>
 		      <tr>
 		         <td class="width-15 active"><label class="pull-right">邮政编码:</label></td>
 		         <td class="width-35"><form:input path="zipCode" htmlEscape="false" maxlength="50" cssClass="form-control" /></td>

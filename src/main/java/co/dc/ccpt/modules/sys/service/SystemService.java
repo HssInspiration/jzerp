@@ -3,6 +3,7 @@
  */
 package co.dc.ccpt.modules.sys.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -27,7 +28,6 @@ import co.dc.ccpt.core.service.BaseService;
 import co.dc.ccpt.core.service.ServiceException;
 import co.dc.ccpt.modules.sys.entity.DataRule;
 import co.dc.ccpt.modules.sys.entity.Menu;
-import co.dc.ccpt.modules.sys.entity.NewUser;
 import co.dc.ccpt.modules.sys.entity.Office;
 import co.dc.ccpt.modules.sys.entity.Role;
 import co.dc.ccpt.modules.sys.entity.User;
@@ -247,9 +247,13 @@ public class SystemService extends BaseService implements InitializingBean {
 	}
 	
 	//-- Role Service --//
-	
+	//多表联查
 	public Role getRole(String id) {
 		return roleMapper.get(id);
+	}
+	//非多表联查
+	public Role getOneRole(String id) {
+		return roleMapper.getRole(id);
 	}
 
 	public Role getRoleByName(String name) {
@@ -591,7 +595,11 @@ public class SystemService extends BaseService implements InitializingBean {
 		List<User> userList = userMapper.getUserListByRoleId(roleId);
 		return userList;
 	}
-
+/**
+ * 获取分公司主负责人
+ * @param officeId
+ * @return
+ */
 	public User getPrimaryPersonById(String officeId) {
 		String parentId = officeMapper.getParentId(officeId);//先获取父级id
 		User user = new User();
@@ -603,5 +611,71 @@ public class SystemService extends BaseService implements InitializingBean {
 		}
 		return user;
 	};
+	/**
+	 * 获取分公司技术负责人
+	 * @param officeId
+	 * @return
+	 */
+	public User getTecPersonById(String officeId) {
+		String parentId = officeMapper.getParentId(officeId);//先获取父级id
+		User user = new User();
+		if(parentId!=null && !parentId.equals("")){
+			String primaryId = officeMapper.getTecPersonId(parentId);//再获父级id中对应的负责人id
+			if(primaryId!=null && !primaryId.equals("")){
+				user = userMapper.getPrimaryPersonById(primaryId);//通过负责人id获取人员对象
+			}
+		}
+		return user;
+	};
 	
+	/**
+	 * 获取分公司财务负责人
+	 * @param officeId
+	 * @return
+	 */
+	public User getAccPersonById(String officeId) {
+		String parentId = officeMapper.getParentId(officeId);//先获取父级id
+		User user = new User();
+		if(parentId!=null && !parentId.equals("")){
+			String primaryId = officeMapper.getAccPersonId(parentId);//再获父级id中对应的负责人id
+			if(primaryId!=null && !primaryId.equals("")){
+				user = userMapper.getPrimaryPersonById(primaryId);//通过负责人id获取人员对象
+			}
+		}
+		return user;
+	};
+	
+	
+	public List<String> getPrimaryPersonByRoleId(){
+		List<String> userIdList = new ArrayList<String>();
+		//1.经营部负责人
+		List<User> userList1 = userMapper.getUserListByRoleId("7092829b903f404f8357956612f1aeef");
+		if(userList1!=null && userList1.size()>0){
+			for(User u:userList1){
+				userIdList.add(u.getLoginName());
+			}
+		}
+		//2.财务部负责人
+		List<User> userList2 = userMapper.getUserListByRoleId("ec81000dd3a5495bb8f54ae44f435033");
+		if(userList2!=null && userList2.size()>0){
+			for(User u:userList2){
+				userIdList.add(u.getLoginName());
+			}
+		}
+		//3.工程部负责人
+		List<User> userList3 = userMapper.getUserListByRoleId("fd6eb9e08d8344828174640e6987db8f");
+		if(userList3!=null && userList3.size()>0){
+			for(User u:userList3){
+				userIdList.add(u.getLoginName());
+			}
+		}
+		//4.结算部负责人
+		List<User> userList4 = userMapper.getUserListByRoleId("55b823ff805b46febc0ec55eb4c64681");
+		if(userList4!=null && userList4.size()>0){
+			for(User u:userList4){
+				userIdList.add(u.getLoginName());
+			}
+		}
+		return userIdList;
+	}
 }

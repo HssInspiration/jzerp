@@ -22,8 +22,6 @@
 		<association property="hasChildren" column="id" select="hasChildren" />
     </resultMap>
 
-
-
 	<sql id="officeColumns">
 		a.id,
 		a.parent_id AS "parent.id",
@@ -49,11 +47,15 @@
 		a.useable AS useable,
 		a.primary_person AS "primaryPerson.id",
 		a.deputy_person AS "deputyPerson.id",
+		a.tec_person AS "tecPerson.id",
+		a.acc_person AS "accPerson.id",
 		p.name AS "parent.name",
 		ar.name AS "area.name",
 		ar.parent_ids AS "area.parentIds",
 		pp.name AS "primaryPerson.name",
-		dp.name AS "deputyPerson.name"
+		dp.name AS "deputyPerson.name",
+		tp.name AS "tecPerson.name",
+		ap.name AS "accPerson.name"
 	</sql>
 	
 	<sql id="officeJoins">
@@ -61,6 +63,8 @@
 		LEFT JOIN sys_area ar ON ar.id = a.area_id
 		LEFT JOIN sys_user pp ON pp.id = a.primary_person
 		LEFT JOIN sys_user dp ON dp.id = a.deputy_person
+		LEFT JOIN sys_user tp ON tp.id = a.tec_person
+		LEFT JOIN sys_user ap ON ap.id = a.acc_person
     </sql>
     
 	<select id="getChildren" parameterType="String" resultMap="officeResult">  
@@ -91,6 +95,13 @@
 		WHERE a.code = #{code}
 	</select>
 	
+	<select id="getByName" resultType="String">
+		SELECT
+			a.id
+		FROM sys_office a
+		WHERE a.name = #{officeName}
+	</select>
+	
 	<!-- 通过当前机构Id获取父级机构Id-->
 	<select id="getParentId" resultType="String">
 		SELECT
@@ -104,6 +115,24 @@
 	<select id="getPrimaryPersonId" resultType="String">
 		SELECT
 			a.primary_person 
+		FROM sys_office a
+		LEFT JOIN sys_office p ON p.id = a.parent_id
+		WHERE a.id = #{parentId}
+	</select>
+	
+	<!-- 通过officeId(此时为parentId)获取负责人id-->
+	<select id="getTecPersonId" resultType="String">
+		SELECT
+			a.tec_person 
+		FROM sys_office a
+		LEFT JOIN sys_office p ON p.id = a.parent_id
+		WHERE a.id = #{parentId}
+	</select>
+	
+	<!-- 通过officeId(此时为parentId)获取负责人id-->
+	<select id="getAccPersonId" resultType="String">
+		SELECT
+			a.acc_person 
 		FROM sys_office a
 		LEFT JOIN sys_office p ON p.id = a.parent_id
 		WHERE a.id = #{parentId}
@@ -179,6 +208,8 @@
 			remarks, 
 			del_flag,
 			useable,
+			tec_person,
+			acc_person,
 			primary_person,
 			deputy_person
 		) VALUES (
@@ -204,6 +235,8 @@
 			#{remarks}, 
 			#{delFlag},
 			#{useable},
+			#{tecPerson.id},
+			#{accPerson.id},
 			#{primaryPerson.id},
 			#{deputyPerson.id}
 		)
@@ -228,6 +261,8 @@
 			update_date = #{updateDate}, 
 			remarks = #{remarks},
 			useable=#{useable},
+			tec_person = #{tecPerson.id},
+			acc_person = #{accPerson.id},
 			primary_person=#{primaryPerson.id},
 			deputy_person=#{deputyPerson.id}
 		WHERE id = #{id}

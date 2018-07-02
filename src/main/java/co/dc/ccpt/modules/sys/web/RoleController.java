@@ -26,8 +26,10 @@ import co.dc.ccpt.common.json.AjaxJson;
 import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.sys.entity.Office;
 import co.dc.ccpt.modules.sys.entity.Role;
 import co.dc.ccpt.modules.sys.entity.User;
+import co.dc.ccpt.modules.sys.service.OfficeService;
 import co.dc.ccpt.modules.sys.service.SystemService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 
@@ -42,6 +44,9 @@ public class RoleController extends BaseController {
 
 	@Autowired
 	private SystemService systemService;
+	
+	@Autowired
+	private OfficeService officeService;
 	
 	@ModelAttribute("role")
 	public Role get(@RequestParam(required=false) String id) {
@@ -74,6 +79,18 @@ public class RoleController extends BaseController {
 	public String form(Role role, Model model) {
 		User user = UserUtils.getUser();
 		logger.info(user.toString());
+		
+		Office office = role.getOffice();
+		if(office != null){
+			String officeId = office.getId();
+			String officeName = office.getName();
+			if(officeId == null || officeId.equals("")){
+				if(officeName!=null && !officeName.equals("")){
+					String id = officeService.getByName(officeName);
+					office.setId(id);
+				}
+			}
+		}
 		if (role.getOffice()==null){
 			role.setOffice(UserUtils.getUser().getOffice());
 		}
@@ -86,6 +103,17 @@ public class RoleController extends BaseController {
 	public String auth(Role role, Model model) {
 		User user = UserUtils.getUser();
 		logger.info(user.toString());
+		Office office = role.getOffice();
+		if(office != null){
+			String officeId = office.getId();
+			String officeName = office.getName();
+			if(officeId == null || officeId.equals("")){
+				if(officeName!=null && !officeName.equals("")){
+					String id = officeService.getByName(officeName);
+					office.setId(id);
+				}
+			}
+		}
 		if (role.getOffice()==null){
 			role.setOffice(UserUtils.getUser().getOffice());
 		}
@@ -96,6 +124,17 @@ public class RoleController extends BaseController {
 	@RequiresPermissions("sys:role:auth")
 	@RequestMapping(value = "dataRule")
 	public String dataRule(Role role, Model model) {
+		Office office = role.getOffice();
+		if(office != null){
+			String officeId = office.getId();
+			String officeName = office.getName();
+			if(officeId == null || officeId.equals("")){
+				if(officeName!=null && !officeName.equals("")){
+					String id = officeService.getByName(officeName);
+					office.setId(id);
+				}
+			}
+		}
 		if (role.getOffice()==null){
 			role.setOffice(UserUtils.getUser().getOffice());
 		}

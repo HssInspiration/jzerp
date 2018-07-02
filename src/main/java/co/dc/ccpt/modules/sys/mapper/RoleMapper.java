@@ -3,6 +3,8 @@
  */
 package co.dc.ccpt.modules.sys.mapper;
 
+import org.apache.ibatis.annotations.Param;
+
 import co.dc.ccpt.core.persistence.BaseMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
 import co.dc.ccpt.modules.sys.entity.Role;
@@ -36,5 +38,11 @@ public interface RoleMapper extends BaseMapper<Role> {
 	public int deleteRoleDataRule(Role role);
 
 	public int insertRoleDataRule(Role role);
+	/**
+	 * 获取单个role(解决get方法中连接查询了sys_role_menu)
+	 * @param role
+	 * @return
+	 */
+	public Role getRole(@Param("id") String id);
 
 }

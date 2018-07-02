@@ -171,7 +171,7 @@
 							<label></label>
 							<div>
 								<input id="btnSubmit" class="btn  btn-primary btn-lg btn-parsley" type="submit" value="提交申请" onclick="$('#flag').val('yes')"/>&nbsp;
-								<c:if test="${not empty attachContract.id}">
+								<c:if test="${not empty actSubContract.id}">
 									<input id="btnSubmit2" class="btn  btn-danger btn-lg btn-parsley" type="submit" value="销毁申请" onclick="$('#flag').val('no')"/>&nbsp;
 								</c:if>
 							</div>

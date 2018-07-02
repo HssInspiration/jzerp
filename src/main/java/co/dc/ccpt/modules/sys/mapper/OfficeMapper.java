@@ -31,9 +31,21 @@ public interface OfficeMapper extends TreeMapper<Office> {
 	public String getParentId(@Param("officeId") String officeId);
 	
 	/**
-	 * 通过officeId(此时为parentId)获取负责人id
+	 * 通过officeId(此时为parentId)获取分公司负责人id
 	 * @param parentId
 	 */
 	public String getPrimaryPersonId(@Param("parentId") String parentId);
+	/**
+	 * 通过officeId(此时为parentId)获取分公司技术负责人id
+	 * @param parentId
+	 */
+	public String getTecPersonId(@Param("parentId") String parentId);
+	/**
+	 * 通过officeId(此时为parentId)获取分公司财务负责人id
+	 * @param parentId
+	 */
+	public String getAccPersonId(@Param("parentId") String parentId);
+
+	public String getByName(@Param("officeName") String officeName);
 	
 }
