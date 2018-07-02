@@ -234,7 +234,7 @@ public class ProgramController extends BaseController {
 		
 		
 	/**
-	 * 通过单位名称查询出对应集合
+	 * 通过单位名称查询出对应集合（除金卓外）
 	 * @param companyName
 	 * @return
 	 */
@@ -242,7 +242,7 @@ public class ProgramController extends BaseController {
 	@RequestMapping(value = "getCompanyList")
 	public List<Company> getListAllCompanyByName(@RequestParam  String companyName) {
 		List<Company> companyList = new ArrayList<Company>();
-		companyList = companyService.listAllCompanyByName(companyName);
+		companyList = companyService.listAllCompanyByNameExceptJz(companyName);
 		return companyList;
 	}
 	

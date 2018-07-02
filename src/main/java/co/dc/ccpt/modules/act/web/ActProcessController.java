@@ -238,6 +238,7 @@ public class ActProcessController extends BaseController {
 			j.setMsg("请填写作废原因");
 		}else{
 			actProcessService.deleteProcIns(procInsId, reason);
+			//作废成功后要将对应的总包或分包合同的状态更改成未审批
 			j.setSuccess(true);
 			j.setMsg("作废成功，流程实例ID=" + procInsId);
 		}

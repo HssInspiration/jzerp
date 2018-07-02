@@ -165,6 +165,8 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">相关附件：</label>
 						<div class="col-sm-10" id="enclosureCont">
+<%-- 							<form:hidden id="enclosureCont" path="enclosureCont" htmlEscape="false" maxlength="64" class="form-control"/> --%>
+<%-- 							<sys:ckfinder input="enclosureCont" type="files" uploadPath="/enclosuremanage/enclosuretab" selectMultiple="true"/> --%>
 							<input id="enclosure" name="enclosureCont" maxlength="64" class="form-control" type="hidden">	
 						</div>
 					</div>

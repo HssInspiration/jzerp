@@ -74,77 +74,64 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'subProContractNum',
-		        title: '分包合同编号',
-		        sortable: true
+		        title: '分包合同编号'
 		        ,formatter:function(value, row , index){
 		        	return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 		         }
 		    }
 		    ,{
 		        field: 'proContract.contractName',
-		        title: '总包合同名称',
-		        sortable: true
+		        title: '总包合同名称'
 		       
 		    }
 			,{
 		        field: 'subProContractName',
-		        title: '分包合同名称',
-		        sortable: true
+		        title: '分包合同名称'
 		       
 		    }
 			,{
 		        field: 'subpackageProgram.subpackageProgramName',
-		        title: '分包项目名称',
-		        sortable: true
+		        title: '分包项目名称'
 		       
 		    }
 			,{
 		        field: 'subpackageProgram.subProgramType',
 		        title: '分包项目类别',
-		        sortable: true,
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('programtype'))}, value, "-");
 		        }
 		    }
 			,{
 		        field: 'employer',
-		        title: '发包单位',
-		        sortable: true
+		        title: '发包单位'
 		    }
 			,{
 		        field: 'subBidCompany.company.companyName',
-		        title: '承包单位',
-		        sortable: true
+		        title: '承包单位'
 		    }
 			,{
 		        field: 'subProAddr',
-		        title: '工程地址',
-		        sortable: true
+		        title: '工程地址'
 		    }
 			,{
 		        field: 'connector',
-		        title: '工程联系人',
-		        sortable: true
+		        title: '工程联系人'
 		    }
 			,{
 		        field: 'phoneNum',
-		        title: '联系人号码',
-		        sortable: true
+		        title: '联系人号码'
 		    }
 			,{
 		        field: 'startDate',
-		        title: '开工日期',
-		        sortable: true
+		        title: '开工日期'
 		    }
 			,{
 		        field: 'completeDate',
-		        title: '竣工日期',
-		        sortable: true
+		        title: '竣工日期'
 		    }
 			,{
 		        field: 'buildDate',
-		        title: '工期',
-		        sortable: true
+		        title: '工期'
 		    }
 			,{
 		        field: 'subProTotalPrice',
@@ -154,7 +141,6 @@ $(document).ready(function() {
 			,{
 		        field: 'approvalStatus',
 		        title: '审核状态',
-		        sortable: true,
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('procontract_approval'))}, value, "-");
 		        }
@@ -162,7 +148,6 @@ $(document).ready(function() {
 			,{
 		        field: 'contractStatus',
 		        title: '合同状态',
-		        sortable: true,
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('contract_status'))}, value, "-");
 		        }
@@ -179,8 +164,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true
+		        title: '备注信息'
 		       
 		    }
 			,{

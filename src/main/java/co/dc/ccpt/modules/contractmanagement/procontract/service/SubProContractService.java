@@ -123,4 +123,8 @@ public class SubProContractService extends CrudService<SubProContractMapper, Sub
 		return subProContractMapper.getSubProContractList(subProContractName);
 	};
 	
+	// 通过总包id获取分包对象集合
+	public List<SubProContract> getSubProContractListById(SubProContract subProContract){
+		return subProContractMapper.getSubProContractListById(subProContract);
+	}
 }

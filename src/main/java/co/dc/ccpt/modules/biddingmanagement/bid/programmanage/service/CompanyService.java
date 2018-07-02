@@ -34,6 +34,11 @@ public class CompanyService extends CrudService<CompanyMapper, Company>{
 	} 
 	
 	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
+	public List<Company> listAllCompanyByNameExceptJz(String companyName){
+		return companyMapper.listAllCompanyByName(companyName);
+	} 
+	
+	@Transactional(propagation=Propagation.SUPPORTS,readOnly=true)
 	public Company getCompanyIdByName(String companyname){
 		return companyMapper.getCompanyIdByName(companyname);
 	}

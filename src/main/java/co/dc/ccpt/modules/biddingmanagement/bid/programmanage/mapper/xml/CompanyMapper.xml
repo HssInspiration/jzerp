@@ -66,6 +66,21 @@
 			<if test="companyName != null and companyName != ''">
 				AND a.companyname LIKE concat('%',#{companyName},'%')
 			</if>
+<!-- 				AND a.id &lt;&gt; "03ae459404284f17bbd25e78a13397a6" -->
+    	</where>
+    </select>
+    
+    <select id="listAllCompanyByNameExceptJz" resultType="Company">
+    	select 
+	    	a.id AS "id",
+	    	a.companynum AS "companyNum",
+	    	a.companyname AS "companyName",
+	    	a.companycont AS "companyCont"
+    	from company_tab a
+    	<where>
+			<if test="companyName != null and companyName != ''">
+				AND a.companyname LIKE concat('%',#{companyName},'%')
+			</if>
 				AND a.id &lt;&gt; "03ae459404284f17bbd25e78a13397a6"
     	</where>
     </select>

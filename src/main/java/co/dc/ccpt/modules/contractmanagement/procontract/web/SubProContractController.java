@@ -241,6 +241,22 @@ public class SubProContractController extends BaseController{
 		for(String id : idArray){
 			SubProContract subProContract = subProContractService.get(id);
 			if(subProContract!=null){
+				//删除前进行状态判断:
+				if(subProContract.getApprovalStatus() == 1){//审批中不可删除
+					j.setSuccess(false);
+					j.setMsg("分包合同审批中，不可删除!");
+					return j;
+				}else if(subProContract.getApprovalStatus() == 2){//审批通过不可删除
+					j.setSuccess(false);
+					j.setMsg("分包合同审批通过，不可删除!");
+					return j;
+				}
+				
+				if(subProContract.getContractStatus() == 1){//合同生效
+					j.setSuccess(false);
+					j.setMsg("分包合同已生效，不可删除!");
+					return j;
+				}
 				subProContractService.delete(subProContract);
 				enclosuretabService.deleteEnclosureByForeginId(subProContract.getId());//同步删除对应附件
 			}

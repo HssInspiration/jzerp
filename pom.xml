@@ -122,6 +122,9 @@
 		<profile>
 			<!-- 测试环境 -->
 			<id>test</id>
+<!-- 			<activation> -->
+<!-- 				<activeByDefault>true</activeByDefault> -->
+<!-- 			</activation> -->
 			<build>
 				<filters>
 					<filter>${basedir}/profile/test/ccpt.properties</filter>

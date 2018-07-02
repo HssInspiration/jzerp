@@ -35,7 +35,9 @@ import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.Enclosur
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
+import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.service.SystemService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
@@ -51,6 +53,9 @@ public class ProContractController extends BaseController{
 	
 	@Autowired
 	public EnclosuretabService enclosuretabService;
+	
+	@Autowired
+	public SubProContractService subContractService;
 	
 	@Autowired
 	public SystemService userService;
@@ -251,6 +256,33 @@ public class ProContractController extends BaseController{
 			//删除前判断：分包有关联不可删；状态为审批中不可删，审批通过不可删，合同已生效不可删
 			ProContract proContract = proContractService.get(id);
 			if(proContract != null){
+				// 分包有关联不可删：
+				SubProContract subProContract = new SubProContract();
+				subProContract.setProContract(proContract);
+				List<SubProContract> subContractList = subContractService.getSubProContractListById(subProContract);
+				if(subContractList != null && subContractList.size()>0){
+					j.setSuccess(false);
+					j.setMsg("分包中存在关联信息，不允许删除!");
+					return j;
+				}
+				// 状态为审批中、审批通过不可删：
+				Integer approvalStatus = proContract.getApprovalStatus();
+				if(approvalStatus == 1){//审批中
+					j.setSuccess(false);
+					j.setMsg("当前信息审批中，不允许删除!");
+					return j;
+				}else if(approvalStatus == 2){
+					j.setSuccess(false);
+					j.setMsg("当前信息审批通过，不允许删除!");
+					return j;
+				}
+				// 合同已生效不可删：
+				Integer contractStatus = proContract.getContractStatus();
+				if(contractStatus==1){//已生效
+					j.setSuccess(false);
+					j.setMsg("当前信息已生效，不允许删除!");
+					return j;
+				}
 				proContractService.delete(proContract);
 				enclosuretabService.deleteEnclosureByForeginId(proContract.getId());//同步删除对应附件
 			}

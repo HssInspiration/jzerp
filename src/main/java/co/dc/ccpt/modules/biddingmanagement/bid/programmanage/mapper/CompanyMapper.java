@@ -18,7 +18,7 @@ public interface CompanyMapper extends BaseMapper<Company> {
 
 	List<Company> listAllCompanyByName(@Param("companyName") String companyname);//通过单位名称查询对应集合（模糊匹配）
 	
-//	List<Company> listAllCompanyByNameExceptJz(@Param("companyName") String companyname);//通过单位名称查询对应集合（模糊匹配）
+	List<Company> listAllCompanyByNameExceptJz(@Param("companyName") String companyname);//通过单位名称查询对应集合（模糊匹配）
 	
 	Integer getCompanyTotalCount();//获取总条数，便于设置编号自增
 	
