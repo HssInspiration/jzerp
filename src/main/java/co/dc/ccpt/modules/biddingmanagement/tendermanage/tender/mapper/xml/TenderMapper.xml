@@ -23,7 +23,8 @@
 		a.update_date AS "updateDate",
 		a.update_by AS "updateBy.id",
 		a.create_by AS "createBy.id",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.director_phone AS "directorPhone"
 	</sql>
 	
 	<sql id="tenderJoins">
@@ -163,7 +164,8 @@
 			update_date,
 			update_by,
 			create_by,
-			del_flag
+			del_flag,
+			director_phone
 		) VALUES (
 			#{id},
 			#{subpackageProgram.id},
@@ -182,7 +184,8 @@
 			#{updateDate},
 			#{updateBy.id},
 			#{createBy.id},
-			#{delFlag}
+			#{delFlag},
+			#{directorPhone}
 		)
 	</insert>
 	
@@ -202,7 +205,8 @@
 			remarks = #{remarks},
 			update_date = #{updateDate},
 			update_by = #{updateBy.id},
-			del_flag = #{delFlag}
+			del_flag = #{delFlag},
+			director = #{directorPhone}
 		WHERE id = #{id}
 	</update>
 	

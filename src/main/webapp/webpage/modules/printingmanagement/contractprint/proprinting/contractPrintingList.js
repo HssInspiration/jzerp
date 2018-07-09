@@ -71,6 +71,9 @@ $(document).ready(function() {
                onClickRow: function(row, $el){
                },
                columns: [{
+   		        checkbox: true
+   		    },
+   		    {
 		        field: 'printNum',
 		        title: '用章编号'
 		    }
@@ -81,6 +84,11 @@ $(document).ready(function() {
    		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('print_type'))}, value, "-");
    		        }
    		    }
+           ,{
+ 				field: 'createDate',
+ 				title: '用章申请日期',
+ 				sortable: true
+ 			}
            ,{
 				field: 'printDate',
 				title: '用章日期',
@@ -103,6 +111,13 @@ $(document).ready(function() {
 		        field: 'proContract.user.name',
 		        title: '用章申请人'
 		       
+		    }
+			,{
+		        field: 'isStamp',
+		        title: '是否用章',
+   		        formatter:function(value, row , index){
+   		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-");
+   		        }
 		    }
 			,{
 		        field: 'times',
@@ -133,9 +148,7 @@ $(document).ready(function() {
             $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
             $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
             $('#startApproval').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            $('#stamp').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            $('#confirmValid').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            
+            $('#print').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1||getStampStatus() == 1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -185,29 +198,11 @@ $(document).ready(function() {
 		});
   });
 		
-  function getContractStatus() {
+  function getStampStatus() {
         return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-            return row.contratStatus
+            return row.isStamp
         });
     }
-  
-  function getIsKnocked() {
-      return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-          return row.isKnocked
-      });
-  }
-  
-  function getApprovalStatus() {
-      return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-          return row.approvalStatus
-      });
-  }
-  
-  function getProgramGetMethod() {
-	  return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-		  return row.program.getMethod
-	  });
-  }
   
   function getIdSelections() {
       return $.map($("#table").bootstrapTable('getSelections'), function (row) {
@@ -229,33 +224,6 @@ $(document).ready(function() {
 		})
   }
   
-  function startApproval(contractStatus, getMethod, approvalStatus){//启动审批
-  	//合同状态为未生效，用章状态为未申请，审批状态为待审批方可进行启动操作
-	  if(contractStatus == undefined){
-		  contractStatus = getContractStatus();
-	  }
-
-	  if(approvalStatus == undefined){
-		  approvalStatus = getApprovalStatus();
-	  }
-	  
-	  if(getMethod == undefined){
-		  getMethod = getProgramGetMethod();
-	  }
-	  
-	  if(contractStatus==0 && approvalStatus==0 && getMethod==1){
-		  console.log("已进入审批状态！");
-		  jp.openTab("${ctx}/act/task/process?id=" + getIdSelections(),"发起流程",false);//新开单位信息管理tab
-//		  jp.openTab("${ctx}/act/task/form?procDefId=act_contract:2:8f671a80bc3b4039a3e797f2ed0785d2&proContractId="+getIdSelections(),"总包合同（市场投标）审批流程",false);//新开单位信息管理tab
-	   }else if(contractStatus==0 && approvalStatus==0 && getMethod==0){
-			  console.log("已进入审批状态！");
-			  jp.openTab("${ctx}/act/task/process?id=" + getIdSelections(),"发起流程",false);//新开单位信息管理tab
-//			  jp.openTab("${ctx}/act/task/form?procDefId=attach_contract_approval:1:65ac57aa9f824134aaa879bcc87204d8&attachContractId="+getIdSelections(),"总包合同（业主指定）审批流程",false);//新开单位信息管理tab
-	   }else{
-		  jp.info("当前合同非待审批状态，请检查！");
-	   }
-   }
-  
   function add(){
 	  jp.openDialog('新增管理', "${ctx}/procontract/form",'1000px', '600px', $('#table'));
   }
@@ -267,38 +235,11 @@ $(document).ready(function() {
 	  jp.openDialog('编辑管理', "${ctx}/procontract/form?id=" + id,'1000px', '600px', $('#table'));
   }
   
-  function stamp(id,approvalStatus){//用印
+  function print(id){//用印
   	  if(id == undefined){
 		 id = getIdSelections();
 	  }
-  	  if(approvalStatus == undefined){
-		  approvalStatus = getApprovalStatus();
-	  }
-  	  if(approvalStatus == 2){//审批通过
-		console.log("审批通过，可用印！");
-//		jp.openDialog('编辑管理', "${ctx}/procontract/form?id=" + id,'1000px', '600px', $('#table'));
-	  }else{
-		console.log("不可用印！"); 
-		jp.info("非审批通过状态，不可用印！")
-	  }
+	jp.openDialog('用章', "${ctx}/contractprint/proprinting/printForm?id=" + id,'1000px', '600px', $('#table'));
   }
   
-  function confirmValid(id,approvalStatus){//确认生效
-  	  if(id == undefined){
-		 id = getIdSelections();
-	  }
-  	  if(approvalStatus == undefined){
-		  approvalStatus = getApprovalStatus();
-	  }
-  	  if(approvalStatus == 2){//审批通过
-  		console.log("审批通过，可确认生效！");
-  		jp.confirm('您当前正在进行合同生效操作，是否继续？', function(){
-    	  jp.openDialog('合同生效确认', "${ctx}/procontract/confirmValid?id=" + id,'600px', '200px', $('#table'));
-		})
-  	  }else{
-  		console.log("不可确认生效！"); 
-  		jp.info("非审批通过状态，不可确认生效！")
-  	  }
-  }
-
 </script>

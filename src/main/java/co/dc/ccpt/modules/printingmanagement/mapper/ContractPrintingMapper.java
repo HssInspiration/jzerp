@@ -16,4 +16,6 @@ public interface ContractPrintingMapper extends BaseMapper<ContractPrinting> {
 	public String getLastInsertNum();//获取最新增加的编号
 
 	public List<ContractPrinting> getContractPrintingByProId(ContractPrinting contractPrinting);//通过合同id获取用章对象id
+
+	public ContractPrinting updateStampStatus(ContractPrinting contractPrinting);//更新用章状态
 }

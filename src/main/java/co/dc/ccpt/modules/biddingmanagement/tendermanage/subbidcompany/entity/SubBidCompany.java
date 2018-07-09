@@ -4,13 +4,13 @@ import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Company;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity.Tender;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import co.dc.ccpt.modules.programmanage.entity.Company;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 
 /**
  * 子项目参投单位管理Entity

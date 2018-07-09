@@ -107,12 +107,12 @@ public class ActSubContractService extends CrudService<ActSubContractMapper, Act
 						}
 						User tecPerson = systemService.getTecPersonById(officeId);//获取分公司技术负责人
 						if(tecPerson != null){
-							tecUserLoginName = primaryPerson.getLoginName();
+							tecUserLoginName = tecPerson.getLoginName();
 							assigneeList.add(tecUserLoginName);
 						}
 						User accPerson = systemService.getAccPersonById(officeId);//获取分公司财务负责人
 						if(accPerson != null){
-							accUserLoginName = primaryPerson.getLoginName();
+							accUserLoginName = accPerson.getLoginName();
 							assigneeList.add(accUserLoginName);
 						}
 					}

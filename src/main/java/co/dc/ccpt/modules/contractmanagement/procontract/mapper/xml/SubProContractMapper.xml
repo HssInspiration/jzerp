@@ -36,13 +36,16 @@
 		
 		c.companyname AS "subBidCompany.company.companyName",
 		a.approval_status AS "approvalStatus",
-		a.contract_status AS "contractStatus"
-		
+		a.contract_status AS "contractStatus",
+		sp.subpro_addr AS "subpackageProgram.subproAddr"
+<!-- 		tt.tender_director AS "tender.tenderDirector", -->
+<!-- 		tt.director_phone AS "tender.directorPhone" -->
 	</sql>
 	
 	<sql id="subProContractJoins">
 		LEFT JOIN ccpt.sys_user u ON u.id = a.user_id
 		LEFT JOIN ccpt.subpackage_program sp ON sp.id = a.subpro_id
+		LEFT JOIN ccpt.tender_tab tt ON tt.subpackage_programid = a.subpro_id
 		LEFT JOIN ccpt.program_tab p ON p.id = sp.parent_id
 		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
 		LEFT JOIN ccpt.program_contract pc ON  pc.id = a.pro_contract_id

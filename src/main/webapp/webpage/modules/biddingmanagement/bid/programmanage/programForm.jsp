@@ -217,19 +217,19 @@
 					  <a class="btn btn-primary"   onclick ="companyManage()" style="display:block;margin-top:15px;width:160px;"href="#" title="发标单位管理">
 					<i class="glyphicon glyphicon-edit"></i> 维护单位信息</a>
 		          </td>
-		          <td  class="width-15 active">	<label class="pull-right">备注信息:</label></td>
-		          <td  class="width-35" >
-		            <form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
-		          </td>
+		          
+		          <td class="width-15 active"><label class="pull-right"><font color="red">*</font>承接方式：</label></td>
+				  <td class="width-35">
+							<form:select path="getMethod" class="form-control" disabled="true">
+								<form:options items="${fns:getDictList('get_method')}"  itemLabel="label" itemValue="value"  htmlEscape="false"/>
+							</form:select>
+						<span id="typeAlreadyExsist" style = "font-weight:bold;"></span>
+				  </td>
 		      </tr>
 		      <tr>
 		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>承接分公司:</label></td>
 		          <td  class="width-35" >
-<%-- 			          <form:select path="branchCompany.id" class="form-control required">  --%>
-<%-- 								<form:option value="" label="--请选择承接分公司--"/> --%>
-<%-- 								<form:options items="${branchCompanyList}" itemLabel="branchCompanyname" itemValue="id" htmlEscape="false"/> --%>
-<%-- 					  </form:select> --%>
-				<input type="hidden" class="form-control required" name= "office.id" id = "officeId" value = "${program.office.id}">
+					<input type="hidden" class="form-control required" name= "office.id" id = "officeId" value = "${program.office.id}">
 					<div class="row">
 		                <div class="col-lg-2">
 		                    <div class="input-group">
@@ -259,24 +259,27 @@
 			      </td>
 		      </tr>
 		      <tr>
-		      	<td class="width-15 active"><label class="pull-right"><font color="red">*</font>承接方式：</label></td>
-				<td class="width-35">
-					<c:if test="${isAdd}">
-						<form:select path="getMethod" class="form-control required">
-							<form:option value="" label="--请选择承接方式--"/>
-							<form:options items="${fns:getDictList('get_method')}"  itemLabel="label" itemValue="value"  htmlEscape="false"/>
-						</form:select>
-					</c:if>
-					<c:if test="${edit}">
-						<form:select path="getMethod" class="form-control" disabled="true">
-							<form:options items="${fns:getDictList('get_method')}"  itemLabel="label" itemValue="value"  htmlEscape="false"/>
-						</form:select>
-					</c:if>
-					<span id="typeAlreadyExsist" style = "font-weight:bold;"></span>
-				</td>
-				<td class="width-15 active"></td>
-		        <td class="width-35" >
+		      	 <td  class="width-15 active">	
+		         	<label class="pull-right"><font color="red">*</font>工程联系人:</label></td>
+		         <td  class="width-35" >
+		         	<form:input path="programConnector" htmlEscape="false"  maxlength="50" class="form-control required"/>
+		         </td>
+		         <td  class="width-15 active">	
+		         	<label class="pull-right"><font color="red">*</font>联系人号码:</label></td>
+		         <td  class="width-35" >
+		         	<form:input path="connectorPhone" htmlEscape="false" maxlength="50" class="form-control required"/>
+		         </td>
+		      </tr>
+		      <tr>
+		      	<td  class="width-15 active">	
+		         	<label class="pull-right"><font color="red">*</font>工程地址:</label></td>
+		        <td  class="width-35" >
+		         	<form:input path="programAddr" htmlEscape="false"  maxlength="50" class="form-control required"/>
 		        </td>
+		        <td  class="width-15 active">	<label class="pull-right">备注信息:</label></td>
+	          	<td  class="width-35" >
+	           	 	<form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+	         	</td>
 		      </tr>
 		   </tbody>
 		   </table>   

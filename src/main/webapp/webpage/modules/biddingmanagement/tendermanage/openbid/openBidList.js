@@ -214,13 +214,13 @@ $(document).ready(function() {
 		})
   }
    function add(){
-	  jp.openDialog('新增开标信息管理', "${ctx}/tendermanage/openBid/form",'800px', '500px', $('#table'));
+	  jp.openDialog('新增开标信息管理', "${ctx}/tendermanage/openBid/form",'1000px', '800px', $('#table'));
   }
   function edit(id){//没有权限时，不显示确定按钮
   	  if(id == undefined){
 			id = getIdSelections();
 		}
-	  jp.openDialog('编辑开标信息管理', "${ctx}/tendermanage/openBid/form?id=" + id,'800px', '500px', $('#table'));
+	  jp.openDialog('编辑开标信息管理', "${ctx}/tendermanage/openBid/form?id=" + id,'1000px', '800px', $('#table'));
 //	   <shiro:hasPermission name="openbid:openBid:edit">
 //	  jp.openDialog('编辑开标信息管理', "${ctx}/tendermanage/openBid/form?id=" + id,'800px', '500px', $('#table'));
 //	   </shiro:hasPermission>

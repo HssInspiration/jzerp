@@ -12,7 +12,7 @@
 		a.del_flag AS "delFlag",
 		a.contract_num AS "contractNum",
 		a.contract_name AS "contractName",
-		a.program_addr AS "programAddr",
+<!-- 		a.program_addr AS "programAddr", -->
 		a.program_connector AS "programConnector",
 		
 		a.phone_num AS "phoneNum",
@@ -23,22 +23,31 @@
 		
 		a.program_id AS "program.id",
 		p.programname AS "program.programName",
+<!-- 		p.program_connector AS "program.programConnector", -->
+		p.program_addr AS "program.programAddr",
+<!-- 		p.connector_phone AS "program.connectorPhone", -->
+		
 		o.name AS "program.office.name",
 		c.companyname AS "program.company.companyName",
 		p.programtype AS "program.programType",
-		
 		u.name AS "user.name",
 		u.id AS "user.id",
+		
 		a.build_date AS "buildDate",
 		a.approval_status AS "approvalStatus",
 		a.contract_status AS "contractStatus",
 		a.is_stamp AS "isStamp",
-		p.get_method AS "program.getMethod"
+		p.get_method AS "program.getMethod",
+		
+		bm.bidprice AS "bidcompany.bidPrice",
+		bm.laborcost AS "bidcompany.laborCost",
+		bm.meterialexpense AS "bidcompany.meterialExpense"
 		
 	</sql>
 	
 	<sql id="proContractJoins">
 		LEFT JOIN ccpt.program_tab p ON p.id = a.program_id
+		LEFT JOIN ccpt.bidcomp_manage bm ON bm.programid = a.program_id
 		LEFT JOIN ccpt.sys_user u ON u.id = a.user_id
 		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
 		LEFT JOIN ccpt.company_tab c ON c.id = p.companyid
@@ -187,9 +196,6 @@
 		WHERE p.get_method = #{program.getMethod}
 	</select>
 	
-	
-	
-	
 	<select id="findList" resultType="proContract" parameterType="List">
 		SELECT 
 			<include refid="proContractColumns"/>
@@ -271,7 +277,7 @@
 			remarks,
 			
 			contract_num,
-			program_addr,
+<!-- 			program_addr, -->
 			program_connector,
 			phone_num,
 			start_date,
@@ -294,7 +300,7 @@
 			#{remarks},
 			
 			#{contractNum},
-			#{programAddr},
+<!-- 			#{programAddr}, -->
 			#{programConnector},
 			#{phoneNum},
 			#{startDate},
@@ -317,7 +323,7 @@
 			remarks = #{remarks},
 			
 			contract_num = #{contractNum},
-			program_addr = #{programAddr},
+<!-- 			program_addr = #{programAddr}, -->
 			program_connector = #{programConnector},
 			phone_num = #{phoneNum},
 			start_date = #{startDate},

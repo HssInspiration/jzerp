@@ -97,7 +97,7 @@
 						<div class="row">
 			                <div class="col-lg-2">
 			                    <div class="input-group">
-			                        <input type="text" class="form-control required"  readOnly="true" id="test_data" value = "${tender.subpackageProgram.subpackageProgramName}">
+			                        <input type="text" class="form-control required"  id="test_data" value = "${tender.subpackageProgram.subpackageProgramName}">
 			                        <div class="input-group-btn">
 			                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 			                                <span class="caret"></span>
@@ -142,13 +142,13 @@
 					</td>
 				</tr>
 				<tr>
-					
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>招标负责人：</label></td>
 					<td class="width-35">
 						<form:input path="tenderDirector" htmlEscape="false"    class="form-control required"/>
 					</td>
-					<td class="width-15 active"></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>负责人号码：</label></td>
 					<td class="width-35">
+						<form:input path="directorPhone" htmlEscape="false"    class="form-control required"/>
 					</td>
 				</tr>
 				<tr>

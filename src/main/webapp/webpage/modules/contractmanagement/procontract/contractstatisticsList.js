@@ -93,7 +93,7 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'programAddr',
+		        field: 'program.programAddr',
 		        title: '工程地址',
 		        sortable: true
 		    }

@@ -148,8 +148,8 @@ public class ActContractController extends BaseController {
 				}else if(taskKey.equals("mainLead")){//审批通过
 					proContractService.updateProContractStatus(actContract, 2);
 				}else if(taskKey.equals("contract_modify")){//若为合同修改
-					if(act.getFlag().equals("no")){//销毁--审批不通过
-						proContractService.updateProContractStatus(actContract, 3);
+					if(act.getFlag().equals("no")){//销毁--未审批
+						proContractService.updateProContractStatus(actContract, 0);
 					}
 				}
 			}

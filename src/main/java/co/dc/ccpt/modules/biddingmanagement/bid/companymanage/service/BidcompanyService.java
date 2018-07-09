@@ -20,9 +20,9 @@ import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.entity.Bidtable;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Bidcompany;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.mapper.BidcompanyMapper;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
 import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
+import co.dc.ccpt.modules.programmanage.entity.Program;
 
 /**
  * 参投单位管理Service

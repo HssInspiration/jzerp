@@ -156,8 +156,8 @@ public class ActSubContractController extends BaseController {
 				}else if(taskKey.equals("chairman_approval")){
 					subProContractService.updateSubProContractStatus(actSubContract, 2);
 				}else if(taskKey.equals("modify")){//若为合同修改
-					if(act.getFlag().equals("no")){//销毁
-						subProContractService.updateSubProContractStatus(actSubContract, 3);
+					if(act.getFlag().equals("no")){//销毁--未审批
+						subProContractService.updateSubProContractStatus(actSubContract, 0);
 					}
 				}
 			}

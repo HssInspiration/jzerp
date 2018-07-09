@@ -3,6 +3,7 @@
  */
 package co.dc.ccpt.modules.printingmanagement.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
+import co.dc.ccpt.modules.printingmanagement.entity.ContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.entity.SubContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.mapper.SubContractPrintingMapper;
 
@@ -82,5 +84,11 @@ public class SubContractPrintingService extends CrudService<SubContractPrintingM
 
 	public List<SubContractPrinting> getSubContractPrintingBySubId(SubContractPrinting subContractPrinting) {
 		return subContractPrintingMapper.getSubContractPrintingBySubId(subContractPrinting);
+	}
+	
+	@Transactional(readOnly = false)
+	public ContractPrinting updateStampStatus(SubContractPrinting subContractPrinting) {
+		subContractPrinting.setPrintDate(new Date());
+		return subContractPrintingMapper.updateStampStatus(subContractPrinting);
 	}
 }

@@ -30,7 +30,7 @@
 				  idField : "id\" style=\"display:none\"",
 				  keyField : "word",
 				  getDataMethod : "url",
-				  url : "${ctx}/tendermanage/subpackageProgram/getProgramList?programName=",
+				  url : "${ctx}/programmanage/subpackageProgram/getProgramList?programName=",
 				  processData : function(json) {
 				      var i, len, data = {
 				          value : []
@@ -57,7 +57,7 @@
 				var jsonData = JSON.stringify({"id":id});
 				//2.获取完id传入后台获取对应的类型集合;
 				$.ajax({
-					url:"${ctx}/tendermanage/subpackageProgram/getProgramTypeById",
+					url:"${ctx}/programmanage/subpackageProgram/getProgramTypeById",
 					async:false,
 					data:jsonData,
 					type:"post",
@@ -106,7 +106,6 @@
 						console.log("获取失败！");
 					}
 				});
-				
 				//附加：选取之后下次再进行调用只显示没有选过的类型。
 			});//下拉框值选中时调用
 			
@@ -116,7 +115,7 @@
 					if(programId != null && programId != ""){
 						$("#programId").val(programId);
  					}
-					jp.post("${ctx}/tendermanage/subpackageProgram/save",$('#inputForm').serialize(),function(data){
+					jp.post("${ctx}/programmanage/subpackageProgram/save",$('#inputForm').serialize(),function(data){
 						if(data.success){
 	                    	$table.bootstrapTable('refresh');
 	                    	jp.success(data.msg);
@@ -212,17 +211,10 @@
 						</c:if>
 						<span id="typeAlreadyExsist" style = "font-weight:bold;"></span>
 					</td>
-					<td  class="width-15 active">	
-			   		<label class="pull-right"><font color="red">*</font>计划开始时间:</label>
-			   	    </td>
-		            <td  class="width-35" >
-						<div class='input-group form_datetime' id='planToStart'>
-		                    <input type='text'  name="planToStart" class="form-control required"  value="<fmt:formatDate value="${subpackageProgram.planToStart}" pattern="yyyy-MM-dd HH:mm"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>						            
-			        </td>
+					<td class="width-15 active"><label class="pull-right">分包工程地址：</label></td>
+					<td class="width-35">		
+						<form:input path="subproAddr" htmlEscape="false" rows="4"  class="form-control "/>
+					</td>
 				</tr>
 				<script>
 					$().ready(function(){
@@ -239,7 +231,7 @@
 							var jsonData = JSON.stringify({"id":programId});
 							//发送验证：
 							$.ajax({
-								url:"${ctx}/tendermanage/subpackageProgram/getTypeByParentId",
+								url:"${ctx}/programmanage/subpackageProgram/getTypeByParentId",
 								data:jsonData,
 								type:"post",
 								contentType:"application/json;charset=utf-8",
@@ -306,6 +298,17 @@
 				</script>
 				<tr>
 					<td  class="width-15 active">	
+			   		<label class="pull-right"><font color="red">*</font>计划开始时间:</label>
+			   	    </td>
+		            <td  class="width-35" >
+						<div class='input-group form_datetime' id='planToStart'>
+		                    <input type='text'  name="planToStart" class="form-control required"  value="<fmt:formatDate value="${subpackageProgram.planToStart}" pattern="yyyy-MM-dd HH:mm"/>"/>
+		                    <span class="input-group-addon">
+		                        <span class="glyphicon glyphicon-calendar"></span>
+		                    </span>
+		                </div>						            
+			        </td>
+					<td  class="width-15 active">	
 			   		<label class="pull-right"><font color="red">*</font>计划结束时间:</label>
 			   	    </td>
 		            <td  class="width-35" >
@@ -320,7 +323,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">子项目内容：</label></td>
 					<td class="width-35">
-						<form:textarea path="subpackageProgramCont" htmlEscape="false" rows="4"    class="form-control "/>
+						<form:textarea path="subpackageProgramCont" htmlEscape="false" rows="4"   class="form-control "/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">		

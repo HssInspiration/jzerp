@@ -1,6 +1,5 @@
 package co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.web;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +30,9 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.entity.BidtableQuery;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.service.BidtableQueryService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.CompanyService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.service.CompanyService;
+import co.dc.ccpt.modules.programmanage.service.ProgramService;
 
 
 /**

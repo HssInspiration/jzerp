@@ -80,7 +80,8 @@ $(document).ready(function() {
 			,{
 		        field: 'bidNum',
 		        title: '投标编号',
-		        sortable: true
+		        sortable: true,
+		        width:30
 		        ,formatter:function(value, row , index){
 		        	return '<a  href="#" onclick="jp.openDialog(\'编辑投标信息\', \'${ctx}/bidmanage/bidtable/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
 		         }
@@ -88,12 +89,12 @@ $(document).ready(function() {
 			,{
 		        field: 'company.companyName',
 		        title: '招标单位',
-		        sortable: true
+	        	width:20
 		    }
 			,{
 		        field: 'program.programName',
 		        title: '项目名称',
-		        sortable: true
+		        width:20
 		    }
 //			,{
 //		        field: 'openBidDate',
@@ -110,50 +111,49 @@ $(document).ready(function() {
 			,{
 				field: 'program.planToStart',
 				title: '投标时间',
-				sortable: true
+				width:150
 				
 			}
 			,{
 		        field: 'openBidAddr',
 		        title: '开标地点',
-		        sortable: true
-		       
+	        	width:15
 		    }
 			,{
 		        field: 'deposit',
 		        title: '投标保证金（万元）',
-		        sortable: true
-		       
+		        width:15
 		    }
 			,{
 		        field: 'ctrlPrice',
 		        title: '控制价（万元）',
-		        sortable: true
+	        	width:15
 		       
 		    }
 			,{
 		        field: 'floorPrice',
 		        title: '标底价（万元）',
-		        sortable: true
+	        	width:15
 		       
 		    }
 			,{
 		        field: 'provisionPrice',
 		        title: '暂列金额（万元）',
-		        sortable: true
+	        	width:15
 		       
 		    }
 			,{
 		        field: 'recordWorker',
 		        title: '开标记录人员',
-		        sortable: true
-		       
+	        	width:15
 		    }
 			,{
 		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true
-		       
+		        title: '备注信息'
+		    }
+			,{
+		        field: 'provideMeterial',
+		        title: '所需材料'
 		    }
 			,{
                 field: 'operate',
@@ -198,19 +198,6 @@ $(document).ready(function() {
 							'</a> '
 						].join('');
                 }
-		    }
-			,{
-		        field: 'provideMeterial',
-		        title: '所需材料',
-		        sortable: true
-//		        formatter:function(value, row , index){
-//		        	var valueArray = value.split(",");
-//		        	var labelArray = [];
-//		        	for(var i =0 ; i<valueArray.length-1; i++){
-//		        		labelArray[i] = jp.getDictLabel(${fns:toJson(fns:getDictList('providemeterial'))}, valueArray[i], "-");
-//		        	}
-//		        	return labelArray.join(",");
-//		        }
 		    }
 		     ]
 		});

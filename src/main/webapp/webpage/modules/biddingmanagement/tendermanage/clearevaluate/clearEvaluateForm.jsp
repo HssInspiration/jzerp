@@ -215,15 +215,6 @@
 					<td class="width-35">
 						<form:input path="design" htmlEscape="false"    class="form-control required"/>
 					</td>
-<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>标书送达时间：</label></td> -->
-<!-- 					<td class="width-35"> -->
-<!-- 					<div class='input-group form_datetime' id='accessDate'> -->
-<%-- 			                    <input type='text'  name="accessDate" class="form-control required"  value="<fmt:formatDate value="${clearEvaluate.accessDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/> --%>
-<!-- 			                    <span class="input-group-addon"> -->
-<!-- 			                        <span class="glyphicon glyphicon-calendar"></span> -->
-<!-- 			                    </span> -->
-<!-- 			                </div> -->
-<!-- 					</td> -->
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>投标书填写情况：</label></td>
@@ -248,7 +239,7 @@
 		</table>
 		<div class="tabs-container">
             <ul class="nav nav-tabs">
-				<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true">评标人员：</a>
+				<li class="active"><a data-toggle="tab" href="#tab-1" aria-expanded="true"><font color="red">*</font>评标人员：</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -258,7 +249,7 @@
 				<thead>
 					<tr>
 						<th class="hide"></th>
-						<th>评标人员</th>
+						<th><font color="red">*</font>评标人员</th>
 						<th>备注信息</th>
 						<th width="10">&nbsp;</th>
 					</tr>

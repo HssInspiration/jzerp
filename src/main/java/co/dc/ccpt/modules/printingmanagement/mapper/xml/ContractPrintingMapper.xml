@@ -18,6 +18,8 @@
 		a.print_date AS "printDate",
 		a.print_type AS "printType",
 		a.times AS "times",
+		a.is_stamp AS "isStamp",
+		
 		pc.contract_name AS "proContract.contractName",
 		pc.contract_date AS "proContract.contractDate",
 		pc.contract_total_price AS "proContract.contractTotalPrice"
@@ -35,6 +37,13 @@
 		FROM contract_printing a
 			<include refid="contractPrintingJoins"/>
 		WHERE a.id = #{id}
+	</select>
+<!-- 	更新状态和用章时间 -->
+	<select id="updateStampStatus" resultType="contractPrinting" >
+		UPDATE contract_printing SET 
+			is_stamp = #{isStamp},
+			print_date = #{printDate}
+		WHERE id = #{id}
 	</select>
 	
 	<select id="getContractPrintingByProId" resultType="ContractPrinting" >
@@ -118,6 +127,7 @@
 			print_num,
 			print_type,
 			times,
+			is_stamp,
 			contract_id 
 		) VALUES (
 			#{id},
@@ -131,6 +141,7 @@
 			#{printNum},
 			#{printType},
 			#{times},
+			#{isStamp},
 			#{proContract.id}
 		)
 	</insert>
@@ -143,6 +154,7 @@
 			print_date = #{printDate},
 			print_type = #{printType},
 			times = #{times},
+			is_stamp = #{isStamp},
 			contract_id = #{proContract.id}
 		WHERE id = #{id}
 	</update>

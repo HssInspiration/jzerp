@@ -2,17 +2,17 @@
 <script>
 $(document).ready(function() {
 	$('#table').bootstrapTable({
-		  //请求方法
+		  	   //请求方法
                method: 'get',
                //类型json
                dataType: "json",
                //显示刷新按钮
                showRefresh: true,
-               //显示切换手机试图按钮
+               //显示切换手机视图按钮
                showToggle: true,
                //显示 内容列下拉框
     	       showColumns: true,
-    	       //显示到处按钮
+    	       //显示导出按钮
     	       showExport: true,
     	       //显示切换分页按钮
     	       showPaginationSwitch: true,
@@ -77,7 +77,14 @@ $(document).ready(function() {
 		        field: 'contractNum',
 		        title: '总包合同编号'
 		        ,formatter:function(value, row , index){
-		        	return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+		        	var approvalStatus = row.approvalStatus;
+		        	var contractStatus = row.contractStatus;
+		        	if(approvalStatus == 0 || contractStatus == 3){
+		        		return '<a  href="#" onclick="jp.openDialog(\'编辑信息\', \'${ctx}/procontract/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
+		        	}else{
+		        		return '<a  href="#" onclick="jp.openDialogView(\'查看信息\', \'${ctx}/procontract/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
+		        	}
+//	        		return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 		         }
 		    }
 			,{
@@ -120,7 +127,7 @@ $(document).ready(function() {
 		       
 		    }
 			,{
-		        field: 'programAddr',
+		        field: 'program.programAddr',
 		        title: '工程地址'
 		    }
 			,{
@@ -156,6 +163,10 @@ $(document).ready(function() {
 			,{
 		        field: 'user.name',
 		        title: '合同拟草人'
+		    }
+			,{
+		        field: 'createDate',
+		        title: '合同拟草时间'
 		    }
 			,{
 		        field: 'approvalStatus',
@@ -229,11 +240,13 @@ $(document).ready(function() {
 	  $('#table').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
-            $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
+            $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1 
+            				|| getApprovalStatus() != 0 || getContractStatus() != 3);
             $('#startApproval').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            $('#stamp').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
+            $('#stampApply').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
             $('#confirmValid').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            
+            $('#termination').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
+            $('#closeCase').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -355,14 +368,24 @@ $(document).ready(function() {
 	  jp.openDialog('新增管理', "${ctx}/procontract/form",'1000px', '600px', $('#table'));
   }
   
-  function edit(id){//没有权限时，不显示确定按钮
+  function edit(id, approvalStatus, contractStatus){//没有权限时，不显示确定按钮
   	  if(id == undefined){
 		 id = getIdSelections();
 	  }
-	  jp.openDialog('编辑管理', "${ctx}/procontract/form?id=" + id,'1000px', '600px', $('#table'));
+//  	 if(contractStatus == undefined){
+//		  contractStatus = getContractStatus();
+//	  }
+//	  if(approvalStatus == undefined){
+//		  approvalStatus = getApprovalStatus();
+//	  }
+//	  if(approvalStatus==0 || contractStatus==3){//未审批、合同终止
+		  jp.openDialog('编辑管理', "${ctx}/procontract/form?id=" + id,'1000px', '600px', $('#table')); 
+//	  }else{
+//		  jp.openDialogView('查看', "${ctx}/procontract/form?id=" + id,'1000px', '600px', $('#table')); 
+//	  }
   }
   
-  function stamp(id,approvalStatus){//用印
+  function stampApply(id,approvalStatus){//用印
   	  if(id == undefined){
 		 id = getIdSelections();
 	  }
@@ -373,27 +396,6 @@ $(document).ready(function() {
   	  if(approvalStatus == 2){//审批通过
 		console.log("审批通过，可用印！");
 		jp.openDialog('编辑管理', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
-		//验证是否已添加（不可重复申请用印时使用）
-//		var str= id.toString();
-//    	var jsonData = JSON.stringify({"id":str});
-//		$.ajax({
-//			url:"${ctx}/contractprint/proprinting/getContractPrinting",
-//    		type:"post",
-//    		data:jsonData,
-//    		contentType:"application/json;charset=utf-8",
-//    		dataType:"json",
-//    		success:function(data){
-//    			console.log(data);
-//    			if(data.length>0){
-//    				jp.openDialogView('查看', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
-//    			}else{
-//    				jp.openDialog('编辑管理', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
-//    			}
-//    		},
-//			error:function(){
-//				console.log("回调失败！")
-//			}
-//		})
 	  }else{
 		console.log("不可用印！"); 
 		jp.info("非审批通过状态，不可用印！")
@@ -409,8 +411,30 @@ $(document).ready(function() {
 	  }
   	  if(approvalStatus == 2){//审批通过
   		console.log("审批通过，可确认生效！");
-  		jp.confirm('您当前正在进行合同生效操作，是否继续？', function(){
-    	  jp.openDialog('合同生效确认', "${ctx}/procontract/confirmValid?id=" + id,'600px', '200px', $('#table'));
+		var str= id.toString();
+    	var jsonData = JSON.stringify({"id":str});
+    	//发送验证--用章中是否有记录
+		$.ajax({
+			url:"${ctx}/contractprint/proprinting/getContractPrinting",
+    		type:"post",
+    		data:jsonData,
+    		contentType:"application/json;charset=utf-8",
+    		dataType:"json",
+    		success:function(data){
+    			console.log(data);
+    			if(data.length>0){
+//    				jp.openDialogView('查看', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
+    				jp.confirm('您当前正在进行合同生效操作，是否继续？', function(){
+    			    	  jp.openDialog('合同生效确认', "${ctx}/procontract/confirmValid?id=" + id,'600px', '200px', $('#table'));
+    					})
+    			}else{
+    				jp.info("合同未用印，请先用印！");
+//    				jp.openDialog('编辑管理', "${ctx}/contractprint/proprinting/form?proContractId=" + id,'1000px', '600px', $('#table'));
+    			}
+    		},
+			error:function(){
+				console.log("回调失败！")
+			}
 		})
   	  }else{
   		console.log("不可确认生效！"); 

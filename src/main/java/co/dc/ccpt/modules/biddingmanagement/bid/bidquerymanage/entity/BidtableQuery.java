@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
-import co.dc.ccpt.core.persistence.DataEntity;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Company;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
+
+import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
+import co.dc.ccpt.core.persistence.DataEntity;
+import co.dc.ccpt.modules.programmanage.entity.Company;
+import co.dc.ccpt.modules.programmanage.entity.Program;
 
 /**
  * 投标综合查询Entity

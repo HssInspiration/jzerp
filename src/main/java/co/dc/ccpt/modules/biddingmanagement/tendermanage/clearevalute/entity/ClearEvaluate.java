@@ -5,14 +5,14 @@ package co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.Lists;
+
 import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.entity.SubBidCompany;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity.Tender;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.google.common.collect.Lists;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 
 /**
  * 清评标管理Entity

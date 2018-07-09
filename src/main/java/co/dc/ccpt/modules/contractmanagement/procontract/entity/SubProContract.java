@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import co.dc.ccpt.core.persistence.DataEntity;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.entity.SubBidCompany;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
+import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity.Tender;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 import co.dc.ccpt.modules.sys.entity.User;
 
 /**
@@ -36,6 +37,7 @@ public class SubProContract extends DataEntity<SubProContract> {
 	private String subProContractNum;// 分包合同编号
 	private Double subProTotalPrice;// 分包合同总价
 	private User user;// 用户对象（拟草人）
+	private Tender tender;//招标对象
 
 	public SubProContract() {
 		super();
@@ -204,6 +206,14 @@ public class SubProContract extends DataEntity<SubProContract> {
 
 	public void setContractStatus(Integer contractStatus) {
 		this.contractStatus = contractStatus;
+	}
+
+	public Tender getTender() {
+		return tender;
+	}
+
+	public void setTender(Tender tender) {
+		this.tender = tender;
 	}
 
 }

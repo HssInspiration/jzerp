@@ -33,18 +33,18 @@ import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Company;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.CompanyService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.entity.ClearEvaluate;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.service.ClearEvaluateService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.entity.SubBidCompany;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.service.SubBidCompanyService;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.service.SubpackageProgramService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity.Tender;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.service.TenderService;
+import co.dc.ccpt.modules.programmanage.entity.Company;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
+import co.dc.ccpt.modules.programmanage.service.CompanyService;
+import co.dc.ccpt.modules.programmanage.service.ProgramService;
+import co.dc.ccpt.modules.programmanage.service.SubpackageProgramService;
 
 /**
  * 子项目参投单位管理Controller

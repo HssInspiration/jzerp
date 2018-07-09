@@ -12,6 +12,7 @@ public class ContractPrinting extends DataEntity<ContractPrinting> {
 	private Date beginPrintDate;// 用章开始日期
 	private Integer contractType;// 合同类别
 	private Date endPrintDate;// 用章开始日期
+	private String isStamp;// 是否用章
 	private Date printDate;// 用章日期
 	private String printNum;// 用章编号
 	private Integer printType;// 用章类别
@@ -38,6 +39,10 @@ public class ContractPrinting extends DataEntity<ContractPrinting> {
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getEndPrintDate() {
 		return endPrintDate;
+	}
+
+	public String getIsStamp() {
+		return isStamp;
 	}
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -71,6 +76,10 @@ public class ContractPrinting extends DataEntity<ContractPrinting> {
 
 	public void setEndPrintDate(Date endPrintDate) {
 		this.endPrintDate = endPrintDate;
+	}
+
+	public void setIsStamp(String isStamp) {
+		this.isStamp = isStamp;
 	}
 
 	public void setPrintDate(Date printDate) {

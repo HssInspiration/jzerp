@@ -35,14 +35,10 @@ import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Bidcompany;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.BidcompanyService;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.entity.Enclosuretab;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.entity.ClearEvaluate;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.service.ClearEvaluateService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.entity.SubBidCompany;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.subbidcompany.service.SubBidCompanyService;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.service.SubpackageProgramService;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity.Tender;
 import co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.service.TenderService;
 import co.dc.ccpt.modules.contractmanagement.contracttemp.entity.ContractTemp;
@@ -51,10 +47,12 @@ import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
-import co.dc.ccpt.modules.contractmanagement.procontractapproval.entity.ProContractApproval;
-import co.dc.ccpt.modules.contractmanagement.procontractapproval.service.ProContractApprovalService;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
 import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
+import co.dc.ccpt.modules.programmanage.service.ProgramService;
+import co.dc.ccpt.modules.programmanage.service.SubpackageProgramService;
 
 /**
  * 附件信息管理Controller
@@ -96,9 +94,6 @@ public class EnclosuretabController extends BaseController {
 	private SubProContractService subProContractService;
 	
 	@Autowired
-	private ProContractApprovalService proContractApprovalService;
-	
-	@Autowired
 	private CorePersonService personCertificateService;
 	
 	@Autowired
@@ -124,18 +119,6 @@ public class EnclosuretabController extends BaseController {
 		}
 		if (entity == null){
 			entity = new PersonCertificate();
-		}
-		return entity;
-	}
-	
-	@ModelAttribute
-	public ProContractApproval getProContractApproval(@RequestParam(required=false) String proContractId) {
-		ProContractApproval entity = null;
-		if (StringUtils.isNotBlank(proContractId)){
-			entity = proContractApprovalService.get(proContractId);
-		}
-		if (entity == null){
-			entity = new ProContractApproval();
 		}
 		return entity;
 	}
@@ -269,7 +252,7 @@ public class EnclosuretabController extends BaseController {
 			ClearEvaluate clearEvaluate, SubBidCompany subBidCompany, 
 			Bidcompany bidCompany, SubpackageProgram subpackageProgram, ContractTemp contractTemp,
 			Tender tender, ProContract proContract, SubProContract subProContract, 
-			ProContractApproval proContractApproval, PersonCertificate personCertificate, Model model) {
+			 PersonCertificate personCertificate, Model model) {
 		System.out.println(program);
 		String foreginId = null;
 		if(StringUtils.isNotBlank(program.getId())){
@@ -290,8 +273,6 @@ public class EnclosuretabController extends BaseController {
 			foreginId = proContract.getId();
 		}else if(StringUtils.isNotBlank(subProContract.getId())){
 			foreginId = subProContract.getId();
-		}else if(StringUtils.isNotBlank(proContractApproval.getId())){
-			foreginId = proContractApproval.getId();
 		}else if(StringUtils.isNotBlank(personCertificate.getId())){
 			foreginId = personCertificate.getId();
 		}else if(StringUtils.isNotBlank(contractTemp.getId())){
@@ -331,7 +312,7 @@ public class EnclosuretabController extends BaseController {
 			SubpackageProgram subpackageProgram, SubBidCompany subBidCompany, 
 			Tender tender, Program program, Bidtable bidtable, SubProContract subProContract,
 			Bidcompany bidCompany, ProContract proContract,ContractTemp contractTemp,
-			ProContractApproval proContractApproval, PersonCertificate personCertificate, Model model) {
+			 PersonCertificate personCertificate, Model model) {
 		
 		if(StringUtils.isBlank(enclosuretab.getId())){//如果ID是空为添加
 			model.addAttribute("isAdd", true);
@@ -388,12 +369,6 @@ public class EnclosuretabController extends BaseController {
 			}else if(StringUtils.isNotBlank(subProContract.getId())){
 				model.addAttribute("subProContract", subProContract);
 				enclosureType = 9;
-				enclosuretab.setEnclosureType(enclosureType);
-				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
-				enclosuretab.setEnclosureNum(enclosureNum);
-			}else if(StringUtils.isNotBlank(proContractApproval.getId())){
-				model.addAttribute("proContractApproval", proContractApproval);
-				enclosureType = 10;
 				enclosuretab.setEnclosureType(enclosureType);
 				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
 				enclosuretab.setEnclosureNum(enclosureNum);

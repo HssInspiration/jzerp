@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.mapper.ProgramMapper;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContractStatistics;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubContractStatistics;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.mapper.ProContractMapper;
 import co.dc.ccpt.modules.contractmanagement.procontract.mapper.SubProContractMapper;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.mapper.ProgramMapper;
 
 /**
  * 投标综合查询Service
@@ -81,7 +81,9 @@ public class ContractStatisticsService extends CrudService<ProContractMapper, Pr
 									for(ProContract p1:proContractList2){
 										totalAppointProContractPriceList.add(p1.getContractTotalPrice());
 									}
-									proContractStatistics.setAppointProContractPrice(super.doubleListToArray(totalAppointProContractPriceList));
+									if(totalAppointProContractPriceList!=null && totalAppointProContractPriceList.size()>0){
+										proContractStatistics.setAppointProContractPrice(super.doubleListToArray(totalAppointProContractPriceList));
+									}
 								}
 							}else if(getMethod == 1){//市场招标
 								proContractList3.add(p);
@@ -90,7 +92,10 @@ public class ContractStatisticsService extends CrudService<ProContractMapper, Pr
 									for(ProContract p2:proContractList3){
 										totalMarketProContractPriceList.add(p2.getContractTotalPrice());
 									}
-									proContractStatistics.setMarketProContractPrice(super.doubleListToArray(totalMarketProContractPriceList));
+									if(totalMarketProContractPriceList!=null && totalMarketProContractPriceList.size()>0){
+										proContractStatistics.setMarketProContractPrice(super.doubleListToArray(totalMarketProContractPriceList));
+									}
+									
 								}
 							}
 						}
@@ -106,12 +111,16 @@ public class ContractStatisticsService extends CrudService<ProContractMapper, Pr
 									totalEffectProContractPriceList.add(p4.getContractTotalPrice());
 								}
 								//生效总包合同总价
-								proContractStatistics.setEffectProContractPrice(super.doubleListToArray(totalEffectProContractPriceList));
+								if(totalEffectProContractPriceList != null && totalEffectProContractPriceList.size()>0){
+									proContractStatistics.setEffectProContractPrice(super.doubleListToArray(totalEffectProContractPriceList));
+								}
 							}
 						}
 					}
 				}
-				proContractStatistics.setTotalProContractPrice(super.doubleListToArray(totalProContractPriceList));//总包合同总价
+				if(totalProContractPriceList != null && totalProContractPriceList.size()>0){
+					proContractStatistics.setTotalProContractPrice(super.doubleListToArray(totalProContractPriceList));//总包合同总价
+				}
 				proContractStatistics.setProContractCount(proContractList1.size());//总包合同数量
 //				proContractStatistics.setAppointAndEffectedtPrice(appointAndEffectedtPrice);//业主指定且生效总包合同总价
 //				proContractStatistics.setMarketAndEffectedPrice(marketAndEffectedPrice);//市场投标且生效总包合同总价
@@ -127,7 +136,9 @@ public class ContractStatisticsService extends CrudService<ProContractMapper, Pr
 							totalEffectProContractPriceList.add(p.getContractTotalPrice());
 						}
 						//未生效总包合同总价
-						proContractStatistics.setNotEffectProContractPrice(super.doubleListToArray(totalEffectProContractPriceList));
+						if(totalEffectProContractPriceList != null && totalEffectProContractPriceList.size()>0){
+							proContractStatistics.setNotEffectProContractPrice(super.doubleListToArray(totalEffectProContractPriceList));
+						}
 					}
 				}else if(contractStatus == 1){//已生效
 					proContractList5 = proContractMapper.getEffectList(proContract);
@@ -138,7 +149,9 @@ public class ContractStatisticsService extends CrudService<ProContractMapper, Pr
 							totalEffectProContractPriceList.add(p.getContractTotalPrice());
 						}
 						//生效总包合同总价
-						proContractStatistics.setEffectProContractPrice(super.doubleListToArray(totalEffectProContractPriceList));
+						if(totalEffectProContractPriceList !=null && totalEffectProContractPriceList.size()>0){
+							proContractStatistics.setEffectProContractPrice(super.doubleListToArray(totalEffectProContractPriceList));
+						}
 					}
 				}else if(contractStatus == 2){//结案(暂未处理)
 					proContractList5 = proContractMapper.getEffectList(proContract);

@@ -13,6 +13,7 @@ public class SubContractPrinting extends DataEntity<SubContractPrinting> {
 	private Date beginPrintDate;// 用章开始日期
 	private Integer contractType;// 合同类别
 	private Date endPrintDate;// 用章开始日期
+	private String isStamp;// 是否已用章
 	private Date printDate;// 用章日期
 	private String printNum;// 用章编号
 	private Integer printType;// 用章类别
@@ -40,6 +41,11 @@ public class SubContractPrinting extends DataEntity<SubContractPrinting> {
 	public Date getEndPrintDate() {
 		return endPrintDate;
 	}
+
+	public String getIsStamp() {
+		return isStamp;
+	}
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getPrintDate() {
 		return printDate;
@@ -73,9 +79,14 @@ public class SubContractPrinting extends DataEntity<SubContractPrinting> {
 		this.endPrintDate = endPrintDate;
 	}
 
+	public void setIsStamp(String isStamp) {
+		this.isStamp = isStamp;
+	}
+
 	public void setPrintDate(Date printDate) {
 		this.printDate = printDate;
 	}
+
 	public void setPrintNum(String printNum) {
 		this.printNum = printNum;
 	}
@@ -83,6 +94,7 @@ public class SubContractPrinting extends DataEntity<SubContractPrinting> {
 	public void setPrintType(Integer printType) {
 		this.printType = printType;
 	}
+
 	public void setSubProContract(SubProContract subProContract) {
 		this.subProContract = subProContract;
 	}

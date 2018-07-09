@@ -44,13 +44,13 @@ import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Worker;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.BidcompanyService;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.WorkerService;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Company;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.CompanyService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
 import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
+import co.dc.ccpt.modules.programmanage.entity.Company;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.service.CompanyService;
+import co.dc.ccpt.modules.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.sys.entity.User;
 
 /**

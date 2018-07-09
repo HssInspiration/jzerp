@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.google.common.collect.Lists;
+
 import co.dc.ccpt.common.config.Global;
 import co.dc.ccpt.common.json.AjaxJson;
 import co.dc.ccpt.common.utils.DateUtils;
@@ -37,11 +39,9 @@ import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.service.BidtableServic
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Bidcompany;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.BidcompanyService;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.CompanyService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
-
-import com.google.common.collect.Lists;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.service.CompanyService;
+import co.dc.ccpt.modules.programmanage.service.ProgramService;
 
 /**
  * 投标管理Controller

@@ -32,12 +32,12 @@ import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
+import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.service.SystemService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
@@ -212,18 +212,21 @@ public class ProContractController extends BaseController{
 		Date beforeDate = proContract.getStartDate();
 		Date afterDate = proContract.getCompleteDate();
 		Date contractDate = proContract.getContractDate();
+		Integer contractStatus = proContract.getContractStatus();
 		if(beforeDate.after(afterDate)){//保存前处理1：开工日期不得晚于竣工日期
 			j.setSuccess(false);
 			j.setMsg("开工日期不得晚于竣工日期!");
-			return j;
-		}else if(contractDate.after(beforeDate)){//保存前处理2：签订日期不得晚于开工日期
-			j.setSuccess(false);
-			j.setMsg("签订日期不得晚于开工日期!");
 			return j;
 		}else{//保存前处理3：设置工期为开工日期与竣工日期间隔天数
 			Double buildDate= DateUtils.getDistanceOfTwoDate(beforeDate, afterDate);//调用日期工具类方法实现工期计算
 			Integer i = (int) Math.round(buildDate);
 			proContract.setBuildDate(i.toString());
+		}
+		//若为生效且生效时间为空，则设置生效时间为当前时间
+		if(contractStatus!=null){
+			if(contractDate==null && contractStatus == 1){
+				proContract.setContractDate(new Date());
+			}
 		}
 		//新增或编辑表单保存
 		proContractService.save(proContract);//保存

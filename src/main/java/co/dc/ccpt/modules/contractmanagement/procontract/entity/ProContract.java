@@ -13,7 +13,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
 
 import co.dc.ccpt.core.persistence.ActEntity;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
+import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Bidcompany;
+import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.sys.entity.User;
 
 /**
@@ -37,14 +38,13 @@ public class ProContract extends ActEntity<ProContract> {
 	private Integer isStamp;// 用章状态
 	private String phoneNum;// 联系人号码
 	private Program program;// 项目对象
+	private Bidcompany bidcompany;//参投对象
 	private String programAddr;// 开工地址
 	private String programConnector;// 工程联系人
 	private Date startDate;// 开工日期
 	private User user;// 用户对象（合同拟草人）
 	private SubProContract subProContract;//子表对象
 	private List<SubProContract> subProContractList = Lists.newArrayList();		// 子表列表
-	
-	
 	
 	//-- 临时属性 --//
 	// 流程任务
@@ -261,6 +261,12 @@ public class ProContract extends ActEntity<ProContract> {
 	public void setSubProContractList(List<SubProContract> subProContractList) {
 		this.subProContractList = subProContractList;
 	}
-	
-	
+
+	public Bidcompany getBidcompany() {
+		return bidcompany;
+	}
+
+	public void setBidcompany(Bidcompany bidcompany) {
+		this.bidcompany = bidcompany;
+	}
 }

@@ -114,11 +114,17 @@
 				<button id="startApproval" class="btn btn-primary" disabled onclick="startApproval()">
 	            	<i class="glyphicon glyphicon-open"></i> 启动审批
 	        	</button>
-				<button id="stamp" class="btn btn-info" disabled onclick="stamp()">
-	            	<i class="glyphicon glyphicon-star"></i> 用印
+				<button id="stampApply" class="btn btn-info" disabled onclick="stampApply()">
+	            	<i class="glyphicon glyphicon-star"></i> 用章申请
 	        	</button>
 				<button id="confirmValid" class="btn btn-success" disabled onclick="confirmValid()">
 	            	<i class="glyphicon glyphicon-hand-up"></i> 确认生效
+	        	</button>
+	        	<button id="termination" class="btn btn-warning" disabled onclick="termination()">
+	            	<i class="glyphicon glyphicon-minus-sign"></i> 终止
+	        	</button>
+	        	<button id="closeCase" class="btn btn-success" disabled onclick="closeCase()">
+	            	<i class="glyphicon glyphicon-ok"></i> 结案
 	        	</button>
 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
 					<i class="fa fa-search"></i> 检索

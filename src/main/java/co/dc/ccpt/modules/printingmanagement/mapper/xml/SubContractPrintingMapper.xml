@@ -18,6 +18,8 @@
 		a.print_num AS "printNum",
 		a.print_date AS "printDate",
 		a.print_type AS "printType",
+		a.is_stamp AS "isStamp",
+		
 		spc.subpro_contract_name AS "subProContract.subProContractName",
 		spc.subpro_contract_date AS "subProContract.subProContractDate",
 		spc.subpro_total_price AS "subProContract.subProTotalPrice"
@@ -28,6 +30,14 @@
 		LEFT JOIN ccpt.sub_pro_contract spc ON spc.id=a.sub_contract_id
 		LEFT JOIN ccpt.sys_user u ON u.id = spc.user_id
 	</sql>
+	
+	<!-- 	更新状态和用章时间 -->
+	<select id="updateStampStatus" resultType="contractPrinting" >
+		UPDATE sub_contract_printing SET 
+			is_stamp = #{isStamp},
+			print_date = #{printDate}
+		WHERE id = #{id}
+	</select>
 	
 	<select id="get" resultType="subContractPrinting" >
 		SELECT 
@@ -118,6 +128,7 @@
 			print_num,
 			print_type,
 			times,
+			is_stamp,
 			sub_contract_id 
 		) VALUES (
 			#{id},
@@ -131,6 +142,7 @@
 			#{printNum},
 			#{printType},
 			#{times},
+			#{isStamp},
 			#{subProContract.id}
 		)
 	</insert>
@@ -144,6 +156,7 @@
 			print_num = #{printNum},
 			print_type = #{printType},
 			times = #{times},
+			is_stamp = #{isStamp},
 			sub_contract_id = #{subProContract.id}
 		WHERE id = #{id}
 	</update>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.dc.ccpt.common.utils.DateUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
@@ -146,4 +147,9 @@ public class ProContractService extends CrudService<ProContractMapper, ProContra
 		return i;
 	};
 	
+	//时间处理
+	public ProContract modifyProContract(ProContract proContract){
+		
+		return proContract;
+	}
 }

@@ -119,13 +119,43 @@ public class ContractPrintingController extends BaseController {
 				contractPrinting.setPrintNum(printNum);
 				//设置对应的用章类型--0（总包合同用章）
 				contractPrinting.setPrintType(0);
-				// 用章时间--默认当前时间
-				logger.info("");
-				contractPrinting.setPrintDate(new Date());
 			}
 		}
 		model.addAttribute("contractPrinting", contractPrinting);
 		return "modules/printingmanagement/contractprint/proprinting/contractPrintingForm";
+	}
+	
+	/**
+	 * 用章表单
+	 * @param contractPrinting
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "printForm")
+	public String printForm(ContractPrinting contractPrinting, Model model) {
+		model.addAttribute("contractPrinting", contractPrinting);
+		return "modules/printingmanagement/contractprint/proprinting/proPrintingForm";
+	}
+	
+	
+	
+	
+	/**
+	 * 更新状态
+	 */
+	@ResponseBody
+	@RequestMapping(value = "updateStampStatus")
+	public AjaxJson updateStampStatus(ContractPrinting contractPrinting, Model model, RedirectAttributes redirectAttributes) throws Exception{
+		AjaxJson j = new AjaxJson();
+		if (!beanValidator(model, contractPrinting)){
+			j.setSuccess(false);
+			j.setMsg("非法参数！");
+			return j;
+		}
+		contractPrintingService.updateStampStatus(contractPrinting);
+		j.setSuccess(true);
+		j.setMsg("保存成功");
+		return j;
 	}
 	
 	
@@ -144,13 +174,13 @@ public class ContractPrintingController extends BaseController {
 		//新增之前用总包合同id查询是否存在对应集合（设置用章次数）
 		List<ContractPrinting> contractPrintList = contractPrintingService.getContractPrintingByProId(contractPrinting);
 		if(contractPrintList!=null && contractPrintList.size()>0){
-			contractPrinting.setTimes("第"+(contractPrintList.size()+1)+"次用章");
+			contractPrinting.setTimes("第"+(contractPrintList.size()+1)+"次申请");
 		}else{
-			contractPrinting.setTimes("第"+1+"次用章");
+			contractPrinting.setTimes("第"+1+"次申请");
 		}
 		contractPrintingService.save(contractPrinting);//新建或者编辑保存
 		j.setSuccess(true);
-		j.setMsg("保存保证金审批成功");
+		j.setMsg("保存成功");
 		return j;
 	}
 	
@@ -180,15 +210,17 @@ public class ContractPrintingController extends BaseController {
 	
 	/**
 	 * 删除
-	 */
+	 */	
 	@ResponseBody
 //	@RequiresPermissions("ContractPrinting:ContractPrinting:del")
 	@RequestMapping(value = "delete")
 	public AjaxJson delete(ContractPrinting contractPrinting, RedirectAttributes redirectAttributes) {
 		AjaxJson j = new AjaxJson();
 		contractPrintingService.delete(contractPrinting);
-		j.setMsg("删除保证金审批成功");
+		j.setMsg("删除成功");
 		return j;
 	}
+	
+	
 	
 }

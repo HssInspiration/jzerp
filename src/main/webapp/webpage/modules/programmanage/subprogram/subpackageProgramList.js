@@ -2,7 +2,7 @@
 <script>
 $(document).ready(function() {
 	$('#table').bootstrapTable({
-		  //请求方法
+			   //请求方法
                method: 'get',
                //类型json
                dataType: "json",
@@ -33,7 +33,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [20, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/contractstatistics/data",
+               url: "${ctx}/programmanage/subpackageProgram/data",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -53,9 +53,9 @@ $(document).ready(function() {
                    if($el.data("item") == "edit"){
                    	edit(row.id);
                    } else if($el.data("item") == "delete"){
-                        jp.confirm('确认要删除该记录吗？', function(){
+                        jp.confirm('确认要删除该子项目工程管理记录吗？', function(){
                        	jp.loading();
-                       	jp.get("${ctx}/contractstatistics/delete?id="+row.id, function(data){
+                       	jp.get("${ctx}/programmanage/subpackageProgram/delete?id="+row.id, function(data){
                    	  		if(data.success){
                    	  			$('#table').bootstrapTable('refresh');
                    	  			jp.success(data.msg);
@@ -73,129 +73,89 @@ $(document).ready(function() {
                columns: [{
 		        checkbox: true
 		    }
-               ,{
-   		        field: 'num',
-   		        title: '合同编号',
-   		        sortable: true
-   		        ,formatter:function(value, row , index){
-   		        	return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
-   		         }
-   		    }
-   			,{
-   		        field: 'name',
-   		        title: '合同名称',
-   		        sortable: true
-   		       
-   		    }
-   			,{
-   		        field: 'proName',
-   		        title: '项目名称',
-   		        sortable: true
-   		       
-   		    }
-   			,{
-   		        field: 'program.programType',
-   		        title: '项目类别',
-   		        sortable: true,
-   		        formatter:function(value, row , index){
-   		        	var valueArray = value.split(",");
-   		        	var labelArray = [];
-   		        	for(var i =0 ; i<valueArray.length-1; i++){
-   		        		labelArray[i] = jp.getDictLabel(${fns:toJson(fns:getDictList('programtype'))}, valueArray[i], "-");
-   		        	}
-   		        	return labelArray.join(",");
-   		        }
-   		       
-   		    }
-   			,{
-   		        field: 'program.company.companyName',
-   		        title: '业主单位',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'program.office.name',
-   		        title: '承包单位',
-   		        sortable: true
-   		       
-   		    }
-   			,{
-   		        field: 'programAddr',
-   		        title: '工程地址',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'connector',
-   		        title: '工程联系人',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'phoneNum',
-   		        title: '联系电话',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'startDate',
-   		        title: '开工日期',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'completeDate',
-   		        title: '竣工日期',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'totalPrice',
-   		        title: '合同总价(万元)',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'contractDate',
-   		        title: '合同签订日期',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'buildDate',
-   		        title: '工期',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'user.name',
-   		        title: '合同拟草人',
-   		        sortable: true
-   		    }
-   			,{
-   		        field: 'approvalStatus',
-   		        title: '审核状态',
-   		        sortable: true,
-   		        formatter:function(value, row , index){
-   		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('procontract_approval'))}, value, "-");
-   		        }
-   		    }
-   			,{
-   		        field: 'status',
-   		        title: '合同状态',
-   		        sortable: true,
-   		        formatter:function(value, row , index){
-   		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('contract_status'))}, value, "-");
-   		        }
-   		    }
-   			,{
-   		        field: 'remarks',
-   		        title: '备注信息',
-   		        sortable: true
-   		       
-   		    }
+			,{
+		        field: 'subpackageProgramNum',
+		        title: '分包项目编号',
+		        width:30
+		        ,formatter:function(value, row , index){
+		        	return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+		         }
+		    }
+			,{
+		        field: 'subpackageProgramName',
+		        title: '分包项目名称',
+		        sortable: true,
+		        width:15
+		       
+		    }
+			//待修改
+			,{
+		        field: 'program.programName',
+		        title: '所属项目名称',
+		        width:20
+		    }
+			,{
+		        field: 'subpackageProgramCont',
+		        title: '分包项目内容',
+		        width:20
+		       
+		    }
+			,{
+		        field: 'tenderCompany',
+		        title: '招标单位名称',
+		        width:20
+		    }
+			,{
+		        field: 'program.office.name',
+		        title: '承接分公司'
+		    }
+			,{
+				field: 'program.getMethod',
+				title: '承接方式',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('get_method'))}, value, "-");
+		        }
+			}
+			,{
+		        field: 'subProgramType',
+		        title: '分包项目工程类别',
+		        width:5,
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('programtype'))}, value, "-");
+		        }
+		    }
+			,{
+		        field: 'planToStart',
+		        title: '计划开始时间'
+		    }
+			
+			,{
+		        field: 'planToEnd',
+		        title: '计划结束时间'
+		    }
+			,{
+		        field: 'subproAddr',
+		        title: '分包工程地址'
+		    }
+			,{
+		        field: 'remarks',
+		        title: '备注信息'
+		       
+		    }
 			,{
                 field: 'operate',
                 title: '操作',
                 align: 'center',
                 events: {
     		        'click .view': function (e, value, row, index) {
-    		        	jp.openTab("${ctx}/enclosuremanage/enclosuretab/list?contractTempId="+row.id,"总包合同附件",false);
+    		        	jp.openTab("${ctx}/enclosuremanage/enclosuretab/list?subproid="+row.id,"子项目附件",false);
     		        },
     		        'click .enclosureedit': function (e, value, row, index) {
-    		        	jp.openDialog('编辑附件', '${ctx}/enclosuremanage/enclosuretab/form?contractTempId='+row.id,'1000px', '600px');
-    		        },
+    		        	jp.openDialog('编辑子项目附件', '${ctx}/enclosuremanage/enclosuretab/form?subproid='+row.id,'1000px', '600px');
+    		        }
+//    		        ,'click .subtendermanage': function (e, value, row, index) {
+//						jp.openDialog('编辑招标管理', '${ctx}/tendermanage/tender/newform?subproid='+row.id,'1000px', '600px');
+//					}
     		    },
                 formatter: function operateFormatter(value, row, index) {
                 	var foreginId = row.id;//获取当前行id
@@ -208,7 +168,6 @@ $(document).ready(function() {
                 		contentType:"application/json;charset=utf-8",
                 		dataType:"json",
                 		success:function(data){
-                			console.log(data);
                 			count = data;
                 		},
                 		error:function(){
@@ -216,7 +175,7 @@ $(document).ready(function() {
                 		}
                 	});
                 	return [
-							'<a href="#" class="view" title="点击查看附件" >',
+                	        '<a href="#" class="view" title="点击查看附件" >',
                 	        '<span style="color:green;font-weight:bold;">',
 							count,
 							'</span>',
@@ -224,14 +183,17 @@ $(document).ready(function() {
 							'<a href="#" class="enclosureedit" title="点击编辑附件" >',
 							'<i class="fa fa-paperclip"></i>',
 							'</a> '
+//							,'<a href="#" class="subtendermanage" title="点击编辑招标管理" >',
+//							'<i class="fa fa-link"></i>',
+//							'</a> '
 						].join('');
                 }
-		    }
-		     ]
+		    }]
 		});
 		  
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 
+		 
 		  $('#table').bootstrapTable("toggleView");
 		}
 	  
@@ -239,6 +201,7 @@ $(document).ready(function() {
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
             $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
+            
         });
 		  
 		$("#btnImport").click(function(){
@@ -249,8 +212,8 @@ $(document).ready(function() {
 			    content:$("#importBox").html() ,
 			    btn: ['下载模板','确定', '关闭'],
 				    btn1: function(index, layero){
-					  window.location='${ctx}/contracttemp/import/template';
-				},
+					  window.location='${ctx}/programmanage/subpackageProgram/import/template';
+				  },
 			    btn2: function(index, layero){
 				        var inputForm =top.$("#importForm");
 				        var top_iframe = top.getActiveTab().attr("name");//获取当前active的tab的iframe 
@@ -270,7 +233,7 @@ $(document).ready(function() {
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#table').bootstrapTable('refresh');
-	  });
+		});
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
@@ -278,38 +241,46 @@ $(document).ready(function() {
 		  $("#searchForm  .select-item").html("");
 		  $('#table').bootstrapTable('refresh');
 		});
-  });
+		
+		
+	});
 		
   function getIdSelections() {
-      return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-          return row.id
-      });
-  }
+        return $.map($("#table").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
   
   function deleteAll(){
-		jp.confirm('确认要删除该记录吗？', function(){
+
+		jp.confirm('确认要删除该子项目工程管理记录吗？', function(){
 			jp.loading();  	
-			jp.get("${ctx}/contracttemp/deleteAll?ids=" + getIdSelections(), function(data){
-     	  		if(data.success){
-     	  			$('#table').bootstrapTable('refresh');
-     	  			jp.success(data.msg);
-     	  		}else{
-     	  			jp.error(data.msg);
-     	  		}
-         	})
+			jp.get("${ctx}/programmanage/subpackageProgram/deleteAll?ids=" + getIdSelections(), function(data){
+         	  		if(data.success){
+         	  			$('#table').bootstrapTable('refresh');
+         	  			jp.success(data.msg);
+         	  		}else{
+         	  			jp.error(data.msg);
+         	  		}
+         	  	})
+          	   
 		})
   }
   
-  function add(){
-	  jp.openDialog('新增管理', "${ctx}/contracttemp/form",'1000px', '600px', $('#table'));
+   function add(){
+	  jp.openDialog('新增子项目工程管理', "${ctx}/programmanage/subpackageProgram/form",'1000px', '800px', $('#table'));
   }
-  
   function edit(id){//没有权限时，不显示确定按钮
   	  if(id == undefined){
-		 id = getIdSelections();
-	  }
-	  jp.openDialog('编辑管理', "${ctx}/contracttemp/form?id=" + id,'1000px', '600px', $('#table'));
+			id = getIdSelections();
+		}
+	  jp.openDialog('编辑子项目工程管理', "${ctx}/programmanage/subpackageProgram/form?id=" + id,'1000px', '800px', $('#table'));
+//	   <shiro:hasPermission name="subpackage:subpackageProgram:edit">
+//	  jp.openDialog('编辑子项目工程管理', "${ctx}/tendermanage/subpackageProgram/form?id=" + id,'800px', '500px', $('#table'));
+//	   </shiro:hasPermission>
+//	  <shiro:lacksPermission name="subpackage:subpackageProgram:edit">
+//	  jp.openDialogView('查看子项目工程管理', "${ctx}/tendermanage/subpackageProgram/form?id=" + id,'800px', '500px', $('#table'));
+//	  </shiro:lacksPermission>
   }
-  
 
 </script>

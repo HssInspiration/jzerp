@@ -79,15 +79,15 @@
 						<input type="hidden" class="form-control" name= "proContract.id" value = "${contractPrinting.proContract.id}">
 						<form:input path="proContract.contractName" htmlEscape="false" readOnly="true" class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>用章日期：</label></td>
-					<td class="width-35">
-						<div class='input-group form_datetime' id='printDate'>
-		                    <input type='text'  name="printDate" class="form-control required"  value="<fmt:formatDate value="${contractPrinting.printDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>	
-					</td>
+<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>用章日期：</label></td> -->
+<!-- 					<td class="width-35"> -->
+<!-- 						<div class='input-group form_datetime' id='printDate'> -->
+<%-- 		                    <input type='text'  name="printDate" class="form-control required"  value="<fmt:formatDate value="${contractPrinting.printDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/> --%>
+<!-- 		                    <span class="input-group-addon"> -->
+<!-- 		                        <span class="glyphicon glyphicon-calendar"></span> -->
+<!-- 		                    </span> -->
+<!-- 		                </div>	 -->
+<!-- 					</td> -->
 				</tr>
 		 	</tbody>
 		</table>

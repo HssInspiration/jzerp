@@ -2,11 +2,11 @@ package co.dc.ccpt.modules.biddingmanagement.tendermanage.tender.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
-import co.dc.ccpt.modules.biddingmanagement.tendermanage.subprogram.entity.SubpackageProgram;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 
 
 /**
@@ -33,6 +33,7 @@ public class Tender extends DataEntity<Tender> {
 	private SubpackageProgram subpackageProgram; //分包项目对象 
 	private Double deposit; //保证金
 	private String projectProfile;//工程概况 
+	private String directorPhone;//负责人号码
 	
 	public Tender() {
 		super();
@@ -178,6 +179,14 @@ public class Tender extends DataEntity<Tender> {
 
 	public void setEndOpenBidDate(Date endOpenBidDate) {
 		this.endOpenBidDate = endOpenBidDate;
+	}
+
+	public String getDirectorPhone() {
+		return directorPhone;
+	}
+
+	public void setDirectorPhone(String directorPhone) {
+		this.directorPhone = directorPhone;
 	}
 		
 }

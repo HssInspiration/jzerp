@@ -102,8 +102,6 @@ public class SubContractPrintingController extends BaseController {
 				subContractPrinting.setPrintNum(printNum);
 				//设置对应的用章类型--1（分包合同用章）
 				subContractPrinting.setPrintType(1);
-				// 用章时间--默认当前时间
-				subContractPrinting.setPrintDate(new Date());
 			}
 		}
 		
@@ -117,6 +115,37 @@ public class SubContractPrintingController extends BaseController {
 		
 		return "modules/printingmanagement/contractprint/subprinting/subContractPrintingForm";
 	}
+	
+	/**
+	 * 用章表单
+	 * @param contractPrinting
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "printForm")
+	public String printForm(SubContractPrinting subContractPrinting, Model model) {
+		model.addAttribute("subContractPrinting", subContractPrinting);
+		return "modules/printingmanagement/contractprint/subprinting/subPrintingForm";
+	}
+	
+	/**
+	 * 更新状态
+	 */
+	@ResponseBody
+	@RequestMapping(value = "updateStampStatus")
+	public AjaxJson updateStampStatus(SubContractPrinting subContractPrinting, Model model, RedirectAttributes redirectAttributes) throws Exception{
+		AjaxJson j = new AjaxJson();
+		if (!beanValidator(model, subContractPrinting)){
+			j.setSuccess(false);
+			j.setMsg("非法参数！");
+			return j;
+		}
+		subContractPrintingService.updateStampStatus(subContractPrinting);
+		j.setSuccess(true);
+		j.setMsg("保存成功");
+		return j;
+	}
+	
 	/**
 	 * 保存
 	 */
@@ -138,7 +167,7 @@ public class SubContractPrintingController extends BaseController {
 		}
 		subContractPrintingService.save(subContractPrinting);//新建或者编辑保存
 		j.setSuccess(true);
-		j.setMsg("保存保证金审批成功");
+		j.setMsg("保存成功");
 		return j;
 	}
 	
@@ -175,7 +204,7 @@ public class SubContractPrintingController extends BaseController {
 	public AjaxJson delete(SubContractPrinting subContractPrinting, RedirectAttributes redirectAttributes) {
 		AjaxJson j = new AjaxJson();
 		subContractPrintingService.delete(subContractPrinting);
-		j.setMsg("删除保证金审批成功");
+		j.setMsg("删除成功");
 		return j;
 	}
 }

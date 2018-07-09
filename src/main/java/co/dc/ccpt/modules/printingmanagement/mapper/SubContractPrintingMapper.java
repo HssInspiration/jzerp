@@ -5,6 +5,7 @@ import java.util.List;
 import co.dc.ccpt.core.persistence.BaseMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
+import co.dc.ccpt.modules.printingmanagement.entity.ContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.entity.SubContractPrinting;
 /**
  * 分包合同用章管理Mapper
@@ -20,4 +21,5 @@ public interface SubContractPrintingMapper extends BaseMapper<SubContractPrintin
 
 	public List<SubProContract> getSubProContractListByName();
 
+	public ContractPrinting updateStampStatus(SubContractPrinting subContractPrinting);//更新用章状态
 }

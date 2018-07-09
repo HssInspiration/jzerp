@@ -3,6 +3,7 @@
  */
 package co.dc.ccpt.modules.printingmanagement.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +76,15 @@ public class ContractPrintingService extends CrudService<ContractPrintingMapper,
 			countStr = count.toString();
 		}
 		countStr = "ZBYZ-"+countStr;
-		return countStr;
+		return countStr;	
 	}
 
 	public List<ContractPrinting> getContractPrintingByProId(ContractPrinting contractPrinting) {
 		return contractPrintingMapper.getContractPrintingByProId(contractPrinting);
+	}
+	@Transactional(readOnly = false)
+	public ContractPrinting updateStampStatus(ContractPrinting contractPrinting) {
+		contractPrinting.setPrintDate(new Date());
+		return contractPrintingMapper.updateStampStatus(contractPrinting);
 	}
 }

@@ -138,6 +138,12 @@ $(document).ready(function() {
 		       
 		    }
 			,{
+		        field: 'directorPhone',
+		        title: '负责人号码',
+		        sortable: true
+		       
+		    }
+			,{
 		        field: 'evaluateMethod',
 		        title: '评标办法',
 		        sortable: true
@@ -280,14 +286,14 @@ $(document).ready(function() {
           	   
 		})
   }
-//   function add(){
-//	  jp.openDialog('新增招标信息管理', "${ctx}/tendermanage/tender/form",'800px', '500px', $('#table'));
-//  }
+   function add(){
+	  jp.openDialog('新增招标信息管理', "${ctx}/tendermanage/tender/form",'1000px', '800px', $('#table'));
+  }
   function edit(id){//没有权限时，不显示确定按钮
   	  if(id == undefined){
 			id = getIdSelections();
 		}
-	  jp.openDialog('编辑招标信息管理', "${ctx}/tendermanage/tender/form?id=" + id,'800px', '500px', $('#table'));
+	  jp.openDialog('编辑招标信息管理', "${ctx}/tendermanage/tender/form?id=" + id,'1000px', '800px', $('#table'));
 //	   <shiro:hasPermission name="tender:tender:edit">
 //	  jp.openDialog('编辑招标信息管理', "${ctx}/tendermanage/tender/form?id=" + id,'800px', '500px', $('#table'));
 //	   </shiro:hasPermission>

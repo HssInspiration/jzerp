@@ -33,7 +33,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [20, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/programmanage/program/data",
+               url: "${ctx}/programmanage/program/dataForJyb",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -92,27 +92,22 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'company.companyName',
-		        title: '发标单位',
-		        sortable: true
-		       
+		        title: '发标单位'
 		    }
 			,{
 		        field: 'getMethod',
 		        title: '承接方式',
-		        sortable: true,
 		        formatter:function(value, row , index){
 		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('get_method'))}, value, "-");
 		        }
 		    }
 			,{
 		        field: 'office.name',
-		        title: '承接分公司',
-		        sortable: true
+		        title: '承接分公司'
 		    }
 			,{
 		        field: 'programType',
 		        title: '项目工程类别',
-		        sortable: true,
 		        formatter:function(value, row , index){
 		        	var valueArray = value.split(",");
 		        	var labelArray = [];
@@ -124,9 +119,20 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'proDescription',
-		        title: '项目详细描述',
-		        sortable: true
+		        title: '项目详细描述'
 		    }
+			,{
+				field: 'programConnector',
+				title: '项目联系人'
+			}
+			,{
+				field: 'connectorPhone',
+				title: '联系号码'
+			}
+			,{
+				field: 'programAddr',
+				title: '工程地址'
+			}
 			,{
 		        field: 'status',
 		        title: '项目状态',
@@ -138,13 +144,11 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'planToStart',
-		        title: '计划开标日期',
-		        sortable: true
+		        title: '计划开标日期'
 		    }
 			,{
 		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true
+		        title: '备注信息'
 		        
 		    }
 			,{
@@ -304,15 +308,15 @@ $(document).ready(function() {
 		  status = getStatusSelection();
 	  }
 	  if(status==0){
-		  jp.openDialog('编辑项目信息', '${ctx}/programmanage/program/form?id='+id,'1000px', '600px');  
+		  jp.openDialog('编辑项目信息', '${ctx}/programmanage/program/formForJyb?id='+id,'1000px', '600px');  
 	  }else{
-		  jp.openDialogView('编辑项目信息', '${ctx}/programmanage/program/form?id='+id,'1000px', '600px');
+		  jp.openDialogView('查看项目信息', '${ctx}/programmanage/program/formForJyb?id='+id,'1000px', '600px');
 	  }
 	  
   }
   
   function add(){
-	  jp.openDialog('新建项目信息', '${ctx}/programmanage/program/form','1000px', '600px');
+	  jp.openDialog('新建项目信息', '${ctx}/programmanage/program/formForJyb','1000px', '600px');
   }
   
   function completed(status){

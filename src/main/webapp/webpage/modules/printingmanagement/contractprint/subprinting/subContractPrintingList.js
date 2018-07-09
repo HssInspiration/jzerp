@@ -71,6 +71,9 @@ $(document).ready(function() {
                onClickRow: function(row, $el){
                },
                columns: [{
+        	   checkbox: true
+             }
+            ,{
 		        field: 'printNum',
 		        title: '用章编号',
 //		        sortable: true
@@ -83,6 +86,11 @@ $(document).ready(function() {
    		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('print_type'))}, value, "-");
    		        }
    		    }
+           ,{
+  				field: 'createDate',
+  				title: '用章申请日期',
+  				sortable: true
+  			}
    			,{
    				field: 'printDate',
    				title: '用章日期',
@@ -101,11 +109,17 @@ $(document).ready(function() {
 		        field: 'subProContract.subProContractDate',
 		        title: '合同签订日期'
 		    }
-			
 			,{
 		        field: 'subProContract.user.name',
 		        title: '用章申请人'
 		       
+		    }
+			,{
+		        field: 'isStamp',
+		        title: '是否用章',
+   		        formatter:function(value, row , index){
+   		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-");
+   		        }
 		    }
 			,{
 				field: 'times',
@@ -137,9 +151,7 @@ $(document).ready(function() {
             $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
             $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
             $('#startApproval').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            $('#stamp').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            $('#confirmValid').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
-            
+            $('#print').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1 || getStampStatus() == 1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -189,6 +201,12 @@ $(document).ready(function() {
 		});
   });
 		
+  function getStampStatus() {
+      return $.map($("#table").bootstrapTable('getSelections'), function (row) {
+          return row.isStamp
+      });
+  }
+  
   function getIdSelections() {
       return $.map($("#table").bootstrapTable('getSelections'), function (row) {
           return row.id
@@ -207,6 +225,13 @@ $(document).ready(function() {
      	  		}
          	})
 		})
+  }
+  
+  function print(id){//用印
+  	  if(id == undefined){
+		 id = getIdSelections();
+	  }
+	jp.openDialog('用章', "${ctx}/contractprint/proprinting/print?id=" + id,'1000px', '600px', $('#table'));
   }
   
 </script>

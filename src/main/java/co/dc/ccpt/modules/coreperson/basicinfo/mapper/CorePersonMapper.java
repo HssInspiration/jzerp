@@ -4,7 +4,6 @@ import java.util.List;
 
 import co.dc.ccpt.core.persistence.BaseMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
-import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.entity.Bidtable;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
 
 /**

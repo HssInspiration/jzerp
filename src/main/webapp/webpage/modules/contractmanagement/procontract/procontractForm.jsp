@@ -131,7 +131,12 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同名称：</label></td>
 					<td class="width-35">
-						<form:input path="contractName" htmlEscape="false"    class="form-control "/>		
+					<c:if test = "${proContract.approvalStatus eq 1 || proContract.approvalStatus eq 2 }"> 
+						<form:input path="contractName" htmlEscape="false"  readOnly="true"  class="form-control "/>	
+					</c:if>	
+					<c:if test = "${proContract.approvalStatus eq 0 }"> 
+						<form:input path="contractName" htmlEscape="false"   class="form-control "/>	
+					</c:if>	;
 					</td>
 				</tr>
 				<tr>
@@ -159,66 +164,71 @@
 			            	<input type="text" class="form-control" readOnly="true" value = "${proContract.program.programName}">
 			            </c:if>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td>
-					<td class="width-35">
-						<form:input path="programConnector" htmlEscape="false"    class="form-control "/>
-					</td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>联系人号码：</label></td>
-					<td class="width-35">
-						<form:input path="phoneNum" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>开工日期：</label></td>
-					<td class="width-35">
-						<div class='input-group form_datetime' id='startDate'>
-		                    <input type='text'  name="startDate" class="form-control required"  value="<fmt:formatDate value="${proContract.startDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>	
-					</td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程地址：</label></td>
-					<td class="width-35">
-						<form:input path="programAddr" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>竣工日期：</label></td>
-					<td class="width-35">
-						<div class='input-group form_datetime' id='completeDate'>
-		                    <input type='text'  name="completeDate" class="form-control required"  value="<fmt:formatDate value="${proContract.completeDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>
-					</td>
-				</tr>
-				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同总价(万元)：</label></td>
-					<td class="width-35">
-						<form:input path="contractTotalPrice" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>签订日期：</label></td>
-					<td class="width-35">
-						<div class='input-group form_datetime' id='contractDate'>
-		                    <input type='text'  name="contractDate" class="form-control required"  value="<fmt:formatDate value="${proContract.contractDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>
-					</td>
-				</tr>
-				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同拟草人：</label></td>
 					<td class="width-35">
 						<input type="hidden" class="form-control" name="user.id" value = "${proContract.user.id}">
 						<form:input path="user.name" htmlEscape="false" value="${proContract.user.name}" readOnly="true"  class="form-control "/>
 					</td>
+					
+				</tr>
+				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td>
+					<td class="width-35">
+						<form:input path="programConnector" htmlEscape="false"    class="form-control "/>
+					</td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>联系人号码：</label></td>
+					<td class="width-35">
+						<form:input path="phoneNum" htmlEscape="false"    class="form-control "/>
+					</td>
+				</tr>
+				<tr>
+					
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>开工日期：</label></td>
+					<td class="width-35">
+						<div class='input-group form_datetime' id='startDate'>
+		                    <input type='text' <c:if test = "${proContract.approvalStatus eq 1 ||proContract.approvalStatus eq 2 }">readOnly="true" </c:if> name="startDate" class="form-control required"  value="<fmt:formatDate value="${proContract.startDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+		                    <span class="input-group-addon">
+		                        <span class="glyphicon glyphicon-calendar"></span>
+		                    </span>
+		                </div>	
+					</td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>竣工日期：</label></td>
+					<td class="width-35">
+						<div class='input-group form_datetime' id='completeDate'>
+		                     <input type='text' name="completeDate"  <c:if test = "${proContract.approvalStatus eq 1 ||proContract.approvalStatus eq 2 }">readOnly="true" </c:if> class="form-control required"  value="<fmt:formatDate value="${proContract.completeDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
+			                    <span class="input-group-addon">
+			                        <span class="glyphicon glyphicon-calendar"></span>
+			                    </span>
+		                </div>
+					</td>
+				</tr>
+<!-- 				<tr> -->
+<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程地址：</label></td> -->
+<!-- 					<td class="width-35"> -->
+<%-- 						<form:input path="programAddr" htmlEscape="false"    class="form-control "/> --%>
+<!-- 					</td> -->
+<!-- 				</tr> -->
+				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同总价(万元)：</label></td>
+					<td class="width-35">
+						<form:input path="contractTotalPrice" htmlEscape="false" class="form-control "/>
+					</td>
+<!-- 					<td class="width-15 active"><label class="pull-right">生效签订日期：</label></td> -->
+<!-- 					<td class="width-35"> -->
+<!-- 						<div class='input-group form_datetime' id='contractDate'> -->
+<%-- 		                    <input type='text'  name="contractDate" class="form-control"  value="<fmt:formatDate value="${proContract.contractDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/> --%>
+<!-- 		                    <span class="input-group-addon"> -->
+<!-- 		                        <span class="glyphicon glyphicon-calendar"></span> -->
+<!-- 		                    </span> -->
+<!-- 		                </div> -->
+<!-- 					</td> -->
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">		
 						<form:textarea path="remarks"  htmlEscape="false"  rows="4" class="form-control "/>
 					</td>
+<!-- 					<td class="width-15 active"></td> -->
+<!-- 					<td class="width-35">		 -->
+<!-- 					</td> -->
 				</tr>
 		 	</tbody>
 		</table>

@@ -190,6 +190,16 @@
 					</td>
 				</tr>
 				<tr>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td>
+					<td class="width-35">
+						<form:input path="connector" htmlEscape="false"    class="form-control "/>
+					</td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>联系人号码：</label></td>
+					<td class="width-35">
+						<form:input path="phoneNum" htmlEscape="false"    class="form-control "/>
+					</td>
+				</tr>
+<!-- 				<tr> -->
 <!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>总包合同名称：</label></td> -->
 <!-- 					<td class="width-35"> -->
 <%-- 						<input type="hidden" class="form-control" name= "proContract.id" id = "proContractId" value = "${subProContract.proContract.id}"> --%>
@@ -208,15 +218,15 @@
 <!-- 			                </div> -->
 <!-- 			            </div> -->
 <!-- 					</td> -->
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程地址：</label></td>
-					<td class="width-35">
-						<form:input path="subProAddr" htmlEscape="false"    class="form-control "/>
-					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td>
-					<td class="width-35">
-						<form:input path="connector" htmlEscape="false"    class="form-control "/>
-					</td>
-				</tr>
+<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程地址：</label></td> -->
+<!-- 					<td class="width-35"> -->
+<%-- 						<form:input path="subProAddr" htmlEscape="false"    class="form-control "/> --%>
+<!-- 					</td> -->
+<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td> -->
+<!-- 					<td class="width-35"> -->
+<%-- 						<form:input path="connector" htmlEscape="false"    class="form-control "/> --%>
+<!-- 					</td> -->
+<!-- 				</tr> -->
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>开工日期：</label></td>
 					<td class="width-35">
@@ -227,10 +237,10 @@
 		                    </span>
 		                </div>	
 					</td>
-					
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>联系人号码：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同拟草人：</label></td>
 					<td class="width-35">
-						<form:input path="phoneNum" htmlEscape="false"    class="form-control "/>
+						<input type="hidden" class="form-control" name= "user.id" id = "userId" value = "${subProContract.user.id}">
+						<form:input path="user.name" htmlEscape="false"  readOnly="true"  class="form-control "/>
 					</td>
 				</tr>
 				<tr>
@@ -244,12 +254,10 @@
 		                </div>
 					</td>
 					
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同拟草人：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包公司：</label></td>
 					<td class="width-35">
-						<input type="hidden" class="form-control" name= "user.id" id = "userId" value = "${subProContract.user.id}">
-						<form:input path="user.name" htmlEscape="false"  readOnly="true"  class="form-control "/>
+						<form:input path="employer" htmlEscape="false" readOnly="true" value="江苏金卓建设工程有限公司" class="form-control "/>
 					</td>
-					
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>签订日期：</label></td>
@@ -261,22 +269,11 @@
 		                    </span>
 		                </div>
 					</td>
-					
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包公司：</label></td>
-					<td class="width-35">
-						<form:input path="employer" htmlEscape="false" readOnly="true" value="江苏金卓建设工程有限公司" class="form-control "/>
-					</td>
-				</tr> 
-				<tr>
-					
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">		
 						<form:textarea path="remarks"  htmlEscape="false"  rows="4" class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"></td>
-					<td class="width-35">
-					</td>
-				</tr>
+				</tr> 
 		 	</tbody>
 		</table>
 	</form:form>

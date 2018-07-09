@@ -27,11 +27,11 @@ import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.act.entity.Act;
 import co.dc.ccpt.modules.act.service.ActTaskService;
 import co.dc.ccpt.modules.act.utils.ActUtils;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
+import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 
 /**

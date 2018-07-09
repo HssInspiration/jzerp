@@ -72,7 +72,7 @@
 				<div class="form-group text-center">
 				 <h3>总包合同（市场投标）审批</h3>
 				</div>
-			<form:form id="inputForm" modelAttribute="attachContract" action="${ctx}/oa/attachContract/save" method="post" class="form-horizontal">
+			<form:form id="inputForm" modelAttribute="actSubContract" action="${ctx}/oa/actSubContract/save" method="post" class="form-horizontal">
 				<form:hidden path="id"/>
 				<form:hidden path="act.taskId"/>
 				<form:hidden path="act.taskName"/>
@@ -84,7 +84,7 @@
 					<div class="form-group">
 						<label class="col-sm-2 control-label">合同名称：</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" readonly="readonly" id="test_data" value = "${attachContract.proContract.contractName}">
+							<input type="text" class="form-control" readonly="readonly" id="test_data" value = "${actSubContract.subProContract.subProContractName}">
 						</div>
 					</div>
 					<div class="form-group">
@@ -94,8 +94,8 @@
 						</div>
 					</div>
 		
-					<act:flowChart procInsId="${attachContract.act.procInsId}"/>
-					<act:histoicFlow procInsId="${attachContract.act.procInsId}"/>
+					<act:flowChart procInsId="${actSubContract.act.procInsId}"/>
+					<act:histoicFlow procInsId="${actSubContract.act.procInsId}"/>
 			</form:form>
 	</div>
 </div>

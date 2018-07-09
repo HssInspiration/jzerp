@@ -76,7 +76,14 @@ $(document).ready(function() {
 		        field: 'subProContractNum',
 		        title: '分包合同编号'
 		        ,formatter:function(value, row , index){
-		        	return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
+		        	var approvalStatus = row.approvalStatus;
+		        	var contractStatus = row.contractStatus;
+		        	if(approvalStatus == 0 || contractStatus == 3){
+		        		return '<a  href="#" onclick="jp.openDialog(\'编辑信息\', \'${ctx}/subprocontract/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
+		        	}else{
+		        		return '<a  href="#" onclick="jp.openDialogView(\'查看信息\', \'${ctx}/subprocontract/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
+		        	}
+//		        	return "<a href='javascript:edit(\""+row.id+"\")'>"+value+"</a>";
 		         }
 		    }
 		    ,{
@@ -110,7 +117,7 @@ $(document).ready(function() {
 		        title: '承包单位'
 		    }
 			,{
-		        field: 'subProAddr',
+		        field: 'subpackageProgram.subproAddr',
 		        title: '工程地址'
 		    }
 			,{
@@ -221,7 +228,8 @@ $(document).ready(function() {
 	  $('#table').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#table').bootstrapTable('getSelections').length);
-            $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
+            $('#edit').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1
+            				|| getApprovalStatus() != 0 || getContractStatus() != 3);
             $('#startApproval').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
             $('#stamp').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
             $('#confirmValid').prop('disabled', $('#table').bootstrapTable('getSelections').length!=1);
@@ -336,7 +344,7 @@ $(document).ready(function() {
 	  jp.openDialog('编辑管理', "${ctx}/subprocontract/form?id=" + id,'1000px', '600px', $('#table'));
   }
   
-  function stamp(id,approvalStatus){//用印
+  function stampApply(id,approvalStatus){//用印
   	  if(id == undefined){
 		 id = getIdSelections();
 	  }

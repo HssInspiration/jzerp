@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
-import co.dc.ccpt.modules.constructormanagement.basicinfo.entity.CoreStaff;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
 import co.dc.ccpt.modules.coreperson.basicinfo.mapper.CorePersonMapper;

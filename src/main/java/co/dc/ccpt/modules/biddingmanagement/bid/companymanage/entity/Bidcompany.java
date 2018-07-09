@@ -12,9 +12,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.entity.Bidtable;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Company;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
+import co.dc.ccpt.modules.programmanage.entity.Company;
+import co.dc.ccpt.modules.programmanage.entity.Program;
 
 /**
  * 参投单位管理Entity

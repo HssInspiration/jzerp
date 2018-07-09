@@ -67,7 +67,7 @@
 	<!-- 工具栏 -->
 	<div id="toolbar">
 <%-- 			<shiro:hasPermission name="tender:tender:add"> --%>
-<!-- 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a> -->
+				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
 <%-- 			</shiro:hasPermission> --%>
 <%-- 			<shiro:hasPermission name="tender:tender:edit"> --%>
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">

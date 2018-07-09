@@ -83,6 +83,9 @@
 <!-- 	            	<i class="glyphicon glyphicon-remove"></i> 删除 -->
 <!-- 	        	</button> -->
 <%-- 			</shiro:hasPermission> --%>
+				<button id="print" class="btn btn-info" disabled onclick="print()">
+	            	<i class="glyphicon glyphicon-star"></i> 用章
+	        	</button>
 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
 					<i class="fa fa-search"></i> 检索
 				</a>

@@ -2,8 +2,7 @@
 <script>
 $(document).ready(function() {
 	$('#table').bootstrapTable({
-		 
-		  //请求方法
+			   //请求方法
                method: 'get',
                //类型json
                dataType: "json",
@@ -87,7 +86,6 @@ $(document).ready(function() {
 		        	}else{
 		        		return '<a  href="#" onclick="jp.openDialogView(\'查看保证金信息\', \'${ctx}/deposit/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
 		        	}
-		        	
 		         }
 		    }
 			,{
@@ -144,22 +142,16 @@ $(document).ready(function() {
 		        	}
 //		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('deposit_checkstatus'))}, value, "-");
 		        }
-		       
 		    }
 			,{
 		        field: 'remarks',
 		        title: '备注信息',
 		        sortable: true
-		        
 		    }
 		     ]
-		
 		});
-		
 		  
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
-
-		 
 		  $('#table').bootstrapTable("toggleView");
 		}
 	  
@@ -233,23 +225,23 @@ $(document).ready(function() {
   }
   
   function deleteAll(){
-
 		jp.confirm('确认要删除该保证金信息管理记录吗？', function(){
 			jp.loading();  	
 			jp.get("${ctx}/deposit/deleteAll?ids=" + getIdSelections(), function(data){
-         	  		if(data.success){
-         	  			$('#table').bootstrapTable('refresh');
-         	  			jp.success(data.msg);
-         	  		}else{
-         	  			jp.error(data.msg);
-         	  		}
-         	  	})
-          	   
+	 	  		if(data.success){
+	 	  			$('#table').bootstrapTable('refresh');
+	 	  			jp.success(data.msg);
+	 	  		}else{
+	 	  			jp.error(data.msg);
+	 	  		}
+	 	  	})
 		})
   }
-   function add(){
+  
+  function add(){
 	  jp.openDialog('新增保证金信息管理', "${ctx}/deposit/form",'800px', '500px', $('#table'));
   }
+  
   function edit(id,status){//没有权限时，不显示确定按钮
   	  if(id == undefined){
 			id = getIdSelections();
@@ -264,7 +256,6 @@ $(document).ready(function() {
 	  }else{
 		  jp.openDialogView('查看保证金信息管理', "${ctx}/deposit/form?id=" + id,'800px', '500px', $('#table'));
 	  }
-	  
 //	   <shiro:hasPermission name="deposit:deposit:edit">
 //	  jp.openDialog('编辑保证金信息管理', "${ctx}/deposit/form?id=" + id,'800px', '500px', $('#table'));
 //	   </shiro:hasPermission>

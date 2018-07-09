@@ -1,19 +1,17 @@
 package co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.entity;
 
-
-
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Company;
-import co.dc.ccpt.modules.biddingmanagement.bid.programmanage.entity.Program;
-import co.dc.ccpt.modules.constructormanagement.basicinfo.entity.CoreStaff;
+import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
+import co.dc.ccpt.modules.programmanage.entity.Company;
+import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.sys.entity.DictValue;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 参投单位表Entity
@@ -50,17 +48,17 @@ public class BidCompanyManage extends DataEntity<BidCompanyManage> {
 	private Company company;             //单位对象
 	
 	/*人员名称*/
-	private CoreStaff tecBidName;      // 技术标负责人
-	private CoreStaff comBidName;      // 商务标负责人
-	private CoreStaff ecoBidName;      // 经济标负责人
-	private CoreStaff constructoor;    // 建造师名称
-	private CoreStaff director;        // 技术负责人
+	private CorePerson tecBidName;      // 技术标负责人
+	private CorePerson comBidName;      // 商务标负责人
+	private CorePerson ecoBidName;      // 经济标负责人
+	private CorePerson constructoor;    // 建造师名称
+	private CorePerson director;        // 技术负责人
 	
-	private CoreStaff saver;           // 安全员名称
-	private CoreStaff constrworker;    // 施工员名称
-	private CoreStaff inspector;       // 质检员名称
-	private CoreStaff meterialer;      // 材料员名称
-	private CoreStaff coster;          // 造价员名称
+	private CorePerson saver;           // 安全员名称
+	private CorePerson constrworker;    // 施工员名称
+	private CorePerson inspector;       // 质检员名称
+	private CorePerson meterialer;      // 材料员名称
+	private CorePerson coster;          // 造价员名称
 //	private Worker tecBidName;      // 技术标负责人
 //	private Worker comBidName;      // 商务标负责人
 //	private Worker ecoBidName;      // 经济标负责人
@@ -288,83 +286,83 @@ public class BidCompanyManage extends DataEntity<BidCompanyManage> {
 		this.tecBid = tecBid;
 	}
 
-	public CoreStaff getTecBidName() {
+	public CorePerson getTecBidName() {
 		return tecBidName;
 	}
 
-	public void setTecBidName(CoreStaff tecBidName) {
+	public void setTecBidName(CorePerson tecBidName) {
 		this.tecBidName = tecBidName;
 	}
 
-	public CoreStaff getComBidName() {
+	public CorePerson getComBidName() {
 		return comBidName;
 	}
 
-	public void setComBidName(CoreStaff comBidName) {
+	public void setComBidName(CorePerson comBidName) {
 		this.comBidName = comBidName;
 	}
 
-	public CoreStaff getEcoBidName() {
+	public CorePerson getEcoBidName() {
 		return ecoBidName;
 	}
 
-	public void setEcoBidName(CoreStaff ecoBidName) {
+	public void setEcoBidName(CorePerson ecoBidName) {
 		this.ecoBidName = ecoBidName;
 	}
 
-	public CoreStaff getConstructoor() {
+	public CorePerson getConstructoor() {
 		return constructoor;
 	}
 
-	public void setConstructoor(CoreStaff constructoor) {
+	public void setConstructoor(CorePerson constructoor) {
 		this.constructoor = constructoor;
 	}
 
-	public CoreStaff getDirector() {
+	public CorePerson getDirector() {
 		return director;
 	}
 
-	public void setDirector(CoreStaff director) {
+	public void setDirector(CorePerson director) {
 		this.director = director;
 	}
 
-	public CoreStaff getSaver() {
+	public CorePerson getSaver() {
 		return saver;
 	}
 
-	public void setSaver(CoreStaff saver) {
+	public void setSaver(CorePerson saver) {
 		this.saver = saver;
 	}
 
-	public CoreStaff getConstrworker() {
+	public CorePerson getConstrworker() {
 		return constrworker;
 	}
 
-	public void setConstrworker(CoreStaff constrworker) {
+	public void setConstrworker(CorePerson constrworker) {
 		this.constrworker = constrworker;
 	}
 
-	public CoreStaff getInspector() {
+	public CorePerson getInspector() {
 		return inspector;
 	}
 
-	public void setInspector(CoreStaff inspector) {
+	public void setInspector(CorePerson inspector) {
 		this.inspector = inspector;
 	}
 
-	public CoreStaff getMeterialer() {
+	public CorePerson getMeterialer() {
 		return meterialer;
 	}
 
-	public void setMeterialer(CoreStaff meterialer) {
+	public void setMeterialer(CorePerson meterialer) {
 		this.meterialer = meterialer;
 	}
 
-	public CoreStaff getCoster() {
+	public CorePerson getCoster() {
 		return coster;
 	}
 
-	public void setCoster(CoreStaff coster) {
+	public void setCoster(CorePerson coster) {
 		this.coster = coster;
 	}
 
