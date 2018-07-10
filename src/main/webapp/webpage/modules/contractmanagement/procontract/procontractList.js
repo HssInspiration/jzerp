@@ -198,6 +198,17 @@ $(document).ready(function() {
     		        'click .enclosureedit': function (e, value, row, index) {
     		        	jp.openDialog('编辑附件', '${ctx}/enclosuremanage/enclosuretab/form?contractId='+row.id,'1000px', '600px');
     		        },
+    		        'click .contractedit': function (e, value, row, index) {
+    		        	if(row.approvalStatus==0){
+    		        		jp.openDialog('编辑合同正文', '${ctx}/contractTextManage/form?contractId='+row.id,'1000px', '600px');
+    		        	}else{
+    		        		jp.info("非待审批状态不可操作！");
+    		        	}
+    		        },
+    		        'click .contractview': function (e, value, row, index) {
+    		        	jp.openDialog('查看合同正文', '${ctx}/contractTextManage/list?contractId='+row.id,'1000px', '600px');
+    		        	
+    		        }
     		    },
                 formatter: function operateFormatter(value, row, index) {
                 	var foreginId = row.id;//获取当前行id
@@ -223,8 +234,14 @@ $(document).ready(function() {
 							count,
 							'</span>',
 							'</a> ',
-							'<a href="#" class="enclosureedit" title="点击编辑附件" >',
+							'<a href="#" class="enclosureedit"  title="点击编辑附件" >',
 							'<i class="fa fa-paperclip"></i>',
+							'</a> ',
+							'<a href="#" class="contractview" title="查看合同正文" >',
+							'<i class="fa fa-file-text-o"></i>',
+							'</a> ',
+							'<a href="#" class="contractedit" style="color:green;font-weight:bold;" title="编辑合同正文" >',
+							'<i class="fa fa-edit"></i>',
 							'</a> '
 						].join('');
                 }
@@ -297,10 +314,10 @@ $(document).ready(function() {
   });
 		
   function getContractStatus() {
-        return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-            return row.contratStatus
-        });
-    }
+    return $.map($("#table").bootstrapTable('getSelections'), function (row) {
+        return row.contratStatus
+    });
+  }
   
   function getIsKnocked() {
       return $.map($("#table").bootstrapTable('getSelections'), function (row) {
@@ -327,17 +344,17 @@ $(document).ready(function() {
   }
   
   function deleteAll(){
-		jp.confirm('确认要删除该记录吗？', function(){
-			jp.loading();  	
-			jp.get("${ctx}/procontract/deleteAll?ids=" + getIdSelections(), function(data){
-     	  		if(data.success){
-     	  			$('#table').bootstrapTable('refresh');
-     	  			jp.success(data.msg);
-     	  		}else{
-     	  			jp.error(data.msg);
-     	  		}
-         	})
-		})
+	jp.confirm('确认要删除该记录吗？', function(){
+		jp.loading();  	
+		jp.get("${ctx}/procontract/deleteAll?ids=" + getIdSelections(), function(data){
+ 	  		if(data.success){
+ 	  			$('#table').bootstrapTable('refresh');
+ 	  			jp.success(data.msg);
+ 	  		}else{
+ 	  			jp.error(data.msg);
+ 	  		}
+     	})
+	})
   }
   
   function startApproval(contractStatus, getMethod, approvalStatus){//启动审批
@@ -441,5 +458,4 @@ $(document).ready(function() {
   		jp.info("非审批通过状态，不可确认生效！")
   	  }
   }
-
 </script>

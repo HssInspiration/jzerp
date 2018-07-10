@@ -385,10 +385,10 @@ public class EnclosuretabController extends BaseController {
 				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
 				enclosuretab.setEnclosureNum(enclosureNum);
 			}
-			model.addAttribute("enclosuretab", enclosuretab);
 		}else{
 			model.addAttribute("edit",true);
 		}
+		model.addAttribute("enclosuretab", enclosuretab);
 		return "modules/biddingmanagement/bid/enclosuremanage/enclosuretabForm";
 	}
 	

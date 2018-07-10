@@ -80,7 +80,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right">附件内容：</label></td>
 					<td class="width-35">
-						<form:hidden id="enclosureCont" path="enclosureCont" htmlEscape="false" maxlength="64" class="form-control"/>
+						<form:hidden  path="enclosureCont" htmlEscape="false" maxlength="64" class="form-control"/>
 						<sys:ckfinder input="enclosureCont" type="files" uploadPath="/enclosuremanage/enclosuretab" selectMultiple="true"/>
 					</td>
 				</tr>
