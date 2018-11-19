@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-mybatis.org//DTD Mapper3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="co.dc.ccpt.modules.contractmanagement.contracttext.mapper.ContractTextMapper">
+	<sql id="contractTextColumns">
+			a.id AS "id",
+			a.create_by AS "createBy.id",
+			a.create_date AS "createDate",
+			a.update_by AS "updateBy.id",
+			a.update_date AS "updateDate",
+			
+			a.remarks AS "remarks",
+			a.del_flag AS "delFlag",
+			a.contract_text_num AS "contractTextNum",
+			a.contract_text_name AS "contractTextName",
+			a.contract_text_cont AS "contractTextCont",
+			
+			a.contract_text_status AS "contractTextStatus",
+			a.contract_id AS "contractId"
+<!-- 			a.contract_id AS "contractId" -->
+	</sql>
+		
+	<sql id="contractTextJoins">
+		LEFT JOIN program_contract p ON p.id = a.contract_id
+	</sql>
+
+	<select id="get" resultType="contractText">
+		SELECT
+			<include refid="contractTextColumns"/>
+		FROM contract_text a
+			<include refid="contractTextJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="getByContractId" resultType="contractText">
+		SELECT
+			<include refid="contractTextColumns"/>
+		FROM contract_text a
+			<include refid="contractTextJoins"/>
+			WHERE a.contract_id = #{contractId}
+			AND a.contract_text_status = 1
+			AND a.del_flag = '0'
+	</select>
+	
+	<select id="findAll" resultType="contractText">
+		SELECT
+			<include refid="contractTextColumns"/>
+		FROM contract_text a
+			<include refid="contractTextJoins"/>
+		WHERE a.contract_id = #{contractId}
+	</select>
+	
+	<select id="getLastProContractNum" resultType="String" >
+		SELECT
+			a.contract_text_num AS "contractTextNum"
+		FROM contract_text a	
+		WHERE a.create_date =  (SELECT MAX(a.create_date) FROM contract_text a)
+	</select>
+	
+	<select id="findList" resultType="contractText">
+		SELECT
+			<include refid="contractTextColumns"/>
+		FROM contract_text a
+			<include refid="contractTextJoins"/>
+		<where>
+			${dataScope}
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="contractTextName != null and contractTextName != ''">
+				AND a.contract_text_name LIKE
+					<if test="dbName == 'oracle'">'%'||#{contractTextName}||'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractTextName},'%')</if>
+			</if>
+			<if test="contractId != null and contractId != ''">
+				AND a.contract_id = #{contractId}
+			</if>
+<!-- 				AND a.contract_text_status = 1  -->
+		</where>
+		<choose>
+			<when test="page != null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="proContract">
+		SELECT
+			<include refid="contractTextColumns"/>
+		FROM contract_text a
+			<include refid="contractTextJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			${dataScope}
+		</where>	
+		<choose>
+			<when test="page != null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+<!-- 	增加操作 -->
+	<insert id="insert">
+		INSERT INTO contract_text(
+			id,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			
+			del_flag,
+			remarks,
+			contract_text_num,
+			contract_text_name,
+			contract_text_cont,
+			
+			contract_text_status,
+			contract_id		
+		) VALUES (
+			#{id},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			
+			#{delFlag},
+			#{remarks},
+			#{contractTextNum},
+			#{contractTextName},
+			#{contractTextCont},
+			
+			#{contractTextStatus},
+			#{contractId}
+		)
+	</insert>
+<!-- 	更新（修改）操作 -->
+	<update id="update">
+		UPDATE contract_text SET
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			contract_text_num = #{contractTextNum},
+			contract_text_name = #{contractTextName},
+			
+			contract_text_cont = #{contractTextCont},
+			contract_text_status = #{contractTextStatus},
+			contract_id = #{contractId}
+		WHERE id = #{id}
+	</update>
+	
+<!-- 	物理删除 -->
+	<update id="delete">
+		DELETE FROM contract_text
+		WHERE id = #{id}
+	</update>
+	
+<!-- 	逻辑删除 -->
+	<update id="deleteByLogic">
+		UPDATE contract_text SET
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
