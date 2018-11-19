@@ -19,6 +19,7 @@
 		a.print_date AS "printDate",
 		a.print_type AS "printType",
 		a.is_stamp AS "isStamp",
+		a.print_detail_type AS "printDetailType",
 		
 		spc.subpro_contract_name AS "subProContract.subProContractName",
 		spc.subpro_contract_date AS "subProContract.subProContractDate",
@@ -27,8 +28,8 @@
 	</sql>
 	
 	<sql id="subContractPrintingJoins">
-		LEFT JOIN ccpt.sub_pro_contract spc ON spc.id=a.sub_contract_id
-		LEFT JOIN ccpt.sys_user u ON u.id = spc.user_id
+		LEFT JOIN sub_pro_contract spc ON spc.id=a.sub_contract_id
+		LEFT JOIN sys_user u ON u.id = spc.user_id
 	</sql>
 	
 	<!-- 	更新状态和用章时间 -->
@@ -128,7 +129,8 @@
 			print_num,
 			print_type,
 			times,
-			is_stamp,
+			print_detail_type,
+<!-- 			is_stamp, -->
 			sub_contract_id 
 		) VALUES (
 			#{id},
@@ -142,7 +144,8 @@
 			#{printNum},
 			#{printType},
 			#{times},
-			#{isStamp},
+			#{printDetailType},
+<!-- 			#{isStamp}, -->
 			#{subProContract.id}
 		)
 	</insert>
@@ -157,6 +160,7 @@
 			print_type = #{printType},
 			times = #{times},
 			is_stamp = #{isStamp},
+			print_detail_type = #{printDetailType},
 			sub_contract_id = #{subProContract.id}
 		WHERE id = #{id}
 	</update>

@@ -83,6 +83,7 @@ public class UserUtils {
 	 * @return 取不到返回null
 	 */
 	public static User getByLoginName(String loginName){
+//		clearCache();
 		User user = (User)CacheUtils.get(USER_CACHE, USER_CACHE_LOGIN_NAME_ + loginName);
 		if (user == null){
 			user = userMapper.getByLoginName(new User(null, loginName));
@@ -405,5 +406,15 @@ public class UserUtils {
 	public static boolean hasPermission(String permission){
 		return SecurityUtils.getSubject().isPermitted(permission);
 	}
-	
+
+	public static User getByIdCardNum(String idCardNum) {
+			User user = userMapper.getByIdCardNum(new User(null, null, idCardNum));
+			if (user == null){
+				return null;
+			}
+			user.setRoleList(roleMapper.findList(new Role(user)));
+			CacheUtils.put(USER_CACHE, USER_CACHE_ID_ + user.getId(), user);
+			CacheUtils.put(USER_CACHE, USER_CACHE_LOGIN_NAME_ + user.getLoginName(), user);
+		return user;
+	}
 }

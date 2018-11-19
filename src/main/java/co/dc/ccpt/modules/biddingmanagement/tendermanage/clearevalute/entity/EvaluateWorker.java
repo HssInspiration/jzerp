@@ -1,7 +1,6 @@
 package co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.entity;
 
 import co.dc.ccpt.core.persistence.DataEntity;
-import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Worker;
 import co.dc.ccpt.modules.sys.entity.DictValue;
 import co.dc.ccpt.modules.sys.entity.User;
 
@@ -14,7 +13,6 @@ public class EvaluateWorker extends DataEntity<EvaluateWorker> {
 	
 	private static final long serialVersionUID = 1L;
 	private ClearEvaluate clearEvaluate;		// 业务主表id 父类
-	private Worker worker;      // 人员对象
 	private DictValue dictValue; //字典值对象
 	private User user; //人员对象
 	
@@ -26,9 +24,6 @@ public class EvaluateWorker extends DataEntity<EvaluateWorker> {
 		super(id);
 	}
 
-	public Worker getWorker() {
-		return worker;
-	}
 
 	public DictValue getDictValue() {
 		return dictValue;
@@ -38,9 +33,6 @@ public class EvaluateWorker extends DataEntity<EvaluateWorker> {
 		this.dictValue = dictValue;
 	}
 
-	public void setWorker(Worker worker) {
-		this.worker = worker;
-	}
 
 	public EvaluateWorker(ClearEvaluate clearEvaluate) {
 		this.clearEvaluate = clearEvaluate;

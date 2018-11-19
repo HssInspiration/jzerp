@@ -11,7 +11,7 @@ import com.ckfinder.connector.configuration.Configuration;
 import com.ckfinder.connector.data.AccessControlLevel;
 import com.ckfinder.connector.utils.AccessControlUtil;
 import co.dc.ccpt.common.config.Global;
-import co.dc.ccpt.common.utils.FileUtils;
+//import co.dc.ccpt.common.utils.FileUtils;
 import co.dc.ccpt.modules.sys.security.SystemAuthorizingRealm.Principal;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 

@@ -1,7 +1,5 @@
 package co.dc.ccpt.modules.contractmanagement.contracttemp.service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,6 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.contractmanagement.contracttemp.entity.ContractTemp;
 import co.dc.ccpt.modules.contractmanagement.contracttemp.mapper.ContractTempMapper;
-import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
-import co.dc.ccpt.modules.contractmanagement.procontract.mapper.ProContractMapper;
 /**
  * 总包项目合同Service
  * @author Administrator
@@ -80,6 +76,13 @@ public class ContractTempService extends CrudService<ContractTempMapper, Contrac
 		}
 		countStr = "TEMP-"+countStr;
 		return countStr;
+	}
+
+
+	public Object getByTempName(String tempName) {
+		ContractTemp contractTemp = new ContractTemp();
+		contractTemp.setTempName(tempName);
+		return contractTempMapper.getByTempName(contractTemp);
 	}
 	
 }

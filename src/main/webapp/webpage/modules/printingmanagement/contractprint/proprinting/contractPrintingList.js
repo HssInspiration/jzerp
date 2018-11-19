@@ -79,11 +79,23 @@ $(document).ready(function() {
 		    }
            ,{
    		        field: 'printType',
-   		        title: '用章类别',
+   		        title: '类型',
    		        formatter:function(value, row , index){
    		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('print_type'))}, value, "-");
    		        }
    		    }
+           ,{
+		        field: 'printDetailType',
+		        title: '用章类别',
+		        formatter:function(value, row , index){
+		        	var valueArray = value.split(",");
+		        	var labelArray = [];
+		        	for(var i =0 ; i<valueArray.length-1; i++){
+		        		labelArray[i] = jp.getDictLabel(${fns:toJson(fns:getDictList('print_detail_type'))}, valueArray[i], "-");
+		        	}
+		        	return labelArray.join(",");
+		        }
+		    }
            ,{
  				field: 'createDate',
  				title: '用章申请日期',
@@ -239,7 +251,7 @@ $(document).ready(function() {
   	  if(id == undefined){
 		 id = getIdSelections();
 	  }
-	jp.openDialog('用章', "${ctx}/contractprint/proprinting/printForm?id=" + id,'1000px', '600px', $('#table'));
+	jp.openDialog('用章', "${ctx}/contractprint/proprinting/printForm?id=" + id,'600px', '200px', $('#table'));
   }
   
 </script>

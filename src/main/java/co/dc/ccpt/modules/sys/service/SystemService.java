@@ -92,7 +92,6 @@ public class SystemService extends BaseService implements InitializingBean {
 		System.out.println(user+":"+id);
 		return userMapper.getOnlyOneUser(user);
 	}
-	
 
 	/**
 	 * 根据登录名获取用户
@@ -678,4 +677,9 @@ public class SystemService extends BaseService implements InitializingBean {
 		}
 		return userIdList;
 	}
+
+	public User getUserByIdCardNum(String idCardNum) {
+		return UserUtils.getByIdCardNum(idCardNum);
+	}
+
 }

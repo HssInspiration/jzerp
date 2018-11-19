@@ -28,7 +28,7 @@
 	</sql>
 	
 	<sql id="tenderJoins">
-		LEFT JOIN ccpt.subpackage_program AS s on s.id=a.subpackage_programid
+		LEFT JOIN subpackage_program AS s on s.id=a.subpackage_programid
 	</sql>
 	
 	<select id="get" resultType="Tender" >
@@ -46,9 +46,9 @@
 			e.companyname AS "subpackageProgram.programcompany.companyName",
 			e.companynum AS "subpackageProgram.programcompany.companyNum"
 		FROM tender_tab a
-		    LEFT JOIN ccpt.subpackage_program AS s on s.id = a.subpackage_programid
-		    LEFT JOIN ccpt.program_tab AS p on p.id = s.parent_id
-		    LEFT JOIN ccpt.company_tab AS e on e.id=p.companyid
+		    LEFT JOIN subpackage_program AS s on s.id = a.subpackage_programid
+		    LEFT JOIN program_tab AS p on p.id = s.parent_id
+		    LEFT JOIN company_tab AS e on e.id=p.companyid
 		WHERE a.id = #{id}
 	</select>
 	
@@ -66,7 +66,7 @@
 			a.id AS "id",
 			s.subpackage_programname AS "subpackageProgram.subpackageProgramName"
 		FROM tender_tab a
-		LEFT JOIN ccpt.subpackage_program AS s on s.id=a.subpackage_programid
+		LEFT JOIN subpackage_program AS s on s.id=a.subpackage_programid
 		<where>
 			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
 				AND s.subpackage_programname LIKE 
@@ -83,7 +83,7 @@
 			a.id AS "id",
 			s.subpackage_programname AS "subpackageProgram.subpackageProgramName"
 		FROM tender_tab a
-		LEFT JOIN ccpt.subpackage_program AS s on s.id=a.subpackage_programid
+		LEFT JOIN subpackage_program AS s on s.id=a.subpackage_programid
 		<where>
 			<if test="subpackageProgram.subpackageProgramName != null and subpackageProgram.subpackageProgramName != ''">
 				AND s.subpackage_programname LIKE 
@@ -120,8 +120,8 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-<!-- 				ORDER BY a.update_date DESC -->
-					ORDER BY a.openbid_date DESC
+				ORDER BY a.update_date DESC
+<!-- 					ORDER BY a.openbid_date DESC -->
 			</otherwise>
 		</choose>
 	</select>
@@ -152,16 +152,19 @@
 			arrange,
 			quality,	
 			tenderctrl_price,
+			
 			build_date,
 			openbid_date,
 			openbid_addr,
 			evaluate_method,
 			tender_director,
+			
 			deposit,
 			remarks,
 			project_profile,
 			create_date,
 			update_date,
+			
 			update_by,
 			create_by,
 			del_flag,
@@ -172,16 +175,19 @@
 			#{arrange},
 			#{quality},
 			#{tenderCtrlPrice},
+			
 			#{buildDate},
 			#{openBidDate},
 			#{openBidAddr},
 			#{evaluateMethod},
 			#{tenderDirector},
+			
 			#{deposit},
 			#{remarks},
 			#{projectProfile},
 			#{createDate},
 			#{updateDate},
+			
 			#{updateBy.id},
 			#{createBy.id},
 			#{delFlag},
@@ -206,7 +212,8 @@
 			update_date = #{updateDate},
 			update_by = #{updateBy.id},
 			del_flag = #{delFlag},
-			director = #{directorPhone}
+			tender_director = #{tenderDirector},
+			director_phone = #{directorPhone}
 		WHERE id = #{id}
 	</update>
 	

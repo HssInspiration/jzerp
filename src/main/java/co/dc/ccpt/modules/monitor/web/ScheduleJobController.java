@@ -183,12 +183,14 @@ public class ScheduleJobController extends BaseController {
 	@RequestMapping("existsClass")
 	@ResponseBody
 	public boolean existsClass(String className) {
-		Class job = null;
+		Class<?> job = null;
 		try {
 			job = Class.forName(className);
 			return true;
 		} catch (ClassNotFoundException e1) {
 			return false;
+		}finally{
+			System.out.println(job);
 		}
 	}
 

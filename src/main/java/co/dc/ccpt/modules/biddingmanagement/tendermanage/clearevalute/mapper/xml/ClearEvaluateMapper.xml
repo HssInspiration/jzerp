@@ -32,13 +32,13 @@
 	</sql>
 	
 	<sql id="clearEvaluateJoins">
-		LEFT JOIN ccpt.subbid_company sc ON a.subbid_company_id = sc.id
+		LEFT JOIN subbid_company sc ON a.subbid_company_id = sc.id
 		
-		LEFT JOIN ccpt.tender_tab t ON sc.tender_id = t.id
+		LEFT JOIN tender_tab t ON sc.tender_id = t.id
 		
-		LEFT JOIN ccpt.subpackage_program sp ON t.subpackage_programid = sp.id
+		LEFT JOIN subpackage_program sp ON t.subpackage_programid = sp.id
 		
-		LEFT JOIN ccpt.company_tab c ON c.id = sc.company_id 
+		LEFT JOIN company_tab c ON c.id = sc.company_id 
 		
 	</sql>
 	

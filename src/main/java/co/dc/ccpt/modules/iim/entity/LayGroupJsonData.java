@@ -12,18 +12,18 @@ import java.util.List;
  */
 public class LayGroupJsonData {
 	
-	private HashMap owner = new HashMap(); // 我的信息
+	private HashMap<Object, Object> owner = new HashMap<Object, Object>(); // 我的信息
 
 	
-	private List<Friend> list = new ArrayList(); // 群组中的成员列表
+	private List<Friend> list = new ArrayList<Friend>(); // 群组中的成员列表
 
 
-	public void setOwner(HashMap owner) {
+	public void setOwner(HashMap<Object, Object> owner) {
 		this.owner = owner;
 	}
 
 
-	public HashMap getOwner() {
+	public HashMap<Object, Object> getOwner() {
 		return owner;
 	}
 

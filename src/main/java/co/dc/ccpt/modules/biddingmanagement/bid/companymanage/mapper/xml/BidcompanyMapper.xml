@@ -34,10 +34,13 @@
 		a.create_by AS "createBy",
 		a.update_by AS "updateBy",
 		a.del_flag AS "delFlag",
+		a.build_date AS "buildDate",
+		a.quality AS "quality",
 		c.companyname AS "company.companyName",
 		c.companynum AS "company.companyNum",
 		p.programname AS "program.programName",
 		p.programnum AS "program.programNum",
+		p.status AS "program.status",
 		b.bidnum AS "bidtable.bidNum",
 		b.openBidDate AS "bidtable.openBidDate",
 		
@@ -56,42 +59,42 @@
 	</sql>
 	
 	<sql id="bidcompanyJoins">
-		LEFT JOIN ccpt.company_tab AS c ON c.id=a.companyid
-		LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
-		LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+		LEFT JOIN company_tab AS c ON c.id=a.companyid
+		LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id  
+		LEFT JOIN program_tab AS p ON p.id=b.programid 
 		
-		LEFT JOIN ccpt.core_staff AS c1 ON c1.id=a.tecbid 
-		LEFT JOIN ccpt.sys_user AS u1 ON u1.id=c1.user_id 
+		LEFT JOIN core_staff AS c1 ON c1.id=a.tecbid 
+		LEFT JOIN sys_user AS u1 ON u1.id=c1.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c2 ON c2.id=a.combid 
-		LEFT JOIN ccpt.sys_user AS u2 ON u2.id=c2.user_id 
+		LEFT JOIN core_staff AS c2 ON c2.id=a.combid 
+		LEFT JOIN sys_user AS u2 ON u2.id=c2.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c3 ON c3.id=a.ecobid 
-		LEFT JOIN ccpt.sys_user AS u3 ON u3.id=c3.user_id 
+		LEFT JOIN core_staff AS c3 ON c3.id=a.ecobid 
+		LEFT JOIN sys_user AS u3 ON u3.id=c3.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c4 ON c4.id=a.constructorid 
-		LEFT JOIN ccpt.sys_user AS u4 ON u4.id=c4.user_id 
+		LEFT JOIN core_staff AS c4 ON c4.id=a.constructorid 
+		LEFT JOIN sys_user AS u4 ON u4.id=c4.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c5 ON c5.id=a.directorid 
-		LEFT JOIN ccpt.sys_user AS u5 ON u5.id=c5.user_id 
+		LEFT JOIN core_staff AS c5 ON c5.id=a.directorid 
+		LEFT JOIN sys_user AS u5 ON u5.id=c5.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c6 ON c6.id=a.saverid 
-		LEFT JOIN ccpt.sys_user AS u6 ON u6.id=c6.user_id 
+		LEFT JOIN core_staff AS c6 ON c6.id=a.saverid 
+		LEFT JOIN sys_user AS u6 ON u6.id=c6.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c7 ON c7.id=a.constrworkerid 
-		LEFT JOIN ccpt.sys_user AS u7 ON u7.id=c7.user_id 
+		LEFT JOIN core_staff AS c7 ON c7.id=a.constrworkerid 
+		LEFT JOIN sys_user AS u7 ON u7.id=c7.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c8 ON c8.id=a.inspectorid 
-		LEFT JOIN ccpt.sys_user AS u8 ON u8.id=c8.user_id 
+		LEFT JOIN core_staff AS c8 ON c8.id=a.inspectorid 
+		LEFT JOIN sys_user AS u8 ON u8.id=c8.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c9 ON c9.id=a.meterialerid 
-		LEFT JOIN ccpt.sys_user AS u9 ON u9.id=c9.user_id 
+		LEFT JOIN core_staff AS c9 ON c9.id=a.meterialerid 
+		LEFT JOIN sys_user AS u9 ON u9.id=c9.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c10 ON c10.id=a.costerid 
-		LEFT JOIN ccpt.sys_user AS u10 ON u10.id=c10.user_id 
+		LEFT JOIN core_staff AS c10 ON c10.id=a.costerid 
+		LEFT JOIN sys_user AS u10 ON u10.id=c10.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c11 ON c11.id=a.otherworkersid 
-		LEFT JOIN ccpt.sys_user AS u11 ON u11.id=c11.user_id 
+		LEFT JOIN core_staff AS c11 ON c11.id=a.otherworkersid 
+		LEFT JOIN sys_user AS u11 ON u11.id=c11.user_id 
 		
 	</sql>
 	
@@ -135,6 +138,17 @@
 		WHERE a.biddate = #{bidDate}
 	</select>
 	
+	<select id="getBidPriceByProId" resultType="Bidcompany" >
+		SELECT 
+			a.bidprice AS "bidPrice"
+		FROM bidcomp_manage a
+			LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN program_tab AS p ON p.id=b.programid
+		WHERE p.id = #{program.id}
+		AND a.isbid= "1"
+		AND a.companyid = "03ae459404284f17bbd25e78a13397a6"
+	</select>
+	
 	<select id="listAllBidtableByProName" resultType="Bidcompany" >
 		SELECT 
 			a.id AS "id",
@@ -142,8 +156,8 @@
 			a.bidtable_id AS "bidtable.id",
 			p.programname AS "program.programName"
 		FROM bidcomp_manage a
-			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
-			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+			LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN program_tab AS p ON p.id=b.programid 
 		<where>
 			<if test = "program.programName != null and program.programName != ''">
 				AND p.programname LIKE concat('%',#{program.programName},'%')
@@ -163,9 +177,9 @@
 		SELECT 
 			b.programid AS "bidtable.program.id"
 		FROM bidcomp_manage a
-			LEFT JOIN ccpt.company_tab AS c ON c.id=a.companyid
-			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
-			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+			LEFT JOIN company_tab AS c ON c.id=a.companyid
+			LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN program_tab AS p ON p.id=b.programid 
 		<where>
 			<if test = "company.id != null and company.id != ''">
 				AND c.id =#{company.id}
@@ -177,17 +191,68 @@
 		SELECT 
 		a.isbid AS "isBid"
 		FROM bidcomp_manage a
-			LEFT JOIN ccpt.company_tab AS c ON c.id=a.companyid
-			LEFT JOIN ccpt.bid_tab AS b ON b.id=a.bidtable_id  
-			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+			LEFT JOIN company_tab AS c ON c.id=a.companyid
+			LEFT JOIN bid_tab AS b ON b.id=a.bidtable_id  
+			LEFT JOIN program_tab AS p ON p.id=b.programid 
 		<where>
 			<if test = "bidtable.program.id != null and bidtable.program.id != ''">
 				AND b.programid =#{bidtable.program.id}
 			</if>
 		</where>
 	</select>
-	
-	
+<!-- 	通过人员id查询人员所在在建项目 -->
+	<select id="getBidcompanyByCorePersonId" resultType="Bidcompany" >
+		SELECT 
+			<include refid="bidcompanyColumns"/>
+		FROM bidcomp_manage a
+			<include refid="bidcompanyJoins"/>
+		<where>
+			  (a.constructorid = #{corePersonId}
+			  or
+			  a.directorid = #{corePersonId}
+			  or
+			  a.saverid = #{corePersonId}
+			  or
+			  a.constrworkerid = #{corePersonId}
+			  or
+			  a.inspectorid = #{corePersonId}
+			  or
+			  a.costerid = #{corePersonId}
+			  or
+			  a.meterialerid = #{corePersonId}
+			  )
+			<if test="program.programName != null and program.programName != ''">
+				AND p.programname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{program.programName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{program.programName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.programName},'%')</if> 
+			</if>		
+			<if test="company.companyName != null and company.companyName != ''">
+				AND c.companyname LIKE 
+					<if test="dbName == 'oracle'">'%'||#{company.companyName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{company.companyName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{company.companyName},'%')</if> 
+			</if>		
+			<if test="beginBidDate != null and endBidDate != null and beginBidDate != '' and endBidDate != ''">
+				AND a.bidDate BETWEEN #{beginBidDate} AND #{endBidDate}
+			</if>
+			<if test="isBid != null">
+				AND a.isbid = #{isBid}
+			</if>
+			AND p.status &lt;&gt; 3
+			AND p.status &lt;&gt; 5
+			AND p.status &lt;&gt; 6
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
 	
 	<select id="getBidcompanyByWorkerId" resultType="Bidcompany" >
 		SELECT 
@@ -198,8 +263,8 @@
 			a.inspectorid AS "inspector.id",
 			p.programname AS "program.programName"
 		FROM bidcomp_manage a
-			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
-			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+			LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN program_tab AS p ON p.id=b.programid 
 		WHERE a.constructorid = #{corePersonId}
 			  or
 			  a.directorid = #{corePersonId}
@@ -222,8 +287,8 @@
 			p.programname AS "program.programName",
 			p.status AS "program.status" 
 		FROM bidcomp_manage a
-			LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id  
-			LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid 
+			LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id  
+			LEFT JOIN program_tab AS p ON p.id=b.programid 
 		WHERE a.constructorid = #{corePersonId}
 			  or
 			  a.directorid = #{corePersonId}
@@ -249,7 +314,7 @@
 			a.bidtable_id AS "bidtable.id",
 			a.isbid AS "isBid"
 		FROM bidcomp_manage a
-		LEFT JOIN ccpt.bid_tab AS b ON b.id=a.bidtable_id  
+		LEFT JOIN bid_tab AS b ON b.id=a.bidtable_id  
 		WHERE a.bidtable_id = #{bidtable.id}
 	</select>
 	
@@ -259,8 +324,8 @@
 			a.id AS "id",
 			p.programname AS "program.programName"
 		FROM bidcomp_manage a
-		LEFT JOIN ccpt.bid_tab  AS b ON b.id=a.bidtable_id
-		LEFT JOIN ccpt.program_tab AS p ON p.id=b.programid  
+		LEFT JOIN bid_tab  AS b ON b.id=a.bidtable_id
+		LEFT JOIN program_tab AS p ON p.id=b.programid  
 		<where>
 			<if test="program.programName != null and program.programName != ''">
 				AND p.programname LIKE 
@@ -305,9 +370,9 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-<!-- 				ORDER BY a.update_date DESC -->
-				ORDER BY p.programname DESC,
-				a.biddate ASC
+				ORDER BY a.update_date DESC
+<!-- 				ORDER BY p.programname DESC, -->
+<!-- 				a.biddate ASC -->
 			</otherwise>
 		</choose>
 	</select>
@@ -382,6 +447,8 @@
 			
 			update_by,
 			update_date,
+			build_date,
+			quality,
 			del_flag
 		) VALUES (
 			#{id},
@@ -416,6 +483,8 @@
 			
 			#{updateBy.id},
 			#{updateDate},
+			#{buildDate},
+			#{quality},
 			#{delFlag}
 		)
 	</insert>
@@ -452,6 +521,8 @@
 			a.update_date = #{updateDate},
 			a.create_by = #{createBy.id},
 			a.update_by = #{updateBy.id},
+			a.build_date = #{buildDate},
+			a.quality = #{quality},
 			a.del_flag = #{delFlag}
 		WHERE id = #{id}
 	</update>

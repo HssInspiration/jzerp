@@ -4,14 +4,12 @@
 package co.dc.ccpt.core.persistence;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import javax.xml.bind.annotation.XmlTransient;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Maps;
 import co.dc.ccpt.common.config.Global;
 import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.modules.sys.entity.User;

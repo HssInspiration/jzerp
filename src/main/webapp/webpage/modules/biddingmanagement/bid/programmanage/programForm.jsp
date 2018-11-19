@@ -80,6 +80,11 @@
 				}, 
 				
 				submitHandler : function(form) {
+					$("[disabled]").each(function() {//移除disable,后台方可取值  
+				        if (parseInt($(this).val()) != -1) {  
+				            $(this).attr("disabled", false);  
+				        }  
+				    }); 
 					var companyId = $("#test_data1").attr("data-id");
 					console.log("companyId为："+companyId);
  					if(companyId != null && companyId != ""){
@@ -134,11 +139,6 @@
         }
 		
 		function companyManage(){
-			
-        	//jp.close();//先关闭弹出层
-        	
-//         	jp.openTab("${ctx}/programmanage/company/list","单位管理",false)//新开单位信息管理tab
-        	
         	jp.openDialogView('单位管理', '${ctx}/programmanage/company/list','1000px', '600px');
         }
 		
@@ -193,17 +193,17 @@
 				  </td>
 		      </tr> 
 		      <tr>
-		          <td  class="width-15 active">	<label class="pull-right">发标单位:</label></td>
+		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>发标单位:</label></td>
 		          <td  class="width-35" >
 <%-- 			          <form:select path="company.id" class="form-control required" id="s2">  --%>
 <%-- 								<form:option value="" label="--请选择单位，若无可选，请点击维护--"/> --%>
 <%-- 								<form:options items="${companyList}" itemLabel="companyName" itemValue="id" htmlEscape="false"/> --%>
 <%-- 					  </form:select> --%>
-					<input type="hidden" class="form-control" name= "company.id" id = "companyId" value = "${program.company.id}">
+					<input type="hidden" class="form-control required" name= "company.id" id = "companyId" value = "${program.company.id}">
 					<div class="row">
 		                <div class="col-lg-2">
 		                    <div class="input-group">
-		                        <input type="text" class="form-control" id="test_data1" placeholder="请选择单位，若无可选，请点击维护" value = "${program.company.companyName}">
+		                        <input type="text" class="form-control required" id="test_data1" placeholder="请选择单位，若无可选，请点击维护" value = "${program.company.companyName}">
 		                        <div class="input-group-btn">
 		                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 		                                <span class="caret"></span>
@@ -220,7 +220,7 @@
 		          
 		          <td class="width-15 active"><label class="pull-right"><font color="red">*</font>承接方式：</label></td>
 				  <td class="width-35">
-							<form:select path="getMethod" class="form-control" disabled="true">
+							<form:select path="getMethod" class="form-control reqired" disabled="true">
 								<form:options items="${fns:getDictList('get_method')}"  itemLabel="label" itemValue="value"  htmlEscape="false"/>
 							</form:select>
 						<span id="typeAlreadyExsist" style = "font-weight:bold;"></span>
@@ -233,7 +233,7 @@
 					<div class="row">
 		                <div class="col-lg-2">
 		                    <div class="input-group">
-		                        <input type="text" class="form-control" id="test_data2" value = "${program.office.name}">
+		                        <input type="text" class="form-control required" id="test_data2" value = "${program.office.name}">
 		                        <div class="input-group-btn">
 		                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 		                                <span class="caret"></span>

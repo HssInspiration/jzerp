@@ -26,6 +26,8 @@ import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.act.entity.Act;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.entity.Enclosuretab;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
+import co.dc.ccpt.modules.contractmanagement.contracttext.entity.ContractText;
+import co.dc.ccpt.modules.contractmanagement.contracttext.service.ContractTextService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
 import co.dc.ccpt.modules.oa.entity.AttachContract;
@@ -51,19 +53,34 @@ public class AttachContractController extends BaseController {
 	@Autowired 
 	private EnclosuretabService enclosuretabService;
 	
+	@Autowired
+	private ContractTextService contractTextService;
+	
 	@ModelAttribute
 	public AttachContract get(@RequestParam(required=false) String id){//, 
 //			@RequestParam(value="act.procInsId", required=false) String procInsId) {
-		AttachContract AttachContract = null;
+		AttachContract attachContract = null;
 		if (StringUtils.isNotBlank(id)){
-			AttachContract = attachContractService.get(id);
+			attachContract = attachContractService.get(id);
 //		}else if (StringUtils.isNotBlank(procInsId)){
 //			testAudit = testAuditService.getByProcInsId(procInsId);
 		}
-		if (AttachContract == null){
-			AttachContract = new AttachContract();
+		if (attachContract == null){
+			attachContract = new AttachContract();
 		}
-		return AttachContract;
+		return attachContract;
+	}
+	
+	@ModelAttribute
+	public ProContract getProContract(@RequestParam(required=false) String proContractId){
+		ProContract proContract = null;
+		if (StringUtils.isNotBlank(proContractId)){
+			proContract = proContractService.get(proContractId);
+		}
+		if (proContract == null){
+			proContract = new ProContract();
+		}
+		return proContract;
 	}
 	
 	@RequestMapping(value = {"list", ""})
@@ -99,7 +116,7 @@ public class AttachContractController extends BaseController {
 				view = "attachContractView";
 			}
 			// 修改环节
-			else if ("modify".equals(taskDefKey)){
+			else if ("contract_modify".equals(taskDefKey)){
 				view = "attachContractForm";
 			}
 			// 审核环节
@@ -145,13 +162,7 @@ public class AttachContractController extends BaseController {
 			return "redirect:" + adminPath + "/act/task/process/";//发起流程
 		}else{
 			//审批通过更改合同审批状态-->审批通过(1-->2)
-			Act act = attachContract.getAct();
-			if(act != null){
-				String taskKey = act.getTaskDefKey();
-				if(taskKey==null || taskKey.equals("")){
-					proContractService.updateProContractStatus(attachContract, 1);
-				}
-			}
+			attachContractService.changeStatusForForm(attachContract);
 			return "redirect:" + adminPath + "/act/task/todo/";//待办任务
 		}
 		
@@ -165,22 +176,12 @@ public class AttachContractController extends BaseController {
 	 */
 	@RequestMapping(value = "saveAudit")
 	public String saveAudit(AttachContract attachContract, Model model) {
-		if (StringUtils.isBlank(attachContract.getAct().getFlag())
-				|| StringUtils.isBlank(attachContract.getAct().getComment())){
+		if (StringUtils.isBlank(attachContract.getAct().getFlag())){
+//				|| StringUtils.isBlank(attachContract.getAct().getComment())){
 			addMessage(model, "请填写审核意见。");
 			return form(attachContract, model);
 		}else{
-			Act act = attachContract.getAct();
-			if(act!=null){
-				String taskKey = act.getTaskDefKey();
-				if(taskKey.equals("mainLead")){
-					proContractService.updateProContractStatus(attachContract, 2);
-				}else if(taskKey.equals("contract_modify")){//若为合同修改
-					if(act.getFlag().equals("no")){//销毁
-						proContractService.updateProContractStatus(attachContract, 3);
-					}
-				}
-			}
+			attachContractService.changeStatusForAudit(attachContract);//执行状态变更操作
 		}
 		attachContractService.auditSave(attachContract);
 		return "redirect:" + adminPath + "/act/task";
@@ -214,6 +215,19 @@ public class AttachContractController extends BaseController {
 	}
 	
 	/**
+	 * 通过合同名称查询出所有未审批的市场投标合同
+	 * @param contractName
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getAppointContractByName",method = RequestMethod.POST)
+	public List<ProContract> getAppointContractByName(@RequestParam String contractName) {
+		List<ProContract> proContractList = new ArrayList<ProContract>();
+		proContractList = proContractService.getAppointContractByName(contractName);
+		return proContractList;
+	}
+	
+	/**
 	 * 通过总包合同id查出对应附件集合
 	 * @param proContract
 	 * @return
@@ -226,5 +240,49 @@ public class AttachContractController extends BaseController {
 		enclosuretabList = enclosuretabService.getEnclosureContByForeginId(foreginId);
 		return enclosuretabList;
 	}
+	
+	/**
+	 * 通过合同id查出对应合同正文
+	 * @param proContract
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getContractTextByContractId",method = RequestMethod.POST)
+	public ContractText getContractTextByContractId(@RequestBody ProContract proContract){
+		String proContractId = proContract.getId();
+		ContractText contractText = new ContractText();
+		contractText.setContractId(proContractId);
+		contractText = contractTextService.getByContractId(contractText);
+		if(contractText != null){
+			return contractText;
+		}else{
+			return new ContractText();
+		}
+	}
 
+	/**
+	 * 将word转换成PDF方便在线预览
+	 * @param proContract
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="exchangeWordToPdf",method = RequestMethod.POST)
+	public AttachContract exchangeWordToPdf(@RequestBody AttachContract attachContract){
+		attachContract = proContractService.exchangeWordToPdf(attachContract);
+		if(attachContract != null){
+			return attachContract;
+		}else{
+			return new AttachContract();
+		}
+	}
+	
+	@RequestMapping(value = "showAttachProcess")
+	public String showProcess(ProContract proContract, Model model){
+		AttachContract attachContract = new AttachContract();
+		if(StringUtils.isNotBlank(proContract.getId())){
+			attachContract = attachContractService.getByProContract(proContract);
+		}
+		model.addAttribute("attachContract", attachContract);
+		return "modules/oa/attachContract/attachContractShow";
+	}
 }

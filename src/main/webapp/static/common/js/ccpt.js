@@ -203,7 +203,7 @@
 	   openUserSelectDialog:function(isMultiSelect, yesFuc){
 		   top.layer.open({
 			    type: 2, 
-			    area: ['900px', '560px'],
+			    area: ['1200px', '800px'],
 			    title:"选择用户",
 			    auto:true,
 		        maxmin: true, //开启最大化最小化按钮

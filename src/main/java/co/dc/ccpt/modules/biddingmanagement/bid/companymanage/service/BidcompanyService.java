@@ -73,6 +73,13 @@ public class BidcompanyService extends CrudService<BidcompanyMapper, Bidcompany>
 	public Page<Bidcompany> findPage(Page<Bidcompany> page, Bidcompany bidcompany) {
 		return super.findPage(page, bidcompany);
 	}
+	
+	public Page<Bidcompany> findNewPage(Page<Bidcompany> page, Bidcompany bidcompany) {
+		dataRuleFilter(bidcompany);
+		bidcompany.setPage(page);
+		page.setList(bidCompanyMapper.getBidcompanyByCorePersonId(bidcompany));
+		return page;
+	}
 
 	public Bidcompany getByBidcompanyId(String companyId) {
 		Bidcompany bidcompany = new Bidcompany();
@@ -479,7 +486,13 @@ public class BidcompanyService extends CrudService<BidcompanyMapper, Bidcompany>
 		}
 		return statusMap;
 	}
+
+	public Bidcompany getBidPriceByProId(Bidcompany bidcomp) {
+		return bidCompanyMapper.getBidPriceByProId(bidcomp);
+	}
 	
-	//传入参投单位集合，验证集合中的项目状态
-	
+	public List<Bidcompany> getBidcompanyByCorePersonId(Bidcompany bidcompany){
+		return bidCompanyMapper.getBidcompanyByCorePersonId(bidcompany);
+	}
+
 }

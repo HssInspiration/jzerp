@@ -336,6 +336,18 @@ public class UserController extends BaseController {
 		}
 		return "false";
 	}
+	
+	@ResponseBody
+	@RequiresPermissions(value={"sys:user:add","sys:user:edit"},logical=Logical.OR)
+	@RequestMapping(value = "checkIdCardNum")
+	public String checkIdCardNum(String oldIdCardNum, String idCardNum) {
+		if (idCardNum !=null && idCardNum.equals(oldIdCardNum)) {
+			return "true";
+		} else if (idCardNum !=null && systemService.getUserByIdCardNum(idCardNum) == null) {
+			return "true";
+		}
+		return "false";
+	}
 
 	/**
 	 * 用户信息显示

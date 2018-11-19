@@ -8,13 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.dc.ccpt.common.utils.DateUtils;
+import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.mapper.ProContractMapper;
 import co.dc.ccpt.modules.oa.entity.ActContract;
 import co.dc.ccpt.modules.oa.entity.AttachContract;
+import co.dc.ccpt.modules.oa.mapper.ActContractMapper;
+import co.dc.ccpt.modules.oa.mapper.AttachContractMapper;
+import co.dc.ccpt.modules.oa.utils.Jacob;
+import co.dc.ccpt.modules.oa.utils.UrlEx;
 /**
  * 总包项目合同Service
  * @author Administrator
@@ -26,6 +30,12 @@ public class ProContractService extends CrudService<ProContractMapper, ProContra
 	
 	@Autowired
 	public ProContractMapper proContractMapper;
+	
+	@Autowired
+	public ActContractMapper actContractMapper;
+	
+	@Autowired
+	public AttachContractMapper attachContractMapper;
 	
 	public ProContract get(String id) {
 		return super.get(id);
@@ -151,5 +161,74 @@ public class ProContractService extends CrudService<ProContractMapper, ProContra
 	public ProContract modifyProContract(ProContract proContract){
 		
 		return proContract;
+	}
+	/**
+	 * word转成pdf
+	 * @param proContract
+	 */
+	public ActContract exchangeWordToPdf(ActContract actContract) {
+		UrlEx url = new UrlEx();//url转码
+		Jacob jacob = new Jacob();//word转pdf
+		String wordFile = "";
+		//先获取路径
+		actContract = actContractMapper.get(actContract);
+		if(actContract != null){
+			String contractTextCont = actContract.getContractTextCont();//表中存放的合同路径
+			System.out.println("contractTextCont:"+contractTextCont);
+			if(StringUtils.isNotBlank(contractTextCont)){
+				contractTextCont = contractTextCont.replace("/ccpt","D:/jzerp_files");
+				wordFile = url.getURLDecoderString(contractTextCont);
+				wordFile = wordFile.replaceAll("/", "\\\\");
+				System.out.println("wordFile:"+wordFile);
+			}else{
+				System.out.println("contractTextCont is Null");
+			}
+			String pdfFile = wordFile.substring(0,wordFile.lastIndexOf("."))+".pdf";//转换后的路径
+			System.out.println("pdfFile:"+pdfFile);
+			String contractContToPdf = jacob.exchangeWordToPdf(wordFile, pdfFile);
+			actContract.setContractContToPdf(contractContToPdf);
+		}
+		return actContract;
+	}
+	
+	/**
+	 * word转成pdf
+	 * @param proContract
+	 */
+	public AttachContract exchangeWordToPdf(AttachContract attachContract) {
+		UrlEx url = new UrlEx();//url转码
+		Jacob jacob = new Jacob();//word转pdf
+		String wordFile = "";
+		//先获取路径
+		attachContract = attachContractMapper.get(attachContract);
+		if(attachContract != null){
+			String contractTextCont = attachContract.getContractTextCont();//表中存放的合同路径
+			System.out.println("contractTextCont:"+contractTextCont);
+			if(StringUtils.isNotBlank(contractTextCont)){
+				contractTextCont = contractTextCont.replace("/ccpt","D:/jzerp_files");
+				wordFile = url.getURLDecoderString(contractTextCont);
+				wordFile = wordFile.replaceAll("/", "\\\\");
+				System.out.println("wordFile:"+wordFile);
+			}else{
+				System.out.println("contractTextCont is Null");
+			}
+			String pdfFile = wordFile.substring(0,wordFile.lastIndexOf("."))+".pdf";//转换后的路径
+			System.out.println("pdfFile:"+pdfFile);
+			String contractContToPdf = jacob.exchangeWordToPdf(wordFile, pdfFile);
+			attachContract.setContractContToPdf(contractContToPdf);
+		}
+		return attachContract;
+	}
+
+	public List<ProContract> getProContractByName(String contractName) {
+		ProContract proContract = new ProContract();
+		proContract.setContractName(contractName);
+		return proContractMapper.getProContractByName(proContract);
+	}
+
+	public List<ProContract> getAppointContractByName(String contractName) {
+		ProContract proContract = new ProContract();
+		proContract.setContractName(contractName);
+		return proContractMapper.getAppointContractByName(proContract);
 	}
 }

@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Param;
 import co.dc.ccpt.core.persistence.TreeMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
 import co.dc.ccpt.modules.sys.entity.Office;
-import co.dc.ccpt.modules.sys.entity.User;
 
 /**
  * 机构MAPPER接口

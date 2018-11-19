@@ -229,7 +229,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>确认收款账户：</label></td>
 					<td class="width-35">
-						<input id="confirmReceiverAccount" name="confirmReceiverAccount" type="text" value="" maxlength="30" minlength="10" class="form-control required number" equalTo="#receiverAccount"/>
+						<input id="confirmReceiverAccount" onpaste="return false" name="confirmReceiverAccount" type="text" value="" maxlength="30" minlength="10" class="form-control required number" equalTo="#receiverAccount"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">

@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>项目工程管理管理</title>
+	<title>项目工程管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -14,7 +14,7 @@
 	<div class="panel panel-primary">
 	<div class="panel-heading">
 		<h3 class="panel-title">
-		项目工程管理列表111</h3>
+		投标项目管理列表</h3>
 	</div>
 	<div class="panel-body">
 		<sys:message content="${message}"/>
@@ -56,37 +56,34 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<%-- <shiro:hasPermission name="programmanage:program:add"> --%>
+			<shiro:hasPermission name="programmanage:program:addForJyb">
 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="programmanage:program:edit"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="programmanage:program:editForJyb">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="programmanage:program:del"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="programmanage:program:delForJyb">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-	        	<button id="completed" class="btn btn-info" disabled onclick="completed()">
+        	</shiro:hasPermission>
+			<shiro:hasPermission name="programmanage:program:completedForJyb">
+				<button id="completed" class="btn btn-info" disabled onclick="completed()">
 	            	<i class="glyphicon glyphicon-ok-sign"></i> 竣工
 	        	</button>
-	        	<button id="shutdown" class="btn btn-warning" disabled onclick="shutdown()">
+        	</shiro:hasPermission>
+			<shiro:hasPermission name="programmanage:program:shutdownForJyb">
+				<button id="shutdown" class="btn btn-warning" disabled onclick="shutdown()">
 	            	<i class="glyphicon glyphicon-ban-circle"></i> 停工
 	        	</button>
-	        	<button id="closecase" class="btn btn-success" disabled onclick="closecase()">
+        	</shiro:hasPermission>
+			<shiro:hasPermission name="programmanage:program:closecaseForJyb">
+				<button id="closecase" class="btn btn-success" disabled onclick="closecase()">
 	            	<i class="glyphicon glyphicon-ban-check"></i> 结案
 	        	</button>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="programmanage:program:import"> --%>
-<!-- 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button> -->
-<!-- 				<div id="importBox" class="hide"> -->
-<%-- 						<form id="importForm" action="${ctx}/programmanage/program/import" method="post" enctype="multipart/form-data" --%>
-<!-- 							 style="padding-left:20px;text-align:center;" ><br/> -->
-<!-- 							<input id="uploadFile" name="file" type="file" style="width:330px"/>导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！<br/>　　 -->
-<!-- 						</form> -->
-<!-- 				</div> -->
-			<%-- </shiro:hasPermission> --%>
+        	</shiro:hasPermission>
 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
 					<i class="fa fa-search"></i> 检索
 				</a>
@@ -98,16 +95,6 @@
 	           data-id-field="id">
 	</table>
 
-    <!-- context menu -->
-    <ul id="context-menu" class="dropdown-menu">
-    	<%-- <shiro:hasPermission name="programmanage:program:edit"> --%>
-        <li data-item="edit"><a>编辑</a></li>
-       <%--  </shiro:hasPermission>
-        <shiro:hasPermission name="programmanage:program:del"> --%>
-        <li data-item="delete"><a>删除</a></li>
-       <%--  </shiro:hasPermission> --%>
-        <li data-item="action1"><a>取消</a></li>
-    </ul>  
 	</div>
 	</div>
 	</div>

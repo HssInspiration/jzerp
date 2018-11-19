@@ -194,6 +194,7 @@ public class MenuController extends BaseController {
 		if(role !=null){
 			menuIds = ","+role.getMenuIds()+",";
 		}
+		
 		List<Map<String, Object>> mapList = Lists.newArrayList();
 		List<Menu> list = systemService.findAllMenu();
 		for (int i=0; i<list.size(); i++){

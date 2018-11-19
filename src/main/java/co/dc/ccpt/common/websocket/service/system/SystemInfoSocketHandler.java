@@ -49,6 +49,7 @@ public class SystemInfoSocketHandler implements WebSocketHandler {
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> socketMessage) throws Exception {
 
     	String message = socketMessage.getPayload().toString();
+    	System.out.println(message);
 	
     }
 

@@ -65,7 +65,8 @@ public class WordGenerator {
     }  
   
     //将图片转换成BASE64字符串  
-    public static String getImageString(InputStream in) throws IOException {  
+    @SuppressWarnings("restriction")
+	public static String getImageString(InputStream in) throws IOException {  
         //InputStream in = null;    
         byte[] data = null;  
         try {  
@@ -82,5 +83,4 @@ public class WordGenerator {
         BASE64Encoder encoder = new BASE64Encoder();  
         return data != null ? encoder.encode(data) : "";  
     }  
-  
 }  

@@ -88,9 +88,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">备注：</label>
+						<label class="col-sm-2 control-label">标题：</label>
 						<div class="col-sm-10">
-							<form:textarea path="remarks" readonly="true" class="form-control" rows="5" maxlength="20"/>
+							<form:input path="remarks" readonly="true" class="form-control" rows="5" maxlength="100"/>
 						</div>
 					</div>
 		

@@ -22,7 +22,7 @@
 	</sql>
 	
 	<sql id="depositJoins">
-		LEFT JOIN ccpt.program_tab p ON a.program_id = p.id 
+		LEFT JOIN program_tab p ON a.program_id = p.id 
 	</sql>
     
 	<select id="get" resultType="Deposit" >

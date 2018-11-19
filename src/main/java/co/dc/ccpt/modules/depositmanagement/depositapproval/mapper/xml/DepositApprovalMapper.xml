@@ -36,8 +36,8 @@
 	</sql>
 	
 	<sql id="depositApprovalJoins">
-		LEFT JOIN ccpt.deposit_tab d ON d.id = a.deposit_id
-		LEFT JOIN ccpt.program_tab p ON d.program_id = p.id
+		LEFT JOIN deposit_tab d ON d.id = a.deposit_id
+		LEFT JOIN program_tab p ON d.program_id = p.id
 	</sql>
     
 	<select id="get" resultType="DepositApproval" >

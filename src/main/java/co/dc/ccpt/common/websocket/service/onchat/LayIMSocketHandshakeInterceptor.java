@@ -4,8 +4,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -17,7 +17,7 @@ import co.dc.ccpt.modules.sys.utils.UserUtils;
 
 public class LayIMSocketHandshakeInterceptor implements HandshakeInterceptor {
 
-    private static Logger logger = LoggerFactory.getLogger(HandshakeInterceptor.class);
+//    private static Logger logger = LoggerFactory.getLogger(HandshakeInterceptor.class);
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object
                 > attributes) throws Exception {

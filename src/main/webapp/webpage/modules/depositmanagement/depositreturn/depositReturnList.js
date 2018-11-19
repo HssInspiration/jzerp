@@ -293,8 +293,8 @@ $(document).ready(function() {
   }
   function edit(id){//没有权限时，不显示确定按钮
   	  if(id == undefined){
-			id = getIdSelections();
-		}
+  		  id = getIdSelections();
+	  }
   	jp.openDialog('编辑保证金催退', "${ctx}/depositReturn/form?id=" + id,'800px', '500px', $('#table'));
 //	   <shiro:hasPermission name="depositreturn:depositReturn:edit">
 //	  jp.openDialog('编辑保证金催退', "${ctx}/depositReturn/form?id=" + id,'800px', '500px', $('#table'));

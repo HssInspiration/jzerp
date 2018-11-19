@@ -94,20 +94,25 @@
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>招标工程名称：</label></td>
 					<td class="width-35">
 						<input type="hidden" class="form-control" name= "subpackageProgram.id" id = "subpackageProgramId" value = "${tender.subpackageProgram.id}">
-						<div class="row">
-			                <div class="col-lg-2">
-			                    <div class="input-group">
-			                        <input type="text" class="form-control required"  id="test_data" value = "${tender.subpackageProgram.subpackageProgramName}">
-			                        <div class="input-group-btn">
-			                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-			                                <span class="caret"></span>
-			                            </button>
-			                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-			                            </ul>
-			                        </div>
-			                    </div>
-			                </div>
-			            </div>
+						<c:if test="${isAdd }">
+							<div class="row">
+				                <div class="col-lg-2">
+				                    <div class="input-group">
+				                        <input type="text" class="form-control required"  id="test_data" value = "${tender.subpackageProgram.subpackageProgramName}">
+				                        <div class="input-group-btn">
+				                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+				                                <span class="caret"></span>
+				                            </button>
+				                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+				                            </ul>
+				                        </div>
+				                    </div>
+				                </div>
+				            </div>
+			            </c:if>
+						<c:if test="${edit }">
+	                        <input type="text" class="form-control required" readOnly="true" id="test_data" value = "${tender.subpackageProgram.subpackageProgramName}">
+			            </c:if>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>保证金金额：</label></td>
 					<td class="width-35">

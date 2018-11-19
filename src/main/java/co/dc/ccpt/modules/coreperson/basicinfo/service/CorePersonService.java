@@ -92,6 +92,7 @@ public class CorePersonService extends CrudService<CorePersonMapper, CorePerson>
 			invalidDate = p.getInvalidDate();
 			if(date.after(invalidDate)){//如果当前时间晚于失效时间设置失效
 				p.setIsInvalid(1);
+				p.setInvalidReason("证件过期");
 			}
 			personCertificateList2.add(p);
 			personCertificateMapper.update(p);

@@ -269,7 +269,7 @@ public class ClassUtil {
 	 * 
 	 * 因为class.getFiled(); 不能获取父类的private函数, 因此采用循环向上的getDeclaredField();
 	 */
-	public static Field getAccessibleField(final Class clazz, final String fieldName) {
+	public static Field getAccessibleField(final Class<?> clazz, final String fieldName) {
 		Validate.notNull(clazz, "clazz can't be null");
 		Validate.notEmpty(fieldName, "fieldName can't be blank");
 		for (Class<?> superClass = clazz; superClass != Object.class; superClass = superClass.getSuperclass()) {
@@ -297,7 +297,7 @@ public class ClassUtil {
 			Class<?>... parameterTypes) {
 		Validate.notNull(clazz, "class can't be null");
 		Validate.notEmpty(methodName, "methodName can't be blank");
-		Class[] theParameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
+		Class<?>[] theParameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
 
 		// 处理原子类型与对象类型的兼容
 		ClassUtil.wrapClassses(theParameterTypes);

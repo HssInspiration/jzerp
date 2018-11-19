@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>总包合同用章管理</title>
+	<title>分包合同用章管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -70,27 +70,15 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-<%-- 			<shiro:hasPermission name="subpackage:building:add"> --%>
-<!-- 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a> -->
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="subpackage:building:edit"> --%>
-<!-- 			    <button id="edit" class="btn btn-success" disabled onclick="edit()"> -->
-<!-- 	            	<i class="glyphicon glyphicon-edit"></i> 修改 -->
-<!-- 	        	</button> -->
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="subpackage:building:del"> --%>
-<!-- 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()"> -->
-<!-- 	            	<i class="glyphicon glyphicon-remove"></i> 删除 -->
-<!-- 	        	</button> -->
-<%-- 			</shiro:hasPermission> --%>
-				<button id="print" class="btn btn-info" disabled onclick="print()">
-	            	<i class="glyphicon glyphicon-star"></i> 用章
-	        	</button>
-	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-					<i class="fa fa-search"></i> 检索
-				</a>
-		    </div>
-		
+		<shiro:hasPermission name="contractprint:subprinting:print">
+			<button id="print" class="btn btn-info" disabled onclick="print()">
+	           	<i class="glyphicon glyphicon-star"></i> 用章
+	       	</button>
+       	</shiro:hasPermission>
+       	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+			<i class="fa fa-search"></i> 检索
+		</a>
+    </div>
 	<!-- 表格 -->
 	<table id="table"   data-toolbar="#toolbar"></table>
 	</div>

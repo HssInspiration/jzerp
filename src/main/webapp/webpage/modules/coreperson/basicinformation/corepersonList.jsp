@@ -19,7 +19,7 @@
 	<div class="wrapper wrapper-content">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
-				<h3 class="panel-title">人员管理</h3>
+				<h3 class="panel-title">人员管理列表</h3>
 			</div>
 			<div class="panel-body">
 				<sys:message content="${message}" />
@@ -62,26 +62,26 @@
 
 						<!-- 工具栏 -->
 						<div id="toolbar">
-							<%-- 		    	<shiro:hasPermission name="sys:dict:add"> --%>
-							<a id="add" class="btn btn-primary" onclick="add()"><i
-								class="glyphicon glyphicon-plus"></i> 新建</a>
-							<%-- 				</shiro:hasPermission> --%>
-							<%-- 				<shiro:hasPermission name="sys:dict:edit"> --%>
-							<button id="edit" class="btn btn-success" disabled
-								onclick="edit()">
-								<i class="glyphicon glyphicon-edit"></i> 修改
-							</button>
-							<%-- 				</shiro:hasPermission> --%>
-							<%-- 				<shiro:hasPermission name="sys:dict:del"> --%>
-							<button id="remove" class="btn btn-danger" disabled
-								onclick="del()">
-								<i class="glyphicon glyphicon-remove"></i> 删除
-							</button>
-							<%-- 				</shiro:hasPermission> --%>
-							<a class="accordion-toggle btn btn-default "
-								data-toggle="collapse" data-parent="#accordion2"
-								href="#collapseTwo"> <i class="fa fa-search"></i> 检索
-							</a>
+				    		<shiro:hasPermission name="basicinformation:add">
+								<a id="add" class="btn btn-primary" onclick="add()"><i
+									class="glyphicon glyphicon-plus"></i> 新建</a>
+							</shiro:hasPermission>
+							<shiro:hasPermission name="basicinformation:edit">
+								<button id="edit" class="btn btn-success" disabled
+									onclick="edit()">
+									<i class="glyphicon glyphicon-edit"></i> 修改
+								</button>
+							</shiro:hasPermission>
+							<shiro:hasPermission name="basicinformation:del">
+								<button id="remove" class="btn btn-danger" disabled
+									onclick="del()">
+									<i class="glyphicon glyphicon-remove"></i> 删除
+								</button>
+							</shiro:hasPermission>
+								<a class="accordion-toggle btn btn-default "
+									data-toggle="collapse" data-parent="#accordion2"
+									href="#collapseTwo"> <i class="fa fa-search"></i> 检索
+								</a>
 						</div>
 						<!-- 工具栏结束 -->
 

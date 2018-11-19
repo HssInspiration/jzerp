@@ -140,6 +140,19 @@
 				</filters>
 			</build>
 		</profile>
+		<profile>
+	        <id>jdk-1.8</id>
+	        <!-- 另外一种激活方式 -->
+	        <activation>
+	            <activeByDefault>true</activeByDefault>
+	            <jdk>1.8</jdk>
+	        </activation>
+	        <properties>
+	            <maven.compiler.source>1.8</maven.compiler.source>
+	            <maven.compiler.target>1.8</maven.compiler.target>
+				<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+	        </properties>
+	    </profile>
 	</profiles>
 
     <build>
@@ -152,6 +165,13 @@
 				</includes>
 				<filtering>false</filtering>
 			</resource>
+			<resource>
+	            <directory>src/main/resources</directory>
+	            <includes>
+	                <include>**/*.*</include>
+	            </includes>
+	            <filtering>false</filtering>
+	        </resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
@@ -226,12 +246,6 @@
             </plugin>
         </plugins>
     </build>
-
-
-	
-    
-    
-    
     <!-- 依赖项定义 -->
     <dependencies>
         <!-- SPRING begin -->
@@ -884,6 +898,13 @@
 
 
         <!-- UTILS end -->
+<!--         jacob依赖 -->
+<!--         <dependency>   -->
+<!--           <groupId>jacob</groupId>   -->
+<!--           <artifactId>jacob</artifactId>   -->
+<!--           <version>1.0</version>   -->
+<!--           <type>jar</type> -->
+<!-- 		</dependency>  -->
     </dependencies>
 
 </project>

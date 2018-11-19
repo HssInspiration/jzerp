@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>投标管理管理</title>
+	<title>投标管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -13,7 +13,7 @@
 	<div class="wrapper wrapper-content">
 	<div class="panel panel-primary">
 	<div class="panel-heading">
-		<h3 class="panel-title">投标管理列表</h3>
+		<h3 class="panel-title">投标查询管理列表</h3>
 	</div>
 	<div class="panel-body">
 		<sys:message content="${message}"/>
@@ -32,6 +32,10 @@
 				<label class="label-item single-overflow pull-left" title="项目工程id：">项目工程名称：</label>
 				<form:input path="program.programName" htmlEscape="false" maxlength="64"  class=" form-control clear"/>
 			</div>
+<!-- 			<div class="col-xs-12 col-sm-6 col-md-4"> -->
+<!-- 				<label class="label-item single-overflow pull-left" title="项目工程id：">人员名称：</label> -->
+<%-- 				<form:input path="program.programName" htmlEscape="false" maxlength="64"  class=" form-control clear"/> --%>
+<!-- 			</div> -->
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="项目状态：">项目状态：</label>
 				<div class="col-xs-12">
@@ -46,6 +50,17 @@
 	    </div>	
 	</form:form>
 	</div>
+	<!-- 工具栏 -->
+	<div id="toolbar">
+			<%-- <shiro:hasPermission name="bidmanage:bidtable:add"> --%>
+<!-- 				<a id="add" class="btn btn-primary" href="#" title="投标管理" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a> -->
+			<%-- </shiro:hasPermission>--%>
+<%-- 			<shiro:hasPermission name="bidmanage:bidtable:edit">  --%>
+			    <button id="exportBidTab" class="btn btn-success" disabled onclick="exportBidTab()">
+	            	<i class="glyphicon glyphicon-edit"></i> 导出投标情况表
+	        	</button>
+<%-- 			</shiro:hasPermission> --%>
+    </div>
 	<!-- 表格 -->
 	<table id="bidtableTable"   data-toolbar="#toolbar"></table>
 	</div>

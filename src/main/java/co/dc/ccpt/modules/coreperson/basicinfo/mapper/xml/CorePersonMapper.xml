@@ -18,6 +18,7 @@
 		a.user_id AS "user.id",
 		su.name AS "user.name",
 		su.mobile AS "user.mobile",
+		su.idcard_num AS "user.idCardNum",
 		a.phone_num AS "phoneNum"
 <!-- 		csc.certificate_name AS "personCertificate.certificateName" -->
 		
@@ -25,8 +26,8 @@
 	
 	<sql id="corePersonJoins">
 		LEFT JOIN sys_user su ON su.id = a.user_id
-		LEFT JOIN ccpt.sys_office sf ON sf.id = su.office_id 
-<!-- 		LEFT JOIN ccpt.core_staff_certificate csc ON csc.core_staff_id = a.id -->
+		LEFT JOIN sys_office sf ON sf.id = su.office_id 
+<!-- 		LEFT JOIN core_staff_certificate csc ON csc.core_staff_id = a.id -->
 	</sql>
 	
 	<select id="get" resultType="corePerson" >
@@ -114,14 +115,16 @@
 					<if test="dbName == 'mssql'">'%'+#{user.name}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
 			</if>
-			AND a.id IN 
-			(SELECT core_staff_id FROM core_staff_certificate sc
-			<where>
-				<if test="personCertificate.certificateName !=null and personCertificate.certificateName != ''">
-					AND sc.certificate_name = #{personCertificate.certificateName}
-				</if>
-			</where>
-			 GROUP BY core_staff_id )
+			<if test="personCertificate.certificateName !=null and personCertificate.certificateName != ''">
+				AND a.id IN 
+				(SELECT core_staff_id FROM core_staff_certificate sc
+					<where>
+<!-- 						<if test="personCertificate.certificateName !=null and personCertificate.certificateName != ''"> -->
+							AND sc.certificate_name = #{personCertificate.certificateName}
+<!-- 						</if> -->
+					</where>
+				 GROUP BY core_staff_id )
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

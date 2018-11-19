@@ -3,7 +3,6 @@
  */
 package co.dc.ccpt.modules.test.entity.manytoone;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import co.dc.ccpt.core.persistence.TreeEntity;
 

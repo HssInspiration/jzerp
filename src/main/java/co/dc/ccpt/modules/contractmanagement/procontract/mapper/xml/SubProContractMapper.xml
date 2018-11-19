@@ -34,25 +34,26 @@
 		sp.sub_program_type AS "subpackageProgram.subProgramType",
 		sp.subpackage_programname AS "subpackageProgram.subpackageProgramName",
 		
-		c.companyname AS "subBidCompany.company.companyName",
+		c.companyname AS "company.companyName",
 		a.approval_status AS "approvalStatus",
 		a.contract_status AS "contractStatus",
-		sp.subpro_addr AS "subpackageProgram.subproAddr"
+		sp.subpro_addr AS "subpackageProgram.subproAddr",
+		a.sub_comp_id AS "subCompId",
+		c.companyName AS "subpackageProgram.company.companyName"
 <!-- 		tt.tender_director AS "tender.tenderDirector", -->
 <!-- 		tt.director_phone AS "tender.directorPhone" -->
 	</sql>
 	
 	<sql id="subProContractJoins">
-		LEFT JOIN ccpt.sys_user u ON u.id = a.user_id
-		LEFT JOIN ccpt.subpackage_program sp ON sp.id = a.subpro_id
-		LEFT JOIN ccpt.tender_tab tt ON tt.subpackage_programid = a.subpro_id
-		LEFT JOIN ccpt.program_tab p ON p.id = sp.parent_id
-		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
-		LEFT JOIN ccpt.program_contract pc ON  pc.id = a.pro_contract_id
-<!-- 		LEFT JOIN ccpt.program_contract pc ON  pc.program_id = sp.parent_id -->
-		LEFT JOIN ccpt.subbid_company sc ON sc.subpackage_program_id = sp.id
-		LEFT JOIN ccpt.company_tab c ON c.id = sc.company_id
-		LEFT JOIN ccpt.clearevaluate_bid cb ON cb.subbid_company_id = sc.id
+		LEFT JOIN sys_user u ON u.id = a.user_id
+		LEFT JOIN subpackage_program sp ON sp.id = a.subpro_id
+		LEFT JOIN tender_tab tt ON tt.subpackage_programid = a.subpro_id
+		LEFT JOIN program_tab p ON p.id = sp.parent_id
+		LEFT JOIN sys_office o ON o.id = p.sys_officeid
+		LEFT JOIN program_contract pc ON  pc.id = a.pro_contract_id
+<!-- 		LEFT JOIN subbid_company sc ON sc.subpackage_program_id = sp.id -->
+		LEFT JOIN company_tab c ON c.id = a.sub_comp_id
+<!-- 		LEFT JOIN clearevaluate_bid cb ON cb.subbid_company_id = sc.id -->
 	</sql>
 	
 	<select id="get" resultType="subProContract" >
@@ -60,7 +61,8 @@
 			<include refid="subProContractColumns"/>
 		FROM sub_pro_contract a
 			<include refid="subProContractJoins"/>
-		WHERE a.id = #{id} AND cb.isBid=1
+		WHERE a.id = #{id} 
+<!-- 		AND cb.isBid=1 -->
 	</select>
 	
 	<select id="getSubProContractList" resultType="subProContract" >
@@ -111,7 +113,27 @@
 					<if test="dbName == 'mssql'">'%'+#{subProContractName}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{subProContractName},'%')</if>
 			</if>
-				AND a.approval_status=0
+				AND a.approval_status = 0
+				or a.contract_status=3
+		</where>
+	</select>
+	
+<!-- 	获取未审批的分包合同集合 -->
+	<select id="getSubProContractByName" resultType="subProContract" >
+		SELECT 
+			<include refid="subProContractColumns"/>
+		FROM sub_pro_contract a
+			<include refid="subProContractJoins"/>
+		<where>
+			<if test="subProContractName != null and subProContractName != ''">
+				AND a.subpro_contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{subProContractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{subProContractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{subProContractName},'%')</if>
+			</if>
+				AND a.approval_status = 0
+				or a.approval_status = 3
+				or a.contract_status=3
 		</where>
 	</select>
 	
@@ -161,7 +183,7 @@
 					<if test="dbName == 'oracle'">'%'||#{subBidCompany.company.companyName}||'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{subBidCompany.company.companyName},'%')</if>
 			</if>
-			AND cb.isBid=1
+<!-- 			AND cb.isBid=1 -->
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -178,6 +200,8 @@
 			<include refid="subProContractColumns"/>
 		FROM sub_pro_contract a
 			<include refid="subProContractJoins"/>
+			LEFT JOIN subbid_company sc ON sc.subpackage_program_id = sp.id
+			LEFT JOIN clearevaluate_bid cb ON cb.subbid_company_id = sc.id
 		<where>
 			${dataScope}
 			<if test="proContract != null and proContract.id != null and proContract.id != ''">
@@ -200,6 +224,8 @@
 			<include refid="subProContractColumns"/>
 		FROM sub_pro_contract a
 			<include refid="subProContractJoins"/>
+			LEFT JOIN subbid_company sc ON sc.subpackage_program_id = sp.id
+			LEFT JOIN clearevaluate_bid cb ON cb.subbid_company_id = sc.id
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			${dataScope}
@@ -240,7 +266,9 @@
 			build_date,
 			subpro_contract_num,
 			subpro_contract_name,
-			pro_contract_id
+			pro_contract_id,
+			sub_comp_id
+			
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -256,6 +284,7 @@
 			#{phoneNum},
 			#{subpackageProgram.id},
 			
+			
 			#{startDate},
 			#{subProAddr},
 			#{subProContractDate},
@@ -265,7 +294,10 @@
 			#{buildDate},
 			#{subProContractNum},
 			#{subProContractName},
-			#{proContract.id}
+			#{proContract.id},
+			#{subCompId}
+<!-- 			#{subpackageProgram.company.id} -->
+			
 		)
 	</insert>
 	
@@ -290,7 +322,10 @@
 			subpro_total_price = #{subProTotalPrice},
 			subpro_contract_num = #{subProContractNum},
 			subpro_contract_name = #{subProContractName},
-			pro_contract_id = #{proContract.id}
+			pro_contract_id = #{proContract.id},
+			sub_comp_id = #{subCompId},
+			approval_status = #{approvalStatus},
+			contract_status = #{contractStatus}
 		WHERE id = #{id}
 	</update>
 	

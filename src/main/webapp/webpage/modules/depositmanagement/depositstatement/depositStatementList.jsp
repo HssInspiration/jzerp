@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>保证金出账记录管理</title>
+	<title>保证金出账记录</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -70,9 +70,6 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-<%-- 			<shiro:hasPermission name="depositstatement:depositStatement:add"> --%>
-<!-- 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a> -->
-<%-- 			</shiro:hasPermission> --%>
 <%-- 			<shiro:hasPermission name="depositstatement:depositStatement:edit"> --%>
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
@@ -91,16 +88,6 @@
 	<!-- 表格 -->
 	<table id="table"   data-toolbar="#toolbar"></table>
 
-    <!-- context menu -->
-<!--     <ul id="context-menu" class="dropdown-menu"> -->
-<%--     	<shiro:hasPermission name="depositstatement:depositStatement:edit"> --%>
-<!--         <li data-item="edit"><a>编辑</a></li> -->
-<%--         </shiro:hasPermission> --%>
-<%--         <shiro:hasPermission name="depositstatement:depositStatement:del"> --%>
-<!--         <li data-item="delete"><a>删除</a></li> -->
-<%--         </shiro:hasPermission> --%>
-<!--         <li data-item="action1"><a>取消</a></li> -->
-<!--     </ul>   -->
 	</div>
 	</div>
 	</div>

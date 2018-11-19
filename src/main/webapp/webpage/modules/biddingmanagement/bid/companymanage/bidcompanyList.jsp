@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>参投单位管理管理</title>
+	<title>参投单位管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -76,20 +76,20 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-			<%-- <shiro:hasPermission name="companymanage:bidcompany:add"> --%>
+			<shiro:hasPermission name="companymanage:bidcompany:add">
 				<a id="add" class="btn btn-primary" href="#" title="参投单位管理" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="companymanage:bidcompany:edit"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="companymanage:bidcompany:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="companymanage:bidcompany:del"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="companymanage:bidcompany:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="companymanage:bidcompany:import"> --%>
+			</shiro:hasPermission>
+<%-- 			<shiro:hasPermission name="companymanage:bidcompany:import"> --%>
 <!-- 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button> -->
 <!-- 				<div id="importBox" class="hide"> -->
 <%-- 						<form id="importForm" action="${ctx}/companymanage/bidcompany/import" method="post" enctype="multipart/form-data" --%>

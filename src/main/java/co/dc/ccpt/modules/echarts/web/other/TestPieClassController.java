@@ -11,12 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
-import com.github.abel533.echarts.Option;
 import com.github.abel533.echarts.code.Magic;
 import com.github.abel533.echarts.code.Tool;
-import com.github.abel533.echarts.code.Trigger;
 import com.github.abel533.echarts.code.X;
-import com.github.abel533.echarts.data.LineData;
 import com.github.abel533.echarts.data.PieData;
 import com.github.abel533.echarts.feature.MagicType;
 import com.github.abel533.echarts.json.GsonOption;
@@ -83,7 +80,7 @@ public class TestPieClassController extends BaseController {
 
 		//构造11个数据
 		List<TestPieClass> list = testPieClassService.findList(new TestPieClass());
-		ArrayList arrayList = new ArrayList();
+		ArrayList<PieData> arrayList = new ArrayList<PieData>();
 		for(TestPieClass p:list){
 			arrayList.add(new PieData(p.getClassName(), p.getNum()));
 		}

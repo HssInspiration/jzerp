@@ -165,6 +165,73 @@ public class ActTaskService extends BaseService {
 		}
 		return result;
 	}
+	//设置首页待办任务
+	public List<HashMap<String,String>> getTodoList(Act act){
+		List<HashMap<String,String>> result = new ArrayList<HashMap<String,String>>();
+		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
+		// =============== 已经签收的任务  ===============
+		TaskQuery todoTaskQuery = taskService.createTaskQuery().taskAssignee(userId).active()
+				.includeProcessVariables().orderByTaskCreateTime().desc();
+		
+		// 设置查询条件
+		if (StringUtils.isNotBlank(act.getProcDefKey())){
+			todoTaskQuery.processDefinitionKey(act.getProcDefKey());
+		}
+		if (act.getBeginDate() != null){
+			todoTaskQuery.taskCreatedAfter(act.getBeginDate());
+		}
+		if (act.getEndDate() != null){
+			todoTaskQuery.taskCreatedBefore(act.getEndDate());
+		}
+		
+		// 查询列表
+		List<Task> todoList = todoTaskQuery.list();
+		for (Task task : todoList) {
+			HashMap map = new HashMap();
+			map.put("task.id", task.getId());
+			map.put("task.name", task.getName());
+			map.put("task.executionId",task.getExecutionId());
+			map.put("task.processDefinitionId", task.getProcessDefinitionId());
+			map.put("task.processInstanceId", task.getProcessInstanceId());
+			map.put("title",task.getProcessVariables().get("title"));
+			map.put("pass",task.getProcessVariables().get("pass"));
+			map.put("status","todo");
+			result.add(map);
+		}
+		
+		// =============== 等待签收的任务  ===============
+		TaskQuery toClaimQuery = taskService.createTaskQuery().taskCandidateUser(userId)
+				.includeProcessVariables().active().orderByTaskCreateTime().desc();
+		
+		// 设置查询条件
+		if (StringUtils.isNotBlank(act.getProcDefKey())){
+			toClaimQuery.processDefinitionKey(act.getProcDefKey());
+		}
+		if (act.getBeginDate() != null){
+			toClaimQuery.taskCreatedAfter(act.getBeginDate());
+		}
+		if (act.getEndDate() != null){
+			toClaimQuery.taskCreatedBefore(act.getEndDate());
+		}
+		
+		// 查询列表
+		List<Task> toClaimList = toClaimQuery.list();
+		for (Task task : toClaimList) {
+			HashMap map = new HashMap();
+			map.put("task.id", task.getId());
+			map.put("task.name", task.getName());
+			map.put("task.executionId",task.getExecutionId());
+			map.put("task.processInstanceId", task.getProcessInstanceId());
+			map.put("task.processDefinitionId", task.getProcessDefinitionId());
+			map.put("title",task.getProcessVariables().get("title"));
+			map.put("pass",task.getProcessVariables().get("pass"));
+			map.put("status", "claim");
+			result.add(map);
+		}
+		return result;
+	}
+	
+	
 	
 	/**
 	 * 获取已办任务

@@ -15,8 +15,12 @@ import com.google.common.collect.Maps;
 import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
+import co.dc.ccpt.modules.act.entity.Act;
 import co.dc.ccpt.modules.act.service.ActTaskService;
 import co.dc.ccpt.modules.act.utils.ActUtils;
+import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
+import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
+import co.dc.ccpt.modules.oa.entity.ActContract;
 import co.dc.ccpt.modules.oa.entity.AttachContract;
 import co.dc.ccpt.modules.oa.mapper.AttachContractMapper;
 
@@ -33,7 +37,13 @@ public class AttachContractService extends CrudService<AttachContractMapper, Att
 	private ActTaskService actTaskService;
 	
 	@Autowired
+	private ProContractService proContractService;
+	
+	@Autowired
 	private IdentityService identityService;
+	
+	@Autowired
+	private AttachContractMapper attachContractMapper;
 	
 	public AttachContract getByProcInsId(String procInsId) {
 		return mapper.getByProcInsId(procInsId);
@@ -118,6 +128,67 @@ public class AttachContractService extends CrudService<AttachContractMapper, Att
 		vars.put("pass", "yes".equals(attachContract.getAct().getFlag())? "1" : "0");
 		actTaskService.complete(attachContract.getAct().getTaskId(), attachContract.getAct().getProcInsId(), attachContract.getAct().getComment(), vars);
 		
+	}
+	
+	@Transactional(readOnly = false)
+	public AttachContract getByProContract(ProContract proContract) {
+		String proContractId = proContract.getId();
+		AttachContract attachContract = new AttachContract();
+		if(StringUtils.isNotBlank(proContractId)){
+			attachContract = attachContractMapper.getByContractId(proContractId);
+		}
+		if (attachContract != null) {
+			return attachContract;
+		} else {
+			return new AttachContract();
+		}
+	}
+	@Transactional(readOnly = false)
+	public void changeStatusForAudit(AttachContract attachContract) {
+		Act act = attachContract.getAct();
+		if(act!=null){
+			String taskKey = act.getTaskDefKey();
+			String flag = act.getFlag();
+			if(taskKey.equals("subLead")){
+				if(flag.equals("no")){//不同意
+					proContractService.updateProContractStatus(attachContract, 3);
+				}
+			}else if(taskKey.equals("lead")){//总经理审批
+				if(flag.equals("no")){//不同意
+					proContractService.updateProContractStatus(attachContract, 3);
+				}
+			}else if(taskKey.equals("mainLead")){//总经理审批
+				if(flag.equals("no")){//不同意
+					proContractService.updateProContractStatus(attachContract, 3);
+				}else if(flag.equals("yes")){//同意
+					proContractService.updateProContractStatus(attachContract, 2);
+				}
+			}
+//			else if(taskKey.equals("contract_modify")){//若为合同修改
+//				if(flag.equals("no")){//销毁--审批不通过
+//					proContractService.updateProContractStatus(attachContract, 0);
+//				}else if(flag.equals("yes")){//同意
+//					proContractService.updateProContractStatus(attachContract, 1);
+//				}
+//			}
+		}
+	}
+
+	@Transactional(readOnly = false)
+	public void changeStatusForForm(AttachContract attachContract) {
+		Act act = attachContract.getAct();
+		if(act != null){
+			String taskKey = act.getTaskDefKey();
+			if(taskKey==null || taskKey.equals("")){
+				proContractService.updateProContractStatus(attachContract, 1);
+			}else if(taskKey.equals("contract_modify")){//若为合同修改
+				if(act.getFlag().equals("no")){//销毁--审批不通过
+					proContractService.updateProContractStatus(attachContract, 0);
+				}else if(act.getFlag().equals("yes")){
+					proContractService.updateProContractStatus(attachContract, 1);
+				}
+			}
+		}
 	}
 	
 }

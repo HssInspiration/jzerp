@@ -9,7 +9,6 @@ import co.dc.ccpt.modules.iim.entity.ChatPage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
 import co.dc.ccpt.modules.iim.entity.ChatHistory;
 import co.dc.ccpt.modules.iim.mapper.ChatHistoryMapper;

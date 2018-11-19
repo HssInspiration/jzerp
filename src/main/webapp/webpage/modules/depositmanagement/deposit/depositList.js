@@ -239,7 +239,7 @@ $(document).ready(function() {
   }
   
   function add(){
-	  jp.openDialog('新增保证金信息管理', "${ctx}/deposit/form",'800px', '500px', $('#table'));
+	  jp.openDialog('新增保证金信息管理', "${ctx}/deposit/form",'1000px', '600px', $('#table'));
   }
   
   function edit(id,status){//没有权限时，不显示确定按钮
@@ -252,9 +252,9 @@ $(document).ready(function() {
 	  }
   	    console.log("11111:"+status)
   	  if(status == "0" || status == "3"){
-  		  jp.openDialog('编辑保证金信息管理', "${ctx}/deposit/form?id=" + id,'800px', '500px', $('#table'));
+  		  jp.openDialog('编辑保证金信息管理', "${ctx}/deposit/form?id=" + id,'1000px', '600px', $('#table'));
 	  }else{
-		  jp.openDialogView('查看保证金信息管理', "${ctx}/deposit/form?id=" + id,'800px', '500px', $('#table'));
+		  jp.openDialogView('查看保证金信息管理', "${ctx}/deposit/form?id=" + id,'1000px', '600px', $('#table'));
 	  }
 //	   <shiro:hasPermission name="deposit:deposit:edit">
 //	  jp.openDialog('编辑保证金信息管理', "${ctx}/deposit/form?id=" + id,'800px', '500px', $('#table'));

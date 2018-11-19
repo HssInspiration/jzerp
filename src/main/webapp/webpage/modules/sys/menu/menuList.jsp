@@ -41,7 +41,6 @@
 				    </tbody>  
 				</table> 
 	 		</div>
-	 		
 	 		 
 		    <div  id="right" class="panel panel-default col-sm-6" style="display:none">
 				<div class="panel-heading">

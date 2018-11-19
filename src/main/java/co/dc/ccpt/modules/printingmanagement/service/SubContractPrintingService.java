@@ -10,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.dc.ccpt.common.utils.StringUtils;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
-import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
-import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.printingmanagement.entity.ContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.entity.SubContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.mapper.SubContractPrintingMapper;
@@ -88,7 +87,10 @@ public class SubContractPrintingService extends CrudService<SubContractPrintingM
 	
 	@Transactional(readOnly = false)
 	public ContractPrinting updateStampStatus(SubContractPrinting subContractPrinting) {
-		subContractPrinting.setPrintDate(new Date());
+		String isStamp = subContractPrinting.getIsStamp();
+		if(StringUtils.isNotBlank(isStamp) && isStamp.equals("1")){//若是否用章选择是则更新时间
+			subContractPrinting.setPrintDate(new Date());
+		}
 		return subContractPrintingMapper.updateStampStatus(subContractPrinting);
 	}
 }

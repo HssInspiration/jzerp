@@ -46,11 +46,11 @@
 	</sql>
 	
 	<sql id="proContractJoins">
-		LEFT JOIN ccpt.program_tab p ON p.id = a.program_id
-		LEFT JOIN ccpt.bidcomp_manage bm ON bm.programid = a.program_id
-		LEFT JOIN ccpt.sys_user u ON u.id = a.user_id
-		LEFT JOIN ccpt.sys_office o ON o.id = p.sys_officeid
-		LEFT JOIN ccpt.company_tab c ON c.id = p.companyid
+		LEFT JOIN program_tab p ON p.id = a.program_id
+		LEFT JOIN bidcomp_manage bm ON bm.programid = a.program_id and bm.companyid='03ae459404284f17bbd25e78a13397a6'
+		LEFT JOIN sys_user u ON u.id = a.user_id
+		LEFT JOIN sys_office o ON o.id = p.sys_officeid
+		LEFT JOIN company_tab c ON c.id = p.companyid
 	</sql>
 	
 	<select id="get" resultType="proContract" >
@@ -107,6 +107,26 @@
 			</if>
 				AND p.get_method=1
 				AND a.approval_status=0
+				or a.contract_status=3
+		</where>
+	</select>
+	
+	<select id="getProContractByName" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		<where>
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+				AND p.get_method=1
+				AND a.approval_status=0
+				or a.approval_status=3
+				or a.contract_status=3
 		</where>
 	</select>
 	
@@ -124,6 +144,26 @@
 			</if>
 				AND p.get_method=0
 				AND a.approval_status=0
+				or a.contract_status=3
+		</where>
+	</select>
+	
+	<select id="getAppointContractByName" resultType="proContract" >
+		SELECT 
+			<include refid="proContractColumns"/>
+		FROM program_contract a
+			<include refid="proContractJoins"/>
+		<where>
+			<if test="contractName != null and contractName != ''">
+				AND a.contract_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{contractName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{contractName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{contractName},'%')</if>
+			</if>
+				AND p.get_method=0
+				AND a.approval_status=0
+				or a.approval_status=3
+				or a.contract_status=3
 		</where>
 	</select>
 	
@@ -234,7 +274,7 @@
 				AND o.name LIKE 
 					<if test="dbName == 'oracle'">'%'||#{program.office.name}||'%'</if>
 					<if test="dbName == 'mssql'">'%'+#{program.office.name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{user.name},'%')</if>
+					<if test="dbName == 'mysql'">concat('%',#{program.office.name},'%')</if>
 			</if>
 		</where>
 		<choose>

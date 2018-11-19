@@ -6,7 +6,6 @@ package co.dc.ccpt.modules.depositmanagement.depositreturn.mapper;
 import co.dc.ccpt.core.persistence.BaseMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
 import co.dc.ccpt.modules.depositmanagement.depositreturn.entity.DepositReturn;
-import co.dc.ccpt.modules.depositmanagement.depositstatement.entity.DepositStatement;
 
 /**
  * 保证金催退MAPPER接口

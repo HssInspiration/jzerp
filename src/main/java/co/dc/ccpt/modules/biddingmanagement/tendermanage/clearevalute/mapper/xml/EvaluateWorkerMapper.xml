@@ -36,12 +36,13 @@
 		SELECT
 			su.name AS "user.name",
 			sr.name AS "user.role.name",
+			su.mobile AS "user.mobile",
 			a.remarks AS "remarks"
 		FROM evaluate_worker a
 		LEFT JOIN clearevaluate_bid b ON b.id = a.clearevaluate_bid_id
-		LEFT JOIN ccpt.subbid_company sc ON b.subbid_company_id = sc.id
-		LEFT JOIN ccpt.tender_tab t ON sc.tender_id = t.id
-		LEFT JOIN ccpt.subpackage_program sp ON t.subpackage_programid = sp.id
+		LEFT JOIN subbid_company sc ON b.subbid_company_id = sc.id
+		LEFT JOIN tender_tab t ON sc.tender_id = t.id
+		LEFT JOIN subpackage_program sp ON t.subpackage_programid = sp.id
 		LEFT JOIN sys_user su ON su.id = a.user_id
 		LEFT JOIN sys_user_role sur ON sur.user_id = su.id
 		LEFT JOIN sys_role sr ON sr.id = sur.role_id
@@ -66,7 +67,8 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+<!-- 				ORDER BY a.create_date ASC -->
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -85,7 +87,8 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+<!-- 				ORDER BY a.create_date ASC -->
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>

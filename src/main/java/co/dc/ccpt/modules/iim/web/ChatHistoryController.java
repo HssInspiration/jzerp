@@ -3,7 +3,6 @@
  */
 package co.dc.ccpt.modules.iim.web;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +60,7 @@ public class ChatHistoryController extends BaseController {
 	 */
 	@RequestMapping(value = {"list", ""})
 	public String list(ChatHistory chatHistory, HttpServletRequest request, HttpServletResponse response, Model model) {
-		ChatPage pg = new ChatPage<ChatHistory>(request, response);
+		ChatPage<ChatHistory> pg = new ChatPage<ChatHistory>(request, response);
 		ChatPage<ChatHistory> page;
 		chatHistory.setSender(UserUtils.getUser().getLoginName());
 		chatHistory.setReceiver(chatHistory.getId());

@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>投标管理管理</title>
+	<title>投标管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -42,40 +42,21 @@
 	<div id="toolbar">
 			<%-- <shiro:hasPermission name="bidmanage:bidtable:add"> --%>
 <!-- 				<a id="add" class="btn btn-primary" href="#" title="投标管理" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a> -->
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="bidmanage:bidtable:edit"> --%>
+			<%-- </shiro:hasPermission>--%>
+			<shiro:hasPermission name="bidmanage:bidtable:edit"> 
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="bidmanage:bidtable:del"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="bidmanage:bidtable:del"> 
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-			<%-- </shiro:hasPermission>
-			<shiro:hasPermission name="bidmanage:bidtable:import"> --%>
-<!-- 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button> -->
-<!-- 				<div id="importBox" class="hide"> -->
-<%-- 						<form id="importForm" action="${ctx}/bidmanage/bidtable/import" method="post" enctype="multipart/form-data" --%>
-<!-- 							 style="padding-left:20px;text-align:center;" ><br/> -->
-<!-- 							<input id="uploadFile" name="file" type="file" style="width:330px"/>导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！<br/>　　 -->
-<!-- 						</form> -->
-<!-- 				</div> -->
-		    </div>
+			</shiro:hasPermission>
+    </div>
 		
 	<!-- 表格 -->
 	<table id="table"   data-toolbar="#toolbar"></table>
-
-    <!-- context menu -->
-    <%-- <ul id="context-menu" class="dropdown-menu">
-    	<shiro:hasPermission name="bidmanage:bidtable:edit">
-        <li data-item="edit"><a>编辑</a></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="bidmanage:bidtable:del">
-        <li data-item="delete"><a>删除</a></li>
-        </shiro:hasPermission>
-        <li data-item="action1"><a>取消</a></li>
-    </ul>   --%>
 	</div>
 	</div>
 	</div>

@@ -3,9 +3,6 @@
  */
 package co.dc.ccpt.modules.test.entity.tree;
 
-import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import co.dc.ccpt.core.persistence.TreeEntity;
 
 /**

@@ -36,6 +36,8 @@ public class BidtableQuery extends DataEntity<BidtableQuery> {
 	private Double provisionPrice; // 暂列金额
 	private String recordWorker;   // 开标记录人员
 	private String provideMeterial;// 所需材料
+	private String evaluateMethod;//评标办法
+	private Integer coefficient;//抽签系数
 	private List<BidCompanyManage> bidCompanyManageList = Lists.newArrayList();		// 子表列表
 	private List<String> programStatusList;//项目状态集合 
 	private String programStatus;
@@ -218,4 +220,21 @@ public class BidtableQuery extends DataEntity<BidtableQuery> {
 	public void setBidCompanyManageList(List<BidCompanyManage> bidCompanyManageList) {
 		this.bidCompanyManageList = bidCompanyManageList;
 	}
+
+	public String getEvaluateMethod() {
+		return evaluateMethod;
+	}
+
+	public void setEvaluateMethod(String evaluateMethod) {
+		this.evaluateMethod = evaluateMethod;
+	}
+
+	public Integer getCoefficient() {
+		return coefficient;
+	}
+
+	public void setCoefficient(Integer coefficient) {
+		this.coefficient = coefficient;
+	}
+	
 }

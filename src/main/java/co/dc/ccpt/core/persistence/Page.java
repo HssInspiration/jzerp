@@ -580,6 +580,10 @@ public class Page<T> {
 		return getPageSize();
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
 //	/**
 //	 * 获取 Spring data JPA 分页对象
 //	 */

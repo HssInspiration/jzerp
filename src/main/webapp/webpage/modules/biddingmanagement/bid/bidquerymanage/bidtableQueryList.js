@@ -156,6 +156,18 @@ $(document).ready(function() {
 		       
 		    }
 			,{
+				field: 'evaluateMethod',
+				title: '评标办法',
+				width:15
+				
+			}
+//			,{
+//				field: 'coefficient',
+//				title: '系数',
+//				width:15
+//				
+//			}
+			,{
 		        field: 'recordWorker',
 		        title: '开标记录人员',
 		        sortable: true
@@ -186,6 +198,7 @@ $(document).ready(function() {
                 'check-all.bs.table uncheck-all.bs.table', function () {
             $('#remove').prop('disabled', ! $('#bidtableTable').bootstrapTable('getSelections').length);
             $('#edit').prop('disabled', $('#bidtableTable').bootstrapTable('getSelections').length!=1);
+            $('#exportBidTab').prop('disabled', $('#bidtableTable').bootstrapTable('getSelections').length!=1);
         });
 		  
 		$("#btnImport").click(function(){
@@ -293,6 +306,15 @@ $(document).ready(function() {
 	  jp.openDialogView('查看投标管理', "${ctx}/bidquerymanage/bidtablequery/form?id=" + id,'800px', '500px', $('#bidtableTable'));
   }
   
+  function exportBidTab(id){
+	  if(id == undefined){
+		  id = getIdSelections();
+	  }
+	  jp.confirm('确认导出投标项目开标情况表？', function(){
+		  window.location.href="${ctx}/bidquerymanage/bidtablequery/exportBidTab?bidId=" + id;
+	  })
+  }
+  
   function detailFormatter(index, row) {
 	  var htmltpl =  $("#bidtableChildrenTpl").html().replace(/(\/\/\<!\-\-)|(\/\/\-\->)/g,"");
 	  var html = Mustache.render(htmltpl, {
@@ -344,6 +366,8 @@ $(document).ready(function() {
 								<th>商务标</th>
 								<th>材料员</th>
 								<th>造价员</th>
+								<th>工期</th>
+								<th>质量</th>
 								<th>是否中标</th>
 								<th>投标保证金</th>
 							</tr>
@@ -400,6 +424,12 @@ $(document).ready(function() {
 					</td>
 					<td>
 						{{row.coster.user.name}}
+					</td>
+					<td>
+						{{row.buildDate}}
+					</td>
+					<td>
+						{{row.quality}}
 					</td>
 					<td>
 						{{row.dictValue.label}}

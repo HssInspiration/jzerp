@@ -66,46 +66,23 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-<%-- 			<shiro:hasPermission name="tender:tender:add"> --%>
-				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="tender:tender:edit"> --%>
-			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
-	            	<i class="glyphicon glyphicon-edit"></i> 修改
-	        	</button>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="tender:tender:del"> --%>
-				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
-	            	<i class="glyphicon glyphicon-remove"></i> 删除
-	        	</button>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="tender:tender:import"> --%>
-<!-- 				<button id="btnImport" class="btn btn-info"><i class="fa fa-folder-open-o"></i> 导入</button> -->
-<!-- 				<div id="importBox" class="hide"> -->
-<%-- 						<form id="importForm" action="${ctx}/tendermanage/tender/import" method="post" enctype="multipart/form-data" --%>
-<!-- 							 style="padding-left:20px;text-align:center;" ><br/> -->
-<!-- 							<input id="uploadFile" name="file" type="file" style="width:330px"/>导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！<br/>　　 -->
-<!-- 						</form> -->
-<!-- 				</div> -->
-<%-- 			</shiro:hasPermission> --%>
-<!-- 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo"> -->
-<!-- 					<i class="fa fa-search"></i> 检索 -->
-<!-- 				</a> -->
-		    </div>
+		<shiro:hasPermission name="tendermanage:tender:add">
+			<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="tendermanage:tender:edit">
+		    <button id="edit" class="btn btn-success" disabled onclick="edit()">
+            	<i class="glyphicon glyphicon-edit"></i> 修改
+        	</button>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="tendermanage:tender:del">
+			<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
+            	<i class="glyphicon glyphicon-remove"></i> 删除
+        	</button>
+		</shiro:hasPermission>
+    </div>
 		
 	<!-- 表格 -->
 	<table id="table"   data-toolbar="#toolbar"></table>
-
-    <!-- context menu -->
-<!--     <ul id="context-menu" class="dropdown-menu"> -->
-<%--     	<shiro:hasPermission name="tender:tender:edit"> --%>
-<!--         <li data-item="edit"><a>编辑</a></li> -->
-<%--         </shiro:hasPermission> --%>
-<%--         <shiro:hasPermission name="tender:tender:del"> --%>
-<!--         <li data-item="delete"><a>删除</a></li> -->
-<%--         </shiro:hasPermission> --%>
-<!--         <li data-item="action1"><a>取消</a></li> -->
-<!--     </ul>   -->
 	</div>
 	</div>
 	</div>

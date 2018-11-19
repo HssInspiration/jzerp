@@ -326,7 +326,7 @@ public class ClearEvaluateController extends BaseController {
     public void exportFbmb(@RequestParam String proid, HttpServletRequest req, HttpServletResponse resp){
 		Map<String, Object> map = new HashMap<String, Object>();
 		SimpleDateFormat smf = new SimpleDateFormat("yyyy年MM月dd日");
-        if(proid!=null){
+        if(StringUtils.isNotBlank(proid)){
         	//id为项目id
         	//四大对象：
         	ClearEvaluate clearEvaluate = new ClearEvaluate();
@@ -455,11 +455,13 @@ public class ClearEvaluateController extends BaseController {
             map.put("bidCompany", bidCompany.toString());
             
             List<EvaluateWorker> evaluateWorkerList = clearEvaluateService.getUserList(proid);//获取评标人员信息
-            //序号、姓名、职务、电话（备注）--word表格组装遍历
+            //序号、姓名、职务、电话、备注--word表格组装遍历
             List<Map<String, Object>> userList=new ArrayList<Map<String,Object>>();
             
             String userName = "";
         	String roleName = "";
+        	String mobile = "";
+        	String remarks = "";
             if(evaluateWorkerList!=null && evaluateWorkerList.size()!=0){
             	for(int i=0;i<evaluateWorkerList.size();i++){
             		Map<String, Object> userMap = new HashMap<String, Object>();
@@ -471,16 +473,27 @@ public class ClearEvaluateController extends BaseController {
                 		if(role!=null){
                 			roleName = role.getName();
                 		}
+                		mobile = user.getMobile();
                 	}
                 	userMap.put("name", userName);
                 	userMap.put("position", roleName);
-                	userMap.put("remarks", evaluateWorkerList.get(i).getRemarks()!=null?evaluateWorkerList.get(i).getRemarks():"");
+                	userMap.put("mobile", mobile);
+//                	userMap.put("remarks", evaluateWorkerList.get(i).getRemarks()!=null?evaluateWorkerList.get(i).getRemarks():"");
+                	//备注添加人员处理
+//                	if(evaluateWorkerList.size()==1){
+//                		remarks = (evaluateWorkerList.get(i).getRemarks()!=null?evaluateWorkerList.get(i).getRemarks():"")+",";
+//                		System.out.println("remarks:"+evaluateWorkerList.get(i).getRemarks());
+//                	}else{
+                		remarks += (evaluateWorkerList.get(i).getRemarks()!=null?evaluateWorkerList.get(i).getRemarks():"")+",";
+//                	}
+                	
                 	userList.add(userMap);
                 }
                 map.put("userList", userList);
+                map.put("remarks", remarks.substring(0, remarks.length()-1));
         	}
             try {
-                WordUtils.exportMillCertificateWord(req,resp,map,"开评标报告","tempReport.ftl");
+                WordUtils.exportMillCertificateWord(req,resp,map,"开评标报告","tempReport0726.ftl",0);
             } catch (IOException e) {
             	e.printStackTrace();
             } 

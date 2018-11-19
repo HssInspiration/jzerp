@@ -107,7 +107,7 @@ $(document).ready(function() {
                 align: 'center',
                 events: {
     		        'click .view': function (e, value, row, index) {
-    		        	jp.openTab("${ctx}/enclosuremanage/enclosuretab/list?contractTempId="+row.id,"总包合同附件",false);
+    		        	jp.openTab("${ctx}/enclosuremanage/enclosuretab/list?contractTempId="+row.id,"合同模板附件",false);
     		        },
     		        'click .enclosureedit': function (e, value, row, index) {
     		        	jp.openDialog('编辑附件', '${ctx}/enclosuremanage/enclosuretab/form?contractTempId='+row.id,'1000px', '600px');

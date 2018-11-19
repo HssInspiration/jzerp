@@ -5,8 +5,6 @@ package co.dc.ccpt.modules.depositmanagement.depositreturn.entity;
 
 import java.util.Date;
 
-import javax.validation.constraints.NotNull;
-
 import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
 import co.dc.ccpt.modules.depositmanagement.depositstatement.entity.DepositStatement;

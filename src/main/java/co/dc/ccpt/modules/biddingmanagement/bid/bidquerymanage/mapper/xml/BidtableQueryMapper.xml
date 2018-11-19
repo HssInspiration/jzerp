@@ -25,7 +25,10 @@
 		a.provisionprice AS "provisionPrice",
 		a.recordworker AS "recordWorker",
 		a.providemeterial AS "provideMeterial",
+		a.evaluate_method AS "evaluateMethod",
 		e.programname AS "program.programName",
+		e.prodescription AS "program.proDescription",
+		e.plan_to_start AS "program.planToStart",
 		e.status AS "program.status",
 		
 		e.companyid AS "company.id",
@@ -33,8 +36,8 @@
 	</sql>
 	
 	<sql id="bidtableJoins">
-		LEFT JOIN ccpt.program_tab AS e on e.id=a.programid
-	    LEFT JOIN ccpt.company_tab c on e.companyid=c.id
+		LEFT JOIN program_tab AS e on e.id=a.programid
+	    LEFT JOIN company_tab c on e.companyid=c.id
 	</sql>
 	
 	<select id="get" resultType="BidtableQuery" >

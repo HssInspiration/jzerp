@@ -18,6 +18,7 @@
 		$(document).ready(function() {
 			//文档加载完毕验证附件是否为空，若不为空，显示对应附件
 			var enclosureCont = $("#enclosureCont").val();
+			var contractTextCont = $("#contractTextCont").val();
 			if(enclosureCont != null){//附件内容值非空
 				console.log("附件内容值："+enclosureCont);
 				var array = enclosureCont.split("|");
@@ -42,6 +43,43 @@
 				}
 			}
 			
+			if(contractTextCont != null){//合同正文内容值非空
+				console.log("合同正文内容值："+contractTextCont);
+				var contractText = ""; 
+        		if(!/\.(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(contractTextCont)){
+        			contractText = "<a href=\""+contractTextCont+"\" url=\""+contractTextCont+"\" target=\"_blank\">"+decodeURIComponent(contractTextCont.substring(contractTextCont.lastIndexOf("/")+1))+"</a>"
+        		}else{
+        			contractText = '<img  onclick="jp.showPic(\''+contractTextCont+'\')"'+' height="50px" src="'+contractTextCont+'">';
+        		}
+	        	labelArray.join(" ");
+				$("#text").append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+contractText);
+			}
+			
+			$("#viewPdfText").bind("click",function(){
+				console.log("事件绑定成功！");
+				//发送ajax请求获取当前id对应的合同正文PDF版本
+				var id = $("#id").val();
+				console.log("id为："+id);
+				var jsonData = JSON.stringify({"id":id});
+				$.ajax({
+					url:"${ctx}/oa/actContract/exchangeWordToPdf",
+					type:"post",
+					data:jsonData,
+					dataType:"json",
+					contentType:"application/json;charset=utf-8",
+					success:function(data){
+						console.log("获取成功1:"+data);
+						console.log("获取成功2:"+data.contractContToPdf);
+						var urlStr = data.contractContToPdf.replace("D:\\jzerp_files\\","\\ccpt\\");
+						console.log("urlStr:"+urlStr)
+						window.open(urlStr);
+					},
+					error:function(){
+						console.log("回调失败！");
+					}
+				});
+			})
+				
 			$("#name").focus();
 			validateForm = $("#inputForm").validate({
 				submitHandler: function(form){
@@ -92,9 +130,18 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label">备注：</label>
+						<label class="col-sm-2 control-label">标题：</label>
 						<div class="col-sm-10">
-							<form:textarea path="remarks" readonly="true" class="form-control" rows="5" maxlength="20"/>
+							<form:input path="remarks" readonly="true" class="form-control" rows="5" maxlength="100"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-2 control-label">合同正文：</label>
+						<div class="col-sm-3" id="text">
+							<form:hidden path="contractTextCont"  class="form-control" rows="5" maxlength="10000"/>
+						</div>
+						<div class="col-sm-7">
+							<input type="button" id="viewPdfText" value="在线查看合同正文"/>
 						</div>
 					</div>
 					<div class="form-group">
@@ -104,9 +151,9 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label class="col-sm-2 control-label"><font color="red">*</font>审批意见：</label>
+						<label class="col-sm-2 control-label">审批意见：</label>
 						<div class="col-sm-10">
-							<form:textarea path="act.comment" class="form-control required" rows="5" maxlength="20"/>
+							<form:textarea path="act.comment" class="form-control" rows="5" maxlength="20"/>
 						</div>
 					</div>
 					<div class="form-group">

@@ -211,9 +211,9 @@
 						</c:if>
 						<span id="typeAlreadyExsist" style = "font-weight:bold;"></span>
 					</td>
-					<td class="width-15 active"><label class="pull-right">分包工程地址：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包工程地址：</label></td>
 					<td class="width-35">		
-						<form:input path="subproAddr" htmlEscape="false" rows="4"  class="form-control "/>
+						<form:input path="subproAddr" htmlEscape="false" rows="4"  class="form-control required"/>
 					</td>
 				</tr>
 				<script>
@@ -319,6 +319,22 @@
 		                    </span>
 		                </div>						            
 			        </td>
+				</tr>
+				<tr>
+					  <td class="width-15 active"><label class="pull-right">是否招标：</label></td>
+					  <c:if test="${isAdd}">
+				          <td  class="width-35" >
+				            <form:radiobuttons path="isTender"  items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
+				          </td>
+			          </c:if>
+			          <c:if test="${edit}">
+				          <td  class="width-35" >
+				            <form:radiobuttons path="isTender" disabled="true" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false" class="i-checks required"/>
+				          </td>
+				      </c:if>
+					<td class="width-15 active"></td>
+					<td class="width-35">
+					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right">子项目内容：</label></td>

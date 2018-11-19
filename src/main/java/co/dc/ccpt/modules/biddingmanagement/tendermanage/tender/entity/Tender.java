@@ -17,7 +17,7 @@ import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 public class Tender extends DataEntity<Tender> {
 	
 	private static final long serialVersionUID = 1L;
-	private String tenderiNum;		// 招标编号
+	private String tenderNum;		// 招标编号
 	private String subpackageProgramId;		// 子项目工程id
 	private String arrange;		// 招标范围
 	private String quality;		// 质量要求
@@ -68,8 +68,8 @@ public class Tender extends DataEntity<Tender> {
 	}
 
 	@ExcelField(title="招标编号", align=2, sort=1)
-	public String getTenderiNum() {
-		return tenderiNum;
+	public String getTenderNum() {
+		return tenderNum;
 	}
 
 	
@@ -97,8 +97,8 @@ public class Tender extends DataEntity<Tender> {
 		this.tenderDirector = tenderDirector;
 	}
 
-	public void setTenderiNum(String tenderiNum) {
-		this.tenderiNum = tenderiNum;
+	public void setTenderNum(String tenderNum) {
+		this.tenderNum = tenderNum;
 	}
 	
 	@ExcelField(title="子项目工程id", align=2, sort=2)

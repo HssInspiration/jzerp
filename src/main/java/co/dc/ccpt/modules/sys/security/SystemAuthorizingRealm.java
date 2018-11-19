@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -23,14 +22,13 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import co.dc.ccpt.common.config.Global;
 import co.dc.ccpt.common.utils.Encodes;
@@ -87,11 +85,16 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 		User user = getSystemService().getUserByLoginName(token.getUsername());
 		if (user != null) {
 			if (Global.NO.equals(user.getLoginFlag())){
-				throw new AuthenticationException("msg:该已帐号禁止登录.");
+				throw new AuthenticationException("msg:该帐号已禁止登录!");
 			}
-			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
+			System.out.println("*************************:"+user.getPassword());
+			String pwd = user.getPassword();
+			byte[] salt = Encodes.decodeHex(pwd.substring(0,16));
+//			byte[] salt = Encodes.decodeHex(pwd.substring(0,pwd.length()));
+//			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin()), 
+//					pwd.substring(pwd.length()), ByteSource.Util.bytes(salt), getName());
 			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin()), 
-					user.getPassword().substring(16), ByteSource.Util.bytes(salt), getName());
+					pwd.substring(16), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;
 		}
@@ -201,10 +204,10 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 //	/**
 //	 * 清空用户关联权限认证，待下次使用时重新加载
 //	 */
-//	public void clearCachedAuthorizationInfo(Principal principal) {
-//		SimplePrincipalCollection principals = new SimplePrincipalCollection(principal, getName());
-//		clearCachedAuthorizationInfo(principals);
-//	}
+	public void clearCachedAuthorizationInfo(Principal principal) {
+		SimplePrincipalCollection principals = new SimplePrincipalCollection(principal, getName());
+		clearCachedAuthorizationInfo(principals);
+	}
 
 	/**
 	 * 清空所有关联认证

@@ -1,12 +1,12 @@
 //(function() {
 	/** * 请求json格式的数据  {value: [key:value,key2:value2]}; */
-
-	function autoFillData(partXId,reuqestUrl,certificateName){
+//原先传入两个参数，但不可模糊匹配，所以用autoFillData
+	function autoFillData2(partXId,reuqestUrl,certificateName){
 	     $("#"+partXId).bsSuggest({
 	    	url: reuqestUrl+certificateName,
 	        getDataMethod : "url",
 	        showBtn: false,     //不显示下拉按钮
-	        delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+//	        delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
 	        idField: "id\" style=\"display:none\"",
 	        keyField: "word",
 	        clearable: true,
@@ -29,6 +29,35 @@
 			  }
 	     });
 	 }
+	
+	function autoFillData(partXId,reuqestUrl){
+		$("#"+partXId).bsSuggest({
+			url: reuqestUrl,
+			getDataMethod : "url",
+			showBtn: false,     //不显示下拉按钮
+//	        delayUntilKeyup: true, //获取数据的方式为 firstByUrl 时，延迟到有输入/获取到焦点时才请求数据
+			idField: "id\" style=\"display:none\"",
+			keyField: "word",
+			clearable: true,
+			processData : function(json) {
+//				  console.log("回调json为:"+json);
+				var i, len, data = {
+						value : []
+				};
+				if (json.length == 0) {
+					return false
+				} 
+				len = json.length;
+				for (i = 0; i < len; i++) {
+					data.value.push({
+						"id\" style=\"display:none\"":json[i].id,
+						"word":json[i].user.name
+					})
+				}
+				return data
+			}
+		});
+	}
 
 	function autoFillData1(partXId,reuqestUrl1){
 	     $("#"+partXId).bsSuggest({

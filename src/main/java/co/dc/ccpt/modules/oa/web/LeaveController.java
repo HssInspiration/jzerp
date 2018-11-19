@@ -3,7 +3,6 @@
  */
 package co.dc.ccpt.modules.oa.web;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpSession;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +30,7 @@ import com.google.common.collect.Maps;
 import co.dc.ccpt.core.mapper.JsonMapper;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
-import co.dc.ccpt.modules.act.service.ActTaskService;
 import co.dc.ccpt.modules.oa.entity.Leave;
-import co.dc.ccpt.modules.oa.entity.TestAudit;
 import co.dc.ccpt.modules.oa.service.LeaveService;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 

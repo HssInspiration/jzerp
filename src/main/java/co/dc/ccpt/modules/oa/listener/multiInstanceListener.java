@@ -1,6 +1,6 @@
 package co.dc.ccpt.modules.oa.listener;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,20 +19,24 @@ import co.dc.ccpt.modules.sys.service.SystemService;
 public class multiInstanceListener implements TaskListener{
 
 	private static final long serialVersionUID = 1L;
-//	private SystemService systemService;
+	private SystemService systemService;
 	@Override
 	public void notify(DelegateTask delegateTask) {
 		//利用spring的ContextLoader获取对应的类，从而实现service层的可用性
-//		ApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-//		systemService = (SystemService)context.getBean("systemService");
-		//获取启动节点的用户
-//		String loginName = (String)delegateTask.getVariable("applyUserId");
-		String pass = (String)delegateTask.getVariable("pass");
+		ApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+		systemService = (SystemService)context.getBean("systemService");
+//		String pass = (String)delegateTask.getVariable("pass");
 		Map<String,Object> variables = new HashMap<String,Object>();
-		variables.put("pass", Boolean.parseBoolean(pass));
-		List<String> assigneeList = Arrays.asList("dcp001","syd001","qgc001","xsl001","lvwen001","sxm001","zj001");
-		variables.put("assigneeList", assigneeList);
+//		variables.put("pass", Boolean.parseBoolean(pass));
+//		获取总公司四个审批人员（经营部负责人+工程部负责人+财务部负责人+结算部负责人）
+		List<String> leadList = new ArrayList<String>();
+		List<String> list = systemService.getPrimaryPersonByRoleId();
+		if(list!=null && list.size()>0){
+			for(String lead:list){
+				leadList.add(lead);
+			}
+		}
+		variables.put("leadList", leadList);
 		delegateTask.setVariables(variables);//设置流程变量
 	}
-
 }

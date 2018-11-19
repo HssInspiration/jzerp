@@ -194,9 +194,11 @@ $(document).ready(function() {
 							'<a href="#" class="enclosureedit" title="点击编辑附件" >',
 							'<i class="fa fa-paperclip"></i>',
 							'</a> ',
+							<shiro:hasPermission name="programmanage:program:addbid">
 							'<a href="#" class="bidmanage" title="点击编辑投标管理" >',
 							'<i class="fa fa-link"></i>',
 							'</a> '
+							</shiro:hasPermission>
 						].join('');
                 }
 		    }
@@ -286,7 +288,6 @@ $(document).ready(function() {
   }
   
   function deleteAll(){
-
 		jp.confirm('确认要删除该项目工程管理记录吗？', function(){
 			jp.loading();  	
 			jp.get("${ctx}/programmanage/program/deleteAll?ids=" + getIdSelections(), function(data){
@@ -402,7 +403,7 @@ $(document).ready(function() {
 	  }else if(status==3){//竣工
 		  jp.confirm('确认切换\"'+getNameSelection()+'\"项目状态为结案么？', function(){
 				jp.loading();  	
-				jp.get("${ctx}/programmanage/program/closecase?id=" + getIdSelections(), function(data){
+				jp.get("${ctx}/programmanage/program/closeCase?id=" + getIdSelections(), function(data){
 		 	  		if(data.success){
 		 	  			$('#table').bootstrapTable('refresh');
 		 	  			jp.success(data.msg);

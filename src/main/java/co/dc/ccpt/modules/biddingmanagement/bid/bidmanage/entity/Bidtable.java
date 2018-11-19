@@ -41,6 +41,8 @@ public class Bidtable extends DataEntity<Bidtable> {
 	
 	private String recordWorker;   // 开标记录人员
 	private String provideMeterial;// 所需材料
+	private String evaluateMethod;//评标办法
+	private Integer coefficient;//抽签系数
 	
 	public Bidtable() {
 		super();
@@ -220,6 +222,22 @@ public class Bidtable extends DataEntity<Bidtable> {
 				+ ", ctrlPrice=" + ctrlPrice + ", floorPrice=" + floorPrice
 				+ ", provisionPrice=" + provisionPrice + ", recordWorker="
 				+ recordWorker + ", provideMeterial=" + provideMeterial + "]";
+	}
+
+	public String getEvaluateMethod() {
+		return evaluateMethod;
+	}
+
+	public void setEvaluateMethod(String evaluateMethod) {
+		this.evaluateMethod = evaluateMethod;
+	}
+
+	public Integer getCoefficient() {
+		return coefficient;
+	}
+
+	public void setCoefficient(Integer coefficient) {
+		this.coefficient = coefficient;
 	}
 	
 }

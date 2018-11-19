@@ -11,10 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
-import co.dc.ccpt.modules.iim.entity.MailBox;
 import co.dc.ccpt.modules.iim.entity.MailCompose;
 import co.dc.ccpt.modules.iim.entity.MailPage;
-import co.dc.ccpt.modules.iim.mapper.MailBoxMapper;
 import co.dc.ccpt.modules.iim.mapper.MailComposeMapper;
 
 /**

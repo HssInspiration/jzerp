@@ -16,6 +16,7 @@ public class SubContractPrinting extends DataEntity<SubContractPrinting> {
 	private String isStamp;// 是否已用章
 	private Date printDate;// 用章日期
 	private String printNum;// 用章编号
+	private String printDetailType;// 用章详细类别
 	private Integer printType;// 用章类别
 	private SubProContract subProContract;// 分包合同对象
 	private String times;// 用章次数
@@ -101,6 +102,14 @@ public class SubContractPrinting extends DataEntity<SubContractPrinting> {
 
 	public void setTimes(String times) {
 		this.times = times;
+	}
+
+	public String getPrintDetailType() {
+		return printDetailType;
+	}
+
+	public void setPrintDetailType(String printDetailType) {
+		this.printDetailType = printDetailType;
 	}
 
 }

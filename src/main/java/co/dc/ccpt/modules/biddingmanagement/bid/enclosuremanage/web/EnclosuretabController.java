@@ -49,6 +49,8 @@ import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractServ
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
 import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
+import co.dc.ccpt.modules.depositmanagement.depositstatement.entity.DepositStatement;
+import co.dc.ccpt.modules.depositmanagement.depositstatement.service.DepositStatementService;
 import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 import co.dc.ccpt.modules.programmanage.service.ProgramService;
@@ -98,6 +100,21 @@ public class EnclosuretabController extends BaseController {
 	
 	@Autowired
 	private ContractTempService contractTempService; 
+	
+	@Autowired
+	private DepositStatementService statementService;
+	
+	@ModelAttribute
+	public DepositStatement getDepositStatement(@RequestParam(required=false) String statementId) {
+		DepositStatement entity = null;
+		if (StringUtils.isNotBlank(statementId)){
+			entity = statementService.get(statementId);
+		}
+		if (entity == null){
+			entity = new DepositStatement();
+		}
+		return entity;
+	}
 	
 	@ModelAttribute
 	public ContractTemp getContractTemp(@RequestParam(required=false) String contractTempId) {
@@ -252,7 +269,7 @@ public class EnclosuretabController extends BaseController {
 			ClearEvaluate clearEvaluate, SubBidCompany subBidCompany, 
 			Bidcompany bidCompany, SubpackageProgram subpackageProgram, ContractTemp contractTemp,
 			Tender tender, ProContract proContract, SubProContract subProContract, 
-			 PersonCertificate personCertificate, Model model) {
+			PersonCertificate personCertificate, DepositStatement depositStatement, Model model) {
 		System.out.println(program);
 		String foreginId = null;
 		if(StringUtils.isNotBlank(program.getId())){
@@ -277,6 +294,8 @@ public class EnclosuretabController extends BaseController {
 			foreginId = personCertificate.getId();
 		}else if(StringUtils.isNotBlank(contractTemp.getId())){
 			foreginId = contractTemp.getId();
+		}else if(StringUtils.isNotBlank(depositStatement.getId())){
+			foreginId = depositStatement.getId();
 		}
 		model.addAttribute("foreginId",foreginId);
 		return "modules/biddingmanagement/bid/enclosuremanage/enclosuretabList";
@@ -312,7 +331,7 @@ public class EnclosuretabController extends BaseController {
 			SubpackageProgram subpackageProgram, SubBidCompany subBidCompany, 
 			Tender tender, Program program, Bidtable bidtable, SubProContract subProContract,
 			Bidcompany bidCompany, ProContract proContract,ContractTemp contractTemp,
-			 PersonCertificate personCertificate, Model model) {
+			 PersonCertificate personCertificate, DepositStatement depositStatement, Model model) {
 		
 		if(StringUtils.isBlank(enclosuretab.getId())){//如果ID是空为添加
 			model.addAttribute("isAdd", true);
@@ -373,14 +392,20 @@ public class EnclosuretabController extends BaseController {
 				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
 				enclosuretab.setEnclosureNum(enclosureNum);
 			}else if(StringUtils.isNotBlank(personCertificate.getId())){
-			model.addAttribute("personCertificate", personCertificate);
-			enclosureType = 11;
-			enclosuretab.setEnclosureType(enclosureType);
-			enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
-			enclosuretab.setEnclosureNum(enclosureNum);
+				model.addAttribute("personCertificate", personCertificate);
+				enclosureType = 11;
+				enclosuretab.setEnclosureType(enclosureType);
+				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
+				enclosuretab.setEnclosureNum(enclosureNum);
 			}else if(StringUtils.isNotBlank(contractTemp.getId())){
 				model.addAttribute("contractTemp", contractTemp);
 				enclosureType = 12;
+				enclosuretab.setEnclosureType(enclosureType);
+				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
+				enclosuretab.setEnclosureNum(enclosureNum);
+			}else if(StringUtils.isNotBlank(depositStatement.getId())){
+				model.addAttribute("depositStatement", depositStatement);
+				enclosureType = 13;
 				enclosuretab.setEnclosureType(enclosureType);
 				enclosureNum = enclosuretabService.countEnclosureByType(enclosuretab);
 				enclosuretab.setEnclosureNum(enclosureNum);

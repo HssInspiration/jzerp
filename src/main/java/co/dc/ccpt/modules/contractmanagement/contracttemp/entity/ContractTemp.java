@@ -5,6 +5,7 @@ import co.dc.ccpt.core.persistence.DataEntity;
 public class ContractTemp extends DataEntity<ContractTemp> {
 	private static final long serialVersionUID = 1L;
 	private String tempName;// 模板名称
+	private String oldTempName;// 模板名称
 	private String tempNum;// 模板编号
 	private Integer tempType;// 模板类别
 
@@ -38,6 +39,14 @@ public class ContractTemp extends DataEntity<ContractTemp> {
 
 	public void setTempType(Integer tempType) {
 		this.tempType = tempType;
+	}
+
+	public String getOldTempName() {
+		return oldTempName;
+	}
+
+	public void setOldTempName(String oldTempName) {
+		this.oldTempName = oldTempName;
 	}
 
 }

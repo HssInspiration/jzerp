@@ -2,7 +2,7 @@
 <%@ include file="/webpage/include/taglib.jsp"%>
 <html>
 <head>
-	<title>子项目参投单位管理管理</title>
+	<title>分包项目参投单位管理</title>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="decorator" content="ani"/>
 	<%@ include file="/webpage/include/bootstraptable.jsp"%>
@@ -66,19 +66,19 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-<%-- 			<shiro:hasPermission name="subbidcompany:subBidCompany:add"> --%>
+			<shiro:hasPermission name="tendermanage:subBidCompany:add">
 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="subbidcompany:subBidCompany:edit"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="tendermanage:subBidCompany:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="subbidcompany:subBidCompany:del"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="tendermanage:subBidCompany:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-<%-- 			</shiro:hasPermission> --%>
+			</shiro:hasPermission>
 		    </div>
 		
 	<!-- 表格 -->

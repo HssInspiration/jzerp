@@ -21,8 +21,15 @@
 		}
 
 		$(document).ready(function() {
-			
+			$("#tempName").focus();
 			validateForm = $("#inputForm").validate({
+				rules: {
+					tempName: { 
+						remote: "${ctx}/contracttemp/checkTempName?oldTempName=" + encodeURIComponent("${contractTemp.tempName}")},//设置了远程验证，在初始化时必须预先调用一次。
+				},
+				messages: {
+					tempName: {remote: "模板名称已存在"},
+				},
 				submitHandler: function(form){
 					jp.post("${ctx}/contracttemp/save",$('#inputForm').serialize(),function(data){
 						if(data.success){
@@ -62,10 +69,11 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>模板名称：</label></td>
-					<td class="width-35">
-						<form:input path="tempName" htmlEscape="false"    class="form-control "/>		
-					</td>
+					<td  class="width-15 active"><label class="pull-right"><font color="red">*</font>模板名称:</label></td>
+		         <td class="width-35" >
+		         	<input id="oldTempName" name="oldTempName" type="hidden" value="${contractTemp.tempName}">
+		         	<form:input path="tempName" htmlEscape="false" maxlength="50" class="form-control required"/>
+		         </td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>模板类型：</label></td>

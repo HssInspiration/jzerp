@@ -39,32 +39,32 @@
 					<label class="label-item single-overflow pull-left" title="承包单位：">承包单位：</label>
 					<form:input path="subBidCompany.company.companyName" htmlEscape="false" maxlength="64"  class=" form-control"/>
 				</div>
-				<div class="col-xs-12 col-sm-6 col-md-4">
-				 <div class="form-group">
-					<label class="label-item single-overflow pull-left" title="签订日期：">签订日期：</label>
-					<div class="col-xs-12">
-						   <div class="col-xs-12 col-sm-5">
-					        	  <div class='input-group date' id='beginContractDate' style="left: -10px;" >
-					                   <input type='text'  name="beginContractDate" id="beginDate"  class="form-control"  />
-					                   <span class="input-group-addon">
-					                       <span class="glyphicon glyphicon-calendar"></span>
-					                   </span>
-					             </div>	
-					        </div>
-					        <div class="col-xs-12 col-sm-1">
-					        		~
-					       	</div>
-					        <div class="col-xs-12 col-sm-5">
-					          	<div class='input-group date' id='endContractDate' style="left: -10px;" >
-					                   <input type='text'  name="endContractDate" id="endDate"  class="form-control" />
-					                   <span class="input-group-addon">
-					                       <span class="glyphicon glyphicon-calendar"></span>
-					                   </span>
-					           	</div>	
-					        </div>
-					</div>
-				</div>	
-			</div>
+<!-- 				<div class="col-xs-12 col-sm-6 col-md-4"> -->
+<!-- 				 <div class="form-group"> -->
+<!-- 					<label class="label-item single-overflow pull-left" title="签订日期：">签订日期：</label> -->
+<!-- 					<div class="col-xs-12"> -->
+<!-- 						   <div class="col-xs-12 col-sm-5"> -->
+<!-- 					        	  <div class='input-group date' id='beginContractDate' style="left: -10px;" > -->
+<!-- 					                   <input type='text'  name="beginContractDate" id="beginDate"  class="form-control"  /> -->
+<!-- 					                   <span class="input-group-addon"> -->
+<!-- 					                       <span class="glyphicon glyphicon-calendar"></span> -->
+<!-- 					                   </span> -->
+<!-- 					             </div>	 -->
+<!-- 					        </div> -->
+<!-- 					        <div class="col-xs-12 col-sm-1"> -->
+<!-- 					        		~ -->
+<!-- 					       	</div> -->
+<!-- 					        <div class="col-xs-12 col-sm-5"> -->
+<!-- 					          	<div class='input-group date' id='endContractDate' style="left: -10px;" > -->
+<!-- 					                   <input type='text'  name="endContractDate" id="endDate"  class="form-control" /> -->
+<!-- 					                   <span class="input-group-addon"> -->
+<!-- 					                       <span class="glyphicon glyphicon-calendar"></span> -->
+<!-- 					                   </span> -->
+<!-- 					           	</div>	 -->
+<!-- 					        </div> -->
+<!-- 					</div> -->
+<!-- 				</div>	 -->
+<!-- 			</div> -->
 				<div class="col-xs-12 col-sm-6 col-md-4">
 					<label class="label-item single-overflow pull-left" title="审批状态：">审批状态：</label>
 					<form:select path="approvalStatus"  class="form-control m-b">
@@ -92,34 +92,49 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-<%-- 			<shiro:hasPermission name="subpackage:building:add"> --%>
+			<shiro:hasPermission name="subprocontract:add">
 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="subpackage:building:edit"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="subpackage:building:del"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:del">
 				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
 	            	<i class="glyphicon glyphicon-remove"></i> 删除
 	        	</button>
-<%-- 			</shiro:hasPermission> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:startApproval">
 				<button id="startApproval" class="btn btn-primary" disabled onclick="startApproval()">
 	            	<i class="glyphicon glyphicon-open"></i> 启动审批
 	        	</button>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:stampApply">
 				<button id="stampApply" class="btn btn-info" disabled onclick="stampApply()">
 	            	<i class="glyphicon glyphicon-star"></i> 用章申请
 	        	</button>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:confirmValid">
 				<button id="confirmValid" class="btn btn-success" disabled onclick="confirmValid()">
 	            	<i class="glyphicon glyphicon-hand-up"></i> 确认生效
 	        	</button>
-	        	<button id="termination" class="btn btn-warning" disabled onclick="termination()">
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:shutdown">
+				<button id="shutdown" class="btn btn-warning" disabled onclick="shutdown()">
 	            	<i class="glyphicon glyphicon-minus-sign"></i> 终止
 	        	</button>
-	        	<button id="closeCase" class="btn btn-success" disabled onclick="closeCase()">
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:closeCase">
+				<button id="closeCase" class="btn btn-success" disabled onclick="closeCase()">
 	            	<i class="glyphicon glyphicon-ok"></i> 结案
 	        	</button>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="subprocontract:viewProcess">
+				<button id="viewProcess" class="btn btn-info" disabled onclick="viewProcess()">
+	            	<i class="glyphicon glyphicon-zoom-in"></i> 查看流程
+	        	</button>
+			</shiro:hasPermission>
 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
 					<i class="fa fa-search"></i> 检索
 				</a>

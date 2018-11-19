@@ -5,6 +5,8 @@ package co.dc.ccpt.modules.sys.web;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,8 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.security.shiro.session.SessionDAO;
 import co.dc.ccpt.core.servlet.ValidateCodeServlet;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.act.entity.Act;
+import co.dc.ccpt.modules.act.service.ActTaskService;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.service.BidtableService;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.BidcompanyService;
 import co.dc.ccpt.modules.depositmanagement.depositreturn.service.DepositReturnService;
@@ -75,6 +79,9 @@ public class LoginController extends BaseController{
 	
 	@Autowired
 	private DepositReturnService depositReturnService;
+	
+	@Autowired
+	private ActTaskService actTaskService;
 	/**
 	 * 管理登录
 	 * @throws IOException 
@@ -328,25 +335,45 @@ public class LoginController extends BaseController{
 		model.addAttribute("totalIsBid", totalIsBid);
 		//根据上述数据计算出中标率:
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");//格式化小数    
-	    String bidRate = decimalFormat.format(((float)totalIsBid/totalBid)*100);//返回的是String类型    
+		String bidRate = "0.00";
+		if(totalBid != null && totalBid != 0){
+			bidRate = decimalFormat.format(((float)totalIsBid/totalBid)*100);//返回的是String类型    
+		}
 		model.addAttribute("bidRate", bidRate);
 		//查询出已中标劳务：
 		Double laborCost = bidcompanyService.getTotalLaborCost();
-		String totalLaborCost = decimalFormat.format(laborCost);
+		String totalLaborCost = "0";
+		if(laborCost!=null){
+			totalLaborCost = decimalFormat.format(laborCost);
+		}
 		model.addAttribute("totalLaborCost", totalLaborCost);
 		//查询出投标价：
 		Double bidPrice = bidcompanyService.getTotalBidPrice();
-		String totalBidPrice = decimalFormat.format(bidPrice);
+		String totalBidPrice = "0";
+		if(bidPrice!=null){
+			decimalFormat.format(bidPrice);
+		}
 		model.addAttribute("totalBidPrice", totalBidPrice);
 		//查询出未中标未退回的保证金数量
 		Integer totalIsNotReturn = depositReturnService.countDeposit();
 		model.addAttribute("totalIsNotReturn", totalIsNotReturn);
 		//查询出未中标未退回的保证金总金额
 		Double depositPrice = depositReturnService.countDepositTotalPrice();
+		String totalDepositPrice = "0";
 		if(depositPrice!=null){
-			String totalDepositPrice = decimalFormat.format(depositPrice);
-			model.addAttribute("totalDepositPrice", totalDepositPrice);
+			totalDepositPrice = decimalFormat.format(depositPrice);
 		}
+		model.addAttribute("totalDepositPrice", totalDepositPrice);
+		//获取待办任务的id+标题
+		Act act = new Act();
+		List<HashMap<String,String>> list = actTaskService.getTodoList(act);
+		for(HashMap<String,String> map:list){
+			System.out.println(map);
+			String title = map.get("title");
+			System.out.println("title:"+title);
+			model.addAttribute("map", map);
+		}
+		model.addAttribute("list", list);
 		return "modules/sys/login/sysHome";
 	}
 }

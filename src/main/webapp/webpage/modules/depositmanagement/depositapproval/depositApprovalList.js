@@ -93,11 +93,6 @@ $(document).ready(function() {
 		        sortable: true
 		       
 		    }
-//			,{
-//		        field: 'deposit.program.programName',
-//		        title: '所属项目名称',
-//		        sortable: true
-//		    }
 			,{
 		        field: 'deposit.depositType',
 		        title: '用途(类型)',
@@ -122,7 +117,7 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'deposit.checkStatus',
-		        title: '审批状态',
+		        title: '审核状态',
 		        sortable: true,
 		        align:"center",
 		        formatter:function(value, row , index){

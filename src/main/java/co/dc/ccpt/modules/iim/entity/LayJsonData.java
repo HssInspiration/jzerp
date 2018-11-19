@@ -13,9 +13,9 @@ public class LayJsonData {
 	
 	private Object mine; // 我的信息
 
-	private List<FriendGroup> friend = new ArrayList(); // 好友列表
+	private List<FriendGroup> friend = new ArrayList<FriendGroup>(); // 好友列表
 	
-	private List<LayGroup> group = new ArrayList();//群组列表
+	private List<LayGroup> group = new ArrayList<LayGroup>();//群组列表
 
 	public Object getMine() {
 		return mine;

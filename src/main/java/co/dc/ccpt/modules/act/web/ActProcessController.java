@@ -47,8 +47,6 @@ public class ActProcessController extends BaseController {
 	@Autowired
 	private ActProcessService actProcessService;
 
-	 @Autowired
-	 private HistoryService historyService;
 	/**
 	 * 流程定义列表
 	 */

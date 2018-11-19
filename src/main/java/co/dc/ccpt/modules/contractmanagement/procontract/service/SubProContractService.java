@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.service.CrudService;
-import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.mapper.SubProContractMapper;
 import co.dc.ccpt.modules.oa.entity.ActSubContract;
@@ -126,5 +125,11 @@ public class SubProContractService extends CrudService<SubProContractMapper, Sub
 	// 通过总包id获取分包对象集合
 	public List<SubProContract> getSubProContractListById(SubProContract subProContract){
 		return subProContractMapper.getSubProContractListById(subProContract);
+	}
+
+	public List<SubProContract> getSubProContractByName(String subProContractName) {
+		SubProContract subProContract = new SubProContract();
+		subProContract.setSubProContractName(subProContractName);
+		return subProContractMapper.getSubProContractByName(subProContract);
 	}
 }

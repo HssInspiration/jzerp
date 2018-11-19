@@ -29,9 +29,6 @@ public class DispatcherServletConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private Environment environment;
-
     @Bean
     public SessionLocaleResolver localeResolver() {
         return new SessionLocaleResolver();

@@ -29,7 +29,9 @@ public class HttpPostTest {
 	private static Logger log = Logger.getLogger(HttpPostTest.class);
 	Map<String, String> params;
 	String url;
+	@SuppressWarnings("deprecation")
 	public static String post(String url, Map<String, String> params) {
+		@SuppressWarnings("deprecation")
 		DefaultHttpClient httpclient = new DefaultHttpClient();
 		String body = null;
 		
@@ -132,6 +134,7 @@ public class HttpPostTest {
 		params.put("password", "admin");
 			
 		String xml = HttpPostTest.post("http://localhost:8080/HeartCare/a/login", params);
+		System.out.println(xml);
 	}
 	
 	public  String post(){

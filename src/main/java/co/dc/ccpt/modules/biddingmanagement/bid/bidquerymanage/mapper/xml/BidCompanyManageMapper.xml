@@ -50,48 +50,50 @@
 		
 		s.label AS "dictValue.label",
 		a.deposit AS "deposit",
+		a.build_date AS "buildDate",
+		a.quality AS "quality",
 		a.depositenclosure AS "depositEnclosure"
 		
 	</sql>
 	
 	<sql id="bidCompanyManageJoins">
-		LEFT JOIN ccpt.bid_tab b ON b.id = a.bidtable_id
-		LEFT JOIN ccpt.program_tab p ON p.id = a.programid
-		LEFT JOIN ccpt.company_tab c on c.id = a.companyid
+		LEFT JOIN bid_tab b ON b.id = a.bidtable_id
+		LEFT JOIN program_tab p ON p.id = a.programid
+		LEFT JOIN company_tab c on c.id = a.companyid
 		
-		LEFT JOIN ccpt.core_staff AS c1 ON c1.id=a.tecbid 
-		LEFT JOIN ccpt.sys_user AS u1 ON u1.id=c1.user_id 
+		LEFT JOIN core_staff AS c1 ON c1.id=a.tecbid 
+		LEFT JOIN sys_user AS u1 ON u1.id=c1.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c2 ON c2.id=a.combid 
-		LEFT JOIN ccpt.sys_user AS u2 ON u2.id=c2.user_id 
+		LEFT JOIN core_staff AS c2 ON c2.id=a.combid 
+		LEFT JOIN sys_user AS u2 ON u2.id=c2.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c3 ON c3.id=a.ecobid 
-		LEFT JOIN ccpt.sys_user AS u3 ON u3.id=c3.user_id 
+		LEFT JOIN core_staff AS c3 ON c3.id=a.ecobid 
+		LEFT JOIN sys_user AS u3 ON u3.id=c3.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c4 ON c4.id=a.constructorid 
-		LEFT JOIN ccpt.sys_user AS u4 ON u4.id=c4.user_id 
+		LEFT JOIN core_staff AS c4 ON c4.id=a.constructorid 
+		LEFT JOIN sys_user AS u4 ON u4.id=c4.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c5 ON c5.id=a.directorid 
-		LEFT JOIN ccpt.sys_user AS u5 ON u5.id=c5.user_id 
+		LEFT JOIN core_staff AS c5 ON c5.id=a.directorid 
+		LEFT JOIN sys_user AS u5 ON u5.id=c5.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c6 ON c6.id=a.saverid 
-		LEFT JOIN ccpt.sys_user AS u6 ON u6.id=c6.user_id 
+		LEFT JOIN core_staff AS c6 ON c6.id=a.saverid 
+		LEFT JOIN sys_user AS u6 ON u6.id=c6.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c7 ON c7.id=a.constrworkerid 
-		LEFT JOIN ccpt.sys_user AS u7 ON u7.id=c7.user_id 
+		LEFT JOIN core_staff AS c7 ON c7.id=a.constrworkerid 
+		LEFT JOIN sys_user AS u7 ON u7.id=c7.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c8 ON c8.id=a.inspectorid 
-		LEFT JOIN ccpt.sys_user AS u8 ON u8.id=c8.user_id 
+		LEFT JOIN core_staff AS c8 ON c8.id=a.inspectorid 
+		LEFT JOIN sys_user AS u8 ON u8.id=c8.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c9 ON c9.id=a.meterialerid 
-		LEFT JOIN ccpt.sys_user AS u9 ON u9.id=c9.user_id 
+		LEFT JOIN core_staff AS c9 ON c9.id=a.meterialerid 
+		LEFT JOIN sys_user AS u9 ON u9.id=c9.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c10 ON c10.id=a.costerid 
-		LEFT JOIN ccpt.sys_user AS u10 ON u10.id=c10.user_id 
+		LEFT JOIN core_staff AS c10 ON c10.id=a.costerid 
+		LEFT JOIN sys_user AS u10 ON u10.id=c10.user_id 
 		
-		LEFT JOIN ccpt.core_staff AS c11 ON c11.id=a.otherworkersid 
-		LEFT JOIN ccpt.sys_user AS u11 ON u11.id=c11.user_id 
-		LEFT JOIN ccpt.sys_dict s ON s.type='yes_no' AND s.value=a.isbid
+		LEFT JOIN core_staff AS c11 ON c11.id=a.otherworkersid 
+		LEFT JOIN sys_user AS u11 ON u11.id=c11.user_id 
+		LEFT JOIN sys_dict s ON s.type='yes_no' AND s.value=a.isbid
 	</sql>
 	
     
@@ -126,7 +128,8 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+				ORDER BY a.update_date DESC
+<!-- 				ORDER BY a.create_date ASC -->
 			</otherwise>
 		</choose>
 	</select>
@@ -145,7 +148,8 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date ASC
+				ORDER BY a.update_date DESC
+<!-- 				ORDER BY a.create_date ASC -->
 			</otherwise>
 		</choose>
 	</select>

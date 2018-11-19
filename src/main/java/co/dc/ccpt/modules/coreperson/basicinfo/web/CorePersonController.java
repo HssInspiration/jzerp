@@ -32,6 +32,7 @@ import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
 import co.dc.ccpt.modules.sys.entity.DictValue;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.service.DictTypeService;
+import co.dc.ccpt.modules.sys.service.SystemService;
 
 /**
  * 人员Controller
@@ -49,6 +50,9 @@ public class CorePersonController extends BaseController {
 	
 	@Autowired
 	private EnclosuretabService enclosuretabService;
+	
+	@Autowired
+	private SystemService userService;
 	
 	@ModelAttribute
 	public CorePerson get(@RequestParam(required=false) String id) {
@@ -298,6 +302,18 @@ public class CorePersonController extends BaseController {
 	public CorePerson detail(String id) {
 		return corePersonService.get(id);
 	}
+	
+	/**
+	 * 查询所有用户名称（模糊匹配）
+	 */
+	@ResponseBody
+	@RequestMapping(value="getAllUserList")
+	public List<User> getAllUserList (@RequestParam String name){
+		User user = new User();
+		user.setName(name);
+		return userService.getAllUserList(user);
+	}
+	
 	
 	/**
 	 * 删除

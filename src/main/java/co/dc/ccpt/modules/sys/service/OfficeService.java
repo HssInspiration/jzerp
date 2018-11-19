@@ -10,9 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.dc.ccpt.core.service.TreeService;
-import co.dc.ccpt.modules.sys.entity.Area;
 import co.dc.ccpt.modules.sys.entity.Office;
-import co.dc.ccpt.modules.sys.mapper.AreaMapper;
 import co.dc.ccpt.modules.sys.mapper.OfficeMapper;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 

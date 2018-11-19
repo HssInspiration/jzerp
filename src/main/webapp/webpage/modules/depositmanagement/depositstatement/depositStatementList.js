@@ -64,7 +64,7 @@ $(document).ready(function() {
                    	  		}
                    	  	})
                    	});
-                   } 
+                  } 
                },
               
                onClickRow: function(row, $el){
@@ -149,18 +149,57 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'remarks',
-		        title: '备注信息',
-		        sortable: true
+		        title: '备注信息'
 		       
 		    }
-		     ]
-		
+			,{
+				field: 'operate',
+                title: '操作',
+                align: 'center',
+                events: {
+    		        'click .view': function (e, value, row, index) {
+    		        	jp.openTab("${ctx}/enclosuremanage/enclosuretab/list?statementId="+row.id,"出账凭证",false);
+    		        },
+    		        'click .enclosureedit': function (e, value, row, index) {
+    		        	jp.openDialog('编辑出账凭证', '${ctx}/enclosuremanage/enclosuretab/form?statementId='+row.id,'1000px', '600px');
+    		        },
+    		    },
+                formatter: function operateFormatter(value, row, index) {
+                	var foreginId = row.id;//获取当前行id
+                	var count;
+                	$.ajax({
+                		url:"${ctx}/programmanage/program/getEnclosureCount",
+                		type:"post",
+                		async : false,//此处设置异步请求为false，将异步改成同步即可为全局变量count赋值。
+                		data:JSON.stringify({"id":foreginId}),
+                		contentType:"application/json;charset=utf-8",
+                		dataType:"json",
+                		success:function(data){
+                			console.log(data);
+                			count = data;
+                		},
+                		error:function(){
+                			console.log("获取附件数量失败！")
+                		}
+                	});
+                	return [
+							'<a href="#" class="view" title="查看出账凭证" >',
+                	        '<span style="color:green;font-weight:bold;">',
+							count,
+							'</span>',
+							'</a> ',
+							'<a href="#" class="enclosureedit" title="编辑出账凭证" >',
+							'<i class="fa fa-paperclip"></i>',
+							'</a> '
+					].join('');
+                }
+			 }
+    	  ]
 		});
-		
 		  
 	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
 		  $('#table').bootstrapTable("toggleView");
-		}
+	  }
 	  
 	  $('#table').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
                 'check-all.bs.table uncheck-all.bs.table', function () {
@@ -197,7 +236,7 @@ $(document).ready(function() {
 		    
 	  $("#search").click("click", function() {// 绑定查询按扭
 		  $('#table').bootstrapTable('refresh');
-		});
+	  });
 	 
 	 $("#reset").click("click", function() {// 绑定查询按扭
 		  $("#searchForm  input").val("");
@@ -216,32 +255,31 @@ $(document).ready(function() {
 	});
 		
   function getIdSelections() {
-        return $.map($("#table").bootstrapTable('getSelections'), function (row) {
-            return row.id
-        });
-    }
+    return $.map($("#table").bootstrapTable('getSelections'), function (row) {
+        return row.id
+    });
+  }
   
   function deleteAll(){
-		jp.confirm('确认要删除该保证金出账记录记录吗？', function(){
-			jp.loading();  	
-			jp.get("${ctx}/depositStatement/deleteAll?ids=" + getIdSelections(), function(data){
-         	  		if(data.success){
-         	  			$('#table').bootstrapTable('refresh');
-         	  			jp.success(data.msg);
-         	  		}else{
-         	  			jp.error(data.msg);
-         	  		}
-         	  	})
-          	   
-		})
+	jp.confirm('确认要删除该保证金出账记录记录吗？', function(){
+		jp.loading();  	
+		jp.get("${ctx}/depositStatement/deleteAll?ids=" + getIdSelections(), function(data){
+ 	  		if(data.success){
+ 	  			$('#table').bootstrapTable('refresh');
+ 	  			jp.success(data.msg);
+ 	  		}else{
+ 	  			jp.error(data.msg);
+ 	  		}
+ 	  	})
+	})
   }
    function add(){
 	  jp.openDialog('新增保证金出账记录', "${ctx}/depositStatement/form",'800px', '500px', $('#table'));
   }
   function edit(id){//没有权限时，不显示确定按钮
-  	  if(id == undefined){
+//  	  if(id == undefined){
 			id = getIdSelections();
-		}
+//		}
   	 jp.openDialog('编辑保证金出账记录', "${ctx}/depositStatement/form?id=" + id,'800px', '500px', $('#table'));
 //	   <shiro:hasPermission name="depositstatement:depositStatement:edit">
 //	  jp.openDialog('编辑保证金出账记录', "${ctx}/depositStatement/form?id=" + id,'800px', '500px', $('#table'));

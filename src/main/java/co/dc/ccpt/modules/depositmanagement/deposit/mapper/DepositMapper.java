@@ -5,8 +5,6 @@ package co.dc.ccpt.modules.depositmanagement.deposit.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
 import co.dc.ccpt.core.persistence.BaseMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
 import co.dc.ccpt.modules.depositmanagement.deposit.entity.Deposit;

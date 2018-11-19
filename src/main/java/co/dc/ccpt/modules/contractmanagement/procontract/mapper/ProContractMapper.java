@@ -44,5 +44,9 @@ public interface ProContractMapper extends BaseMapper<ProContract> {
 	public List<ProContract> getAppointList(ProContract proContract);//获取业主指定的合同集合
 	
 	public List<ProContract> getMarketList(ProContract proContract);//获取市场投标的合同集合
+
+	public List<ProContract> getProContractByName(ProContract proContract);//通过合同名称获得未审批、不通过且为市场投标的合同
+
+	public List<ProContract> getAppointContractByName(ProContract proContract);//通过合同名称获得未审批、不通过且为业主指定的合同
 	
 }

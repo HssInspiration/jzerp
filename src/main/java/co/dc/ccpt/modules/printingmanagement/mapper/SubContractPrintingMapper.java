@@ -17,7 +17,7 @@ public interface SubContractPrintingMapper extends BaseMapper<SubContractPrintin
 
 	public String getLastInsertNum();//获取最新增一个记录id
 
-	public List<SubContractPrinting> getSubContractPrintingBySubId(SubContractPrinting subContractPrinting);//通过分包合同id查询出对应的的集合
+	public List<SubContractPrinting> getSubContractPrintingBySubId(SubContractPrinting subContractPrinting);//通过分包合同id查询出对应的用章对象集合
 
 	public List<SubProContract> getSubProContractListByName();
 

@@ -25,6 +25,7 @@
 		a.provisionprice AS "provisionPrice",
 		a.recordworker AS "recordWorker",
 		a.providemeterial AS "provideMeterial",
+		a.evaluate_method AS "evaluateMethod",
 		e.programname AS "program.programName",
 		e.plan_to_start AS "program.planToStart",
 		
@@ -33,8 +34,8 @@
 	</sql>
 	
 	<sql id="bidtableJoins">
-	    LEFT JOIN ccpt.program_tab AS e on e.id=a.programid
-	    left join ccpt.company_tab c on e.companyid=c.id
+	    LEFT JOIN program_tab AS e on e.id=a.programid
+	    left join company_tab c on e.companyid=c.id
 	</sql>
     
 	<select id="get" resultType="Bidtable" >
@@ -106,7 +107,7 @@
 			a.id AS "id",
 			e.programname AS "program.programName"
 		FROM bid_tab a
-		LEFT JOIN ccpt.program_tab AS e on e.id=a.programid
+		LEFT JOIN program_tab AS e on e.id=a.programid
 		<where>
 			<if test="program.programName != null and program.programName != ''">
 				AND e.programname LIKE 
@@ -149,7 +150,8 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.openbiddate DESC
+<!-- 				ORDER BY a.openbiddate DESC -->
+			ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -196,7 +198,8 @@
 			floorprice,
 			provisionprice,
 			recordworker,
-			providemeterial
+			providemeterial,
+			evaluate_method
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -219,7 +222,8 @@
 			#{floorPrice},
 			#{provisionPrice},
 			#{recordWorker},
-			#{provideMeterial}
+			#{provideMeterial},
+			#{evaluateMethod}
 		)
 	</insert>
 	
@@ -239,7 +243,8 @@
 			floorprice = #{floorPrice},
 			provisionprice = #{provisionPrice},
 			recordworker = #{recordWorker},
-			providemeterial = #{provideMeterial}
+			providemeterial = #{provideMeterial},
+			evaluate_method = #{evaluateMethod}
 		WHERE id = #{id}
 	</update>
 	

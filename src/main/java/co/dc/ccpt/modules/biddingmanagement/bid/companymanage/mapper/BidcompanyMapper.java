@@ -47,4 +47,8 @@ public interface BidcompanyMapper extends BaseMapper<Bidcompany> {
 	public List<Bidcompany> listBidcompanyByCompId(@Param("companyId") String companyId);//通过公司id查询参投信息（公司信息删除时判断）
 
 	public Bidcompany getBidcompanyByWorkerId(@Param("corePersonId") String corePersonId);//通过人员id获取一条参投信息
+	
+	public List<Bidcompany> getBidcompanyByCorePersonId(Bidcompany bidcompany);//通过人员id获取参投信息集合--方便查询人员所在在建项目
+
+	Bidcompany getBidPriceByProId(Bidcompany bidcomp);//通过项目id查询投标价---总包合同中市场投标项目的投标价
 }

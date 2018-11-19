@@ -24,6 +24,9 @@
 			
 // 			从url请求项目集合，参数：项目名称-programName
 			$("#test_data").bsSuggest({
+// 				  effectiveFields: ["id", "word"],
+// 		          searchFields: [ "id"],
+				  effectiveFieldsAlias:{companyName:"参投单位"},
 				  idField : "id\" style=\"display:none\"",
 				  keyField : "word",
 				  getDataMethod : "url",
@@ -39,7 +42,9 @@
 				      for (i = 0; i < len; i++) {
 				          data.value.push({
 				        	  "id\" style=\"display:none\"":json[i].id,
-				              "word":json[i].subpackageProgramName
+				              "word":json[i].subpackageProgramName,
+				              "companyId\" style=\"display:none\"":json[i].company.id,
+				              "companyName":json[i].company.companyName
 				              })
 				          }
 				          return data
@@ -72,27 +77,54 @@
 				  }
 			  });
 			$("#test_data").on('onSetSelectValue', function (e, keyword) {
-				console.log('onSetSelectValue: ', keyword);
+				console.log('onSetSelectValue1: ', keyword);
 				//思路：
 				//1.下拉变化时获取id;
+// 				keyword:{id:****,key:****}
 				var id = keyword.id;
-				console.log(id);
+				console.log("id:"+id);
 				var jsonData = JSON.stringify({"id":id});
 				//2.获取完id传入后台获取对应的类型集合;
+// 				$.ajax({
+// 					url:"${ctx}/subprocontract/getSubProContractBySubCompId",
+// 					data:jsonData,
+// 					type:"post",
+// 					contentType:"application/json;charset=utf-8",
+// 					dataType:"json",
+// 					success:function(data){
+// 						console.log("获取成功！"+data);
+// 						if(data==true){//代表该分包项目对应的合同已经登记
+// 							$("#alreadyExsist").html("×当前子项目对应参投单位已登记，请重新选择！");
+// 							$("#alreadyExsist").css("color","red");
+// 						}else{//代表该分包项目对应的合同未登记
+// 							$("#alreadyExsist").html("OK!");
+// 							$("#alreadyExsist").css("color","green");
+// 						}
+// 					},
+// 					error:function(){
+// 						console.log("获取失败！");
+// 					}
+// 				});
+				
+				//3.获取完id传入后台获取对应的类型集合;
 				$.ajax({
-					url:"${ctx}/subprocontract/getSubProContractBySubProId",
+					url:"${ctx}/subprocontract/getCompBySubIsBid",
 					data:jsonData,
 					type:"post",
 					contentType:"application/json;charset=utf-8",
 					dataType:"json",
 					success:function(data){
-						console.log("获取成功！"+data);
-						if(data==true){//代表该分包项目对应的合同已经登记
-							$("#alreadyExsist").html("×当前子项目已登记，请重新选择！");
-							$("#alreadyExsist").css("color","red");
-						}else{//代表该分包项目对应的合同未登记
-							$("#alreadyExsist").html("OK!");
-							$("#alreadyExsist").css("color","green");
+						console.log("获取成功000！"+data);
+						$("#subCompId").empty();  //每次获取成功后清空下拉列表()
+						$("#subCompId").append("<option value=''>--请选择参投单位--</option>");
+						//设置参投单位的下拉选项
+						if(data != null && data.length>0){
+							for(var i=0;i<data.length;i++){
+								console.log(data[i]);
+								$("#subCompId").append("<option value = \"" + data[i].id + "\">"+ data[i].companyName +"</option>");
+							}
+						}else{
+							$("#subCompId").append("<option> </option>");
 						}
 					},
 					error:function(){
@@ -107,6 +139,10 @@
 					if(subpackageProgramId != null && subpackageProgramId != ""){
 						$("#subpackageProgramId").val(subpackageProgramId);
  					}
+// 					var subCompId = $("#test_data").attr("data-id");
+// 					if(subCompId != null && subCompId != ""){
+// 						$("#subCompId").val(subCompId);
+//  				}
 					jp.post("${ctx}/subprocontract/save",$('#inputForm').serialize(),function(data){
 						if(data.success){
 	                    	$table.bootstrapTable('refresh');
@@ -151,18 +187,19 @@
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包合同编号：</label></td>
 					<td class="width-35">
 						<input type="hidden" class="form-control" name= "subProContract.subpackageProgram.proContract.id" value = "${subProContract.subpackageProgram.proContract.id}">
-						<form:input path="subProContractNum" htmlEscape="false"  readOnly="true"  class="form-control "/>
+						<form:input path="subProContractNum" htmlEscape="false"  readOnly="true"  class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包合同名称：</label></td>
 					<td class="width-35">
-						<input type="hidden" class="form-control" name= "subProContract.id" id = "subProContractId" value = "${subProContract.id}">
-						<form:input path="subProContractName" htmlEscape="false"  class="form-control "/>
+						<input type="hidden" class="form-control required" name= "subProContract.id" id = "subProContractId" value = "${subProContract.id}">
+						<form:input path="subProContractName" htmlEscape="false"  class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包项目名称：</label></td>
 					<td class="width-35">
-						<input type="hidden" class="form-control" name= "subpackageProgram.id" id = "subpackageProgramId" value = "${subProContract.subpackageProgram.id}">
+						<input type="hidden" class="form-control required" name= "subpackageProgram.id" id = "subpackageProgramId" value = "${subProContract.subpackageProgram.id}">
+<%-- 						<input type="hidden" class="form-control required" name= "subCompId" id = "subCompId" value = "${subProContract.subCompId}"> --%>
 						<c:if test="${isAdd}">
 							<div class="row">
 				                <div class="col-lg-2">
@@ -186,47 +223,19 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同总价(万元)：</label></td>
 					<td class="width-35">
-						<form:input path="subProTotalPrice" htmlEscape="false"    class="form-control "/>
+						<form:input path="subProTotalPrice" htmlEscape="false"    class="form-control required isFloatGteZero"/>
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td>
 					<td class="width-35">
-						<form:input path="connector" htmlEscape="false"    class="form-control "/>
+						<form:input path="connector" htmlEscape="false"    class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>联系人号码：</label></td>
 					<td class="width-35">
-						<form:input path="phoneNum" htmlEscape="false"    class="form-control "/>
+						<form:input path="phoneNum" htmlEscape="false"    class="form-control required"/>
 					</td>
 				</tr>
-<!-- 				<tr> -->
-<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>总包合同名称：</label></td> -->
-<!-- 					<td class="width-35"> -->
-<%-- 						<input type="hidden" class="form-control" name= "proContract.id" id = "proContractId" value = "${subProContract.proContract.id}"> --%>
-<!-- 						<div class="row"> -->
-<!-- 			                <div class="col-lg-2"> -->
-<!-- 			                    <div class="input-group"> -->
-<%-- 			                        <input type="text" class="form-control required"  id="test_data1" value = "${subProContract.proContract.contractName}"> --%>
-<!-- 			                        <div class="input-group-btn"> -->
-<!-- 			                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> -->
-<!-- 			                                <span class="caret"></span> -->
-<!-- 			                            </button> -->
-<!-- 			                            <ul class="dropdown-menu dropdown-menu-right" role="menu"> -->
-<!-- 			                            </ul> -->
-<!-- 			                        </div> -->
-<!-- 			                    </div> -->
-<!-- 			                </div> -->
-<!-- 			            </div> -->
-<!-- 					</td> -->
-<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程地址：</label></td> -->
-<!-- 					<td class="width-35"> -->
-<%-- 						<form:input path="subProAddr" htmlEscape="false"    class="form-control "/> --%>
-<!-- 					</td> -->
-<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td> -->
-<!-- 					<td class="width-35"> -->
-<%-- 						<form:input path="connector" htmlEscape="false"    class="form-control "/> --%>
-<!-- 					</td> -->
-<!-- 				</tr> -->
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>开工日期：</label></td>
 					<td class="width-35">
@@ -239,8 +248,8 @@
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同拟草人：</label></td>
 					<td class="width-35">
-						<input type="hidden" class="form-control" name= "user.id" id = "userId" value = "${subProContract.user.id}">
-						<form:input path="user.name" htmlEscape="false"  readOnly="true"  class="form-control "/>
+						<input type="hidden" class="form-control required" name= "user.id" id = "userId" value = "${subProContract.user.id}">
+						<form:input path="user.name" htmlEscape="false"  readOnly="true"  class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
@@ -256,18 +265,21 @@
 					
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>分包公司：</label></td>
 					<td class="width-35">
-						<form:input path="employer" htmlEscape="false" readOnly="true" value="江苏金卓建设工程有限公司" class="form-control "/>
+						<form:input path="employer" htmlEscape="false" readOnly="true" value="江苏金卓建设工程有限公司" class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>签订日期：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>承包单位：</label></td>
 					<td class="width-35">
-						<div class='input-group form_datetime' id='subProContractDate'>
-		                    <input type='text'  name="subProContractDate" class="form-control required"  value="<fmt:formatDate value="${subProContract.subProContractDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>
+						<c:if test = "${isAdd}">					
+							<form:select path="subCompId" class="form-control requird">
+								<form:option value="" label="--请选择参投单位--"/>
+							</form:select>
+						</c:if>
+						<c:if test = "${edit}">					
+							<form:hidden path="subCompId" htmlEscape="false" class="form-control required"/>
+							<input type='text' class="form-control required" readOnly="true" value="${subProContract.subpackageProgram.company.companyName}" />
+						</c:if>
 					</td>
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">		

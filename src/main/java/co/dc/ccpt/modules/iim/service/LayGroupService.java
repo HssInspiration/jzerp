@@ -18,7 +18,6 @@ import co.dc.ccpt.modules.iim.entity.LayGroupUser;
 import co.dc.ccpt.modules.iim.mapper.LayGroupMapper;
 import co.dc.ccpt.modules.iim.mapper.LayGroupUserMapper;
 import co.dc.ccpt.modules.sys.entity.User;
-import co.dc.ccpt.modules.sys.utils.UserUtils;
 
 /**
  * 群组Service

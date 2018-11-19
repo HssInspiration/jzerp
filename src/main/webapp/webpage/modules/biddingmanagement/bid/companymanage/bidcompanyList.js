@@ -1,36 +1,37 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script>
 //格式化日期
-Date.prototype.format = function(fmt) { 
-    var o = { 
-       "M+" : this.getMonth()+1,                 //月份 
-       "d+" : this.getDate(),                    //日 
-       "h+" : this.getHours(),                   //小时 
-       "m+" : this.getMinutes(),                 //分 
-       "s+" : this.getSeconds(),                 //秒 
-       "q+" : Math.floor((this.getMonth()+3)/3), //季度 
-       "S"  : this.getMilliseconds()             //毫秒 
-   }; 
-   if(/(y+)/.test(fmt)) {
-           fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
-   }
-    for(var k in o) {
-       if(new RegExp("("+ k +")").test(fmt)){
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
-        }
-    }
-   return fmt; 
-}
-var endDate = new Date().format("yyyy-MM-dd");//当前时间格式化
-var beginDate = new Date().setMonth(new Date().getMonth()-3);//将当前时间往前推三月，得到的时间戳
-var date=new Date(beginDate).format("yyyy-MM-dd");//格式化beginDate
-console.log(endDate);//当前时间
-console.log(date);//往前三月
+//Date.prototype.format = function(fmt) { 
+//    var o = { 
+//       "M+" : this.getMonth()+1,                 //月份 
+//       "d+" : this.getDate(),                    //日 
+//       "h+" : this.getHours(),                   //小时 
+//       "m+" : this.getMinutes(),                 //分 
+//       "s+" : this.getSeconds(),                 //秒 
+//       "q+" : Math.floor((this.getMonth()+3)/3), //季度 
+//       "S"  : this.getMilliseconds()             //毫秒 
+//   }; 
+//   if(/(y+)/.test(fmt)) {
+//           fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+//   }
+//    for(var k in o) {
+//       if(new RegExp("("+ k +")").test(fmt)){
+//            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+//        }
+//    }
+//   return fmt; 
+//}
+//投标时间往前推三个月
+//var endDate = new Date().format("yyyy-MM-dd");//当前时间格式化
+//var beginDate = new Date().setMonth(new Date().getMonth()-3);//将当前时间往前推三月，得到的时间戳
+//var date=new Date(beginDate).format("yyyy-MM-dd");//格式化beginDate
+//console.log(endDate);//当前时间
+//console.log(date);//往前三月
 
 $(document).ready(function() {
 	//加载前将两个日期数据传入后台，findlist中的条件参数不为空便可查询到指定的数据
-	$("#beginDate").val(date);
-	$("#endDate").val(endDate);
+//	$("#beginDate").val(date);
+//	$("#endDate").val(endDate);
 		 
 	$('#table').bootstrapTable({
 			   //请求方法
@@ -64,7 +65,7 @@ $(document).ready(function() {
                //可供选择的每页的行数（*）    
                pageList: [20, 25, 50, 100],
                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
-               url: "${ctx}/companymanage/bidcompany/data",
+               url: "${ctx}/companymanage/bidcompany/data?corePersonId=${corePersonId}&bidcompany=${bidcompany}",
                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
                //queryParamsType:'',   
                ////查询参数,每次调用是会带上这个参数，可自定义                         
@@ -208,9 +209,16 @@ $(document).ready(function() {
 		    }
 			,{
 		        field: 'otherWorkers.id',
-		        title: '其他',
-		        sortable: true,
+		        title: '其他'
 		    }
+			,{
+				field: 'buildDate',
+				title: '工期'
+			}
+			,{
+				field: 'quality',
+				title: '质量'
+			}
 			,{
 		        field: 'isBid',
 		        title: '是否中标',

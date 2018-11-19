@@ -105,13 +105,14 @@ public class DepositStatementController extends BaseController {
 //	@RequiresPermissions(value={"depositstatement:depositStatement:view","depositstatement:depositStatement:add","depositstatement:depositStatement:edit"},logical=Logical.OR)
 	@RequestMapping(value = "form")
 	public String form(DepositStatement depositStatement, DepositApproval depositApproval, Model model) {
-		depositStatement.setDepositApproval(depositApproval);//将id存入出账对象中
-		depositStatement = depositStatementService.getDepositStatementByApprovalId(depositStatement);//通过出账中的审批id获取对应的一条出账信息
-		if(depositStatement == null){//如果上述查询为空，创建一个出账信息的实例
-			depositStatement = new DepositStatement();
-			depositStatement.setDepositApproval(depositApproval);//将id存入出账信息，此时出账编辑表单中的审批信息会自动显示
-		}
+		
 		if(StringUtils.isBlank(depositStatement.getId())){//增加
+			depositStatement.setDepositApproval(depositApproval);//将id存入出账对象中
+			depositStatement = depositStatementService.getDepositStatementByApprovalId(depositStatement);//通过出账中的审批id获取对应的一条出账信息
+			if(depositStatement == null){//如果上述查询为空，创建一个出账信息的实例
+				depositStatement = new DepositStatement();
+				depositStatement.setDepositApproval(depositApproval);//将id存入出账信息，此时出账编辑表单中的审批信息会自动显示
+			}
 			//设置出账编号：
 			String statementNum = "CZ"+DateUtils.getDate("yyyyMM")+depositStatementService.getLastInsertNum();
 			depositStatement.setStatementNum(statementNum);

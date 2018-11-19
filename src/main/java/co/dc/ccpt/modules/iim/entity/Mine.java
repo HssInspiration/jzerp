@@ -3,9 +3,6 @@ package co.dc.ccpt.modules.iim.entity;
 import co.dc.ccpt.common.utils.SpringContextHolder;
 import co.dc.ccpt.common.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * layim我的信息
  * @author Swhite

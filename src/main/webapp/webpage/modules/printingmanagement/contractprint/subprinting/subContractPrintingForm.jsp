@@ -65,10 +65,10 @@
 					<td class="width-35">
 						<form:input path="printNum" htmlEscape="false" readOnly="true" value="${contractPrinting.printNum }"  class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>用章类别：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>类&nbsp;型：</label></td>
 					<td class="width-35">
 						<form:select path="printType" class="form-control required" disabled="true" >
-							<form:option value="" label="--请选择用章类别--"/>
+							<form:option value="" label="--请选择类型--"/>
 							<form:options items="${fns:getDictList('print_type')}" itemLabel="label" itemValue="value"  htmlEscape="false"/>
 						</form:select>
 					</td>
@@ -79,15 +79,19 @@
 						<input type="hidden" class="form-control" name= "subProContract" value = "${subContractPrinting.subProContract.id}">
 						<form:input path="subProContract.subProContractName" htmlEscape="false" readOnly="true" class="form-control "/>
 					</td>
-					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>用章日期：</label></td>
+					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>用章类别：</label></td>
 					<td class="width-35">
-						<div class='input-group form_datetime' id='printDate'>
-		                    <input type='text'  name="printDate" class="form-control required"  value="<fmt:formatDate value="${subContractPrinting.printDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/>
-		                    <span class="input-group-addon">
-		                        <span class="glyphicon glyphicon-calendar"></span>
-		                    </span>
-		                </div>	
+						<sys:checkbox id="printDetailType" name="printDetailType"  items="${fns:getDictList('print_detail_type')}" values="${contractPrinting.printDetailType}" cssClass="i-checks required"/>
 					</td>
+<!-- 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>用章日期：</label></td> -->
+<!-- 					<td class="width-35"> -->
+<!-- 						<div class='input-group form_datetime' id='printDate'> -->
+<%-- 		                    <input type='text'  name="printDate" class="form-control required"  value="<fmt:formatDate value="${subContractPrinting.printDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"/> --%>
+<!-- 		                    <span class="input-group-addon"> -->
+<!-- 		                        <span class="glyphicon glyphicon-calendar"></span> -->
+<!-- 		                    </span> -->
+<!-- 		                </div>	 -->
+<!-- 					</td> -->
 				</tr>
 		 	</tbody>
 		</table>

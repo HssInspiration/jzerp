@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.FileSystemUsage;
-import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.Swap;
 
 public class SystemInfo {
 	public static Map SystemProperty() {

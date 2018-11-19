@@ -9,7 +9,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.RuntimeService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +26,8 @@ import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.act.entity.Act;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.entity.Enclosuretab;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
+import co.dc.ccpt.modules.contractmanagement.contracttext.entity.ContractText;
+import co.dc.ccpt.modules.contractmanagement.contracttext.service.ContractTextService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
 import co.dc.ccpt.modules.oa.entity.ActSubContract;
@@ -53,7 +54,7 @@ public class ActSubContractController extends BaseController {
 	private EnclosuretabService enclosuretabService;
 	
 	@Autowired
-	private RuntimeService runtimeService;
+	private ContractTextService contractTextService;
 	
 	@ModelAttribute
 	public ActSubContract get(@RequestParam(required=false) String id){//, 
@@ -68,6 +69,18 @@ public class ActSubContractController extends BaseController {
 			actSubContract = new ActSubContract();
 		}
 		return actSubContract;
+	}
+	
+	@ModelAttribute
+	public SubProContract getSubProContract(@RequestParam(required=false) String subContractId){
+		SubProContract subProContract = null;
+		if (StringUtils.isNotBlank(subContractId)){
+			subProContract = subProContractService.get(subContractId);
+		}
+		if (subProContract == null){
+			subProContract = new SubProContract();
+		}
+		return subProContract;
 	}
 	
 	@RequestMapping(value = {"list", ""})
@@ -106,17 +119,21 @@ public class ActSubContractController extends BaseController {
 			else if ("modify".equals(taskDefKey)){
 				view = "actSubContractForm";
 			}
-			// 审核环节
-			else if ("parallel".equals(taskDefKey)){
+			// 审核环节1
+			else if ("parallel1".equals(taskDefKey)){
 				view = "actSubContractAudit";
 //				String formKey = "/oa/testAudit";
 //				return "redirect:" + ActUtils.getFormUrl(formKey, testAudit.getAct());
 			}
 			// 审核环节2
+			else if ("parallel2".equals(taskDefKey)){
+				view = "actSubContractAudit";
+			}
+			// 审核环节3
 			else if ("manage_approval".equals(taskDefKey)){
 				view = "actSubContractAudit";
 			}
-			//审核环节3
+			//审核环节4
 			else if ("chairman_approval".equals(taskDefKey)){
 				view = "actSubContractAudit";
 			}
@@ -125,7 +142,6 @@ public class ActSubContractController extends BaseController {
 //				view = "AttachContractAudit";
 //			}
 		}
-
 		model.addAttribute("actSubContract", actSubContract);
 		return "modules/oa/actSubContract/" + view;
 	}
@@ -148,50 +164,26 @@ public class ActSubContractController extends BaseController {
 			return "redirect:" + adminPath + "/act/task/process/";//发起流程
 		}else{
 			//审批通过更改合同审批状态-->审批通过(1-->2)
-			Act act = actSubContract.getAct();
-			if(act != null){
-				String taskKey = act.getTaskDefKey();
-				if(taskKey==null || taskKey.equals("")){
-					subProContractService.updateSubProContractStatus(actSubContract, 1);
-				}else if(taskKey.equals("chairman_approval")){
-					subProContractService.updateSubProContractStatus(actSubContract, 2);
-				}else if(taskKey.equals("modify")){//若为合同修改
-					if(act.getFlag().equals("no")){//销毁--未审批
-						subProContractService.updateSubProContractStatus(actSubContract, 0);
-					}
-				}
-			}
+			actSubContractService.changeStatusForForm(actSubContract);
 			return "redirect:" + adminPath + "/act/task/todo/";//待办任务
 		}
 		
 	}
 
 	/**
-	 * 工单执行（完成任务）
+	 * 工单执行（完成任务）	
 	 * @param testAudit
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "saveAudit")
 	public String saveAudit(ActSubContract actSubContract, Model model) {
-		if (StringUtils.isBlank(actSubContract.getAct().getFlag())
-				|| StringUtils.isBlank(actSubContract.getAct().getComment())){
+		if (StringUtils.isBlank(actSubContract.getAct().getFlag())){
+//				|| StringUtils.isBlank(actSubContract.getAct().getComment())){
 			addMessage(model, "请填写审核意见。");
 			return form(actSubContract, model);
 		}else{
-			Act act = actSubContract.getAct();
-			if(act!=null){
-				String taskKey = act.getTaskDefKey();
-				if(taskKey.equals("parallel")){//会签节点
-					System.out.println("会签节点！");
-				}else if(taskKey.equals("chairman_approval")){//董事长审批
-					actSubContractService.updateSubProContractStatus(actSubContract, 2);
-				}else if(taskKey.equals("modify")){//若为合同修改
-					if(act.getFlag().equals("no")){//销毁
-						actSubContractService.updateSubProContractStatus(actSubContract, 3);
-					}
-				}
-			}
+			actSubContractService.changeStatusForAudit(actSubContract);
 		}
 		actSubContractService.auditSave(actSubContract);
 		return "redirect:" + adminPath + "/act/task";
@@ -224,6 +216,19 @@ public class ActSubContractController extends BaseController {
 	}
 	
 	/**
+	 * 通过合同名称查询出所有未审批的分包合同
+	 * @param contractName
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getSubProContractByName",method = RequestMethod.POST)
+	public List<SubProContract> getSubProContractByName(@RequestParam String subProContractName) {
+		List<SubProContract> subProContractList = new ArrayList<SubProContract>();
+		subProContractList = subProContractService.getSubProContractByName(subProContractName);
+		return subProContractList;
+	}
+	
+	/**
 	 * 通过分包合同id查出对应附件集合
 	 * @param subProContract
 	 * @return
@@ -235,6 +240,50 @@ public class ActSubContractController extends BaseController {
 		String foreginId = subProContract.getId();
 		enclosuretabList = enclosuretabService.getEnclosureContByForeginId(foreginId);
 		return enclosuretabList;
+	}
+	
+	/**
+	 * 通过合同id查出对应合同正文
+	 * @param proContract
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getContractTextByContractId",method = RequestMethod.POST)
+	public ContractText getContractTextByContractId(@RequestBody SubProContract subProContract){
+		String ontractId = subProContract.getId();
+		ContractText contractText = new ContractText();
+		contractText.setContractId(ontractId);
+		contractText = contractTextService.getByContractId(contractText);
+		if(contractText != null){
+			return contractText;
+		}else{
+			return new ContractText();
+		}
+	}
+	/**
+	 * 将word转换成PDF方便在线预览
+	 * @param proContract
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="exchangeWordToPdf",method = RequestMethod.POST)
+	public ActSubContract exchangeWordToPdf(@RequestBody ActSubContract actSubContract){
+		actSubContract = actSubContractService.exchangeWordToPdf(actSubContract);
+		if(actSubContract != null){
+			return actSubContract;
+		}else{
+			return new ActSubContract();
+		}
+	}
+	
+	@RequestMapping(value = "showProcess")
+	public String showProcess(SubProContract subProContract, Model model){
+		ActSubContract actSubContract = new ActSubContract();
+		if(StringUtils.isNotBlank(subProContract.getId())){
+			actSubContract = actSubContractService.getBySubContract(subProContract);
+		}
+		model.addAttribute("actSubContract", actSubContract);
+		return "modules/oa/actSubContract/actSubContractShow";
 	}
 
 }

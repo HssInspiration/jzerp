@@ -126,4 +126,19 @@ public class ContractTempController extends BaseController{
 		return j;
 	}
 	
+	
+	/**
+	 * 验证模板名称是否有效
+	 */
+	@ResponseBody
+	@RequestMapping(value = "checkTempName")
+	public String checkTempName(String oldTempName, String tempName) {
+		if (tempName!=null && tempName.equals(oldTempName)) {
+			return "true";
+		} else if (tempName!=null && contractTempService.getByTempName(tempName) == null) {
+			return "true";
+		}
+		return "false";
+	}
+	
 }

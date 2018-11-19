@@ -1,5 +1,9 @@
 package co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.web;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +32,11 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.entity.BidCompanyManage;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.entity.BidtableQuery;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidquerymanage.service.BidtableQueryService;
+import co.dc.ccpt.modules.biddingmanagement.tendermanage.clearevalute.utils.WordUtils;
+import co.dc.ccpt.modules.programmanage.entity.Company;
 import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.programmanage.service.CompanyService;
 import co.dc.ccpt.modules.programmanage.service.ProgramService;
@@ -183,6 +190,74 @@ public class BidtableQueryController extends BaseController {
 			j.setMsg("导出投标管理记录失败！失败信息："+e.getMessage());
 		}
 			return j;
+    }
+	
+	
+	/**
+	 * 导出投标项目开标情况表
+	 */
+	@ResponseBody
+	@RequestMapping("/exportBidTab")
+    public void exportBidTab(@RequestParam String bidId, HttpServletRequest req, HttpServletResponse resp){
+		Map<String, Object> map = new HashMap<String, Object>();
+		SimpleDateFormat smf = new SimpleDateFormat("yyyy年MM月dd日 HH点mm分");
+		List<BidCompanyManage> list = new ArrayList<BidCompanyManage>();
+		List<Map<String,Object>> bidContList = new ArrayList<Map<String,Object>>();
+		if(StringUtils.isNotBlank(bidId)){
+			BidtableQuery bidtabQuery = bidtableService.get(bidId);
+			list = bidtabQuery.getBidCompanyManageList();
+			Program program = null;
+			if(bidtabQuery != null){
+				program = bidtabQuery.getProgram();
+				if(program != null){
+					map.put("programName", StringUtils.isNotBlank(program.getProgramName())?program.getProgramName():"");// 工程名称  
+					map.put("programCont", StringUtils.isNotBlank(program.getProDescription())?program.getProDescription():"");// 工程概况
+					map.put("openDate", program.getPlanToStart() != null?smf.format(program.getPlanToStart()):"");// 计划开标时间
+				}
+				map.put("openAddr", StringUtils.isNotBlank(bidtabQuery.getOpenBidAddr())?bidtabQuery.getOpenBidAddr():"");// 开标地点
+				map.put("openMeterials", StringUtils.isNotBlank(bidtabQuery.getProvideMeterial())?bidtabQuery.getProvideMeterial():"");// 现场所需材料  
+				map.put("evaluateMethod", StringUtils.isNotBlank(bidtabQuery.getEvaluateMethod())?bidtabQuery.getEvaluateMethod():"");// 评标办法
+				map.put("ctrlPrice", bidtabQuery.getCtrlPrice()!=null?bidtabQuery.getCtrlPrice():"");// 控制价
+				map.put("floorPrice", bidtabQuery.getFloorPrice()!=null?bidtabQuery.getFloorPrice():"");// 标底价
+				map.put("provisionPrice", bidtabQuery.getProvisionPrice()!=null?bidtabQuery.getProvisionPrice():"");// 暂列金额
+				map.put("recorder", bidtabQuery.getRecordWorker()!=null?bidtabQuery.getRecordWorker():"");// 评标记录人员
+			}
+			if(list != null && list.size()>0){
+				for(int i=0;i<list.size();i++){
+					Map<String, Object> dataMap = new HashMap<String, Object>();
+					dataMap.put("num",i+1); // 序号
+					BidCompanyManage bidCompanyManage = list.get(i);
+					if(bidCompanyManage != null){
+						Company company = bidCompanyManage.getCompany();
+						if(company != null){
+							// 参投单位  
+							dataMap.put("bidCompanyName", StringUtils.isNotBlank(company.getCompanyName())?company.getCompanyName():"");
+						}
+						System.out.println("bidCompanyManage.getBidPrice():"+bidCompanyManage.getBidPrice());
+						dataMap.put("bidPrice", bidCompanyManage.getBidPrice() != null?bidCompanyManage.getBidPrice():"");// 投标价
+						dataMap.put("buildDate", bidCompanyManage.getBuildDate() != null?bidCompanyManage.getBuildDate():"");// 工期
+						logger.debug(bidCompanyManage.getBuildDate().toString());
+						dataMap.put("quality", bidCompanyManage.getQuality() != null?bidCompanyManage.getQuality():"");// 质量
+					 	Integer isBid = bidCompanyManage.getIsBid();
+					 	if(isBid != null){
+					 		if(isBid == 0){
+					 			dataMap.put("isBid", "未中标");// 是否中标
+					 		}else if(isBid == 1){
+					 			dataMap.put("isBid", "中标");// 是否中标
+					 		}
+					 	}
+						bidContList.add(dataMap);
+					}
+				}
+			}
+			map.put("bidContList", bidContList);
+		}
+        try {
+//            WordUtils.exportMillCertificateWord(req,resp,map,"投标项目开标情况表","tempBidTab.ftl",1);
+            WordUtils.exportMillCertificateWord(req,resp,map,"投标项目开标情况表","temp.ftl",1);
+        } catch (IOException e) {
+        	e.printStackTrace();
+        } 
     }
     
     @ResponseBody

@@ -119,8 +119,6 @@ function sort(id,isUpSort){
 	    	  		}else{
 	    	  			jp.error(data.msg);
 	    	  		}
-	           
-	               
 	   	   		})
               
             }else {  

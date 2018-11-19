@@ -31,13 +31,18 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.act.service.ActProcessService;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
+import co.dc.ccpt.modules.oa.entity.ActSubContract;
+import co.dc.ccpt.modules.oa.service.ActSubContractService;
+import co.dc.ccpt.modules.programmanage.entity.Company;
 import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
+import co.dc.ccpt.modules.programmanage.service.CompanyService;
 import co.dc.ccpt.modules.programmanage.service.SubpackageProgramService;
 import co.dc.ccpt.modules.sys.entity.User;
 import co.dc.ccpt.modules.sys.service.SystemService;
@@ -53,6 +58,9 @@ public class SubProContractController extends BaseController{
 	public SystemService userService;
 	
 	@Autowired
+	public ActSubContractService actSubContractService;
+	
+	@Autowired
 	public ProContractService proContractService;
 
 	@Autowired
@@ -60,6 +68,12 @@ public class SubProContractController extends BaseController{
 	
 	@Autowired
 	public SubpackageProgramService subpackageProgramService;
+	
+	@Autowired
+	public CompanyService companyService;
+	
+	@Autowired
+	private ActProcessService actProcessService;
 	
 	@ModelAttribute
 	public SubProContract get(@RequestParam(required=false) String id) {
@@ -109,7 +123,7 @@ public class SubProContractController extends BaseController{
 			subProContract.setUser(user);
 			String num = subProContractService.setSubProContractNum();
 			subProContract.setSubProContractNum(num);
-			model.addAttribute("subProContract", subProContract);
+			
 			model.addAttribute("isAdd", true);
 		}else{
 			name = subProContract.getUser().getName();
@@ -120,9 +134,9 @@ public class SubProContractController extends BaseController{
 					user = userService.getOnlyOneUser(id);//通过ID获取user信息
 				}
 			}
-			model.addAttribute("subProContract", subProContract);
 			model.addAttribute("edit",true);
 		}
+		model.addAttribute("subProContract", subProContract);
 		return "modules/contractmanagement/procontract/subprocontractForm";
 	}
 
@@ -149,6 +163,18 @@ public class SubProContractController extends BaseController{
 	}
 	
 	/**
+	 * 更改生效状态
+	 * @param proContract
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "confirmValid")
+	public String confirmValid(SubProContract subProContract, Model model) {
+		model.addAttribute("subProContract", subProContract);
+		return "modules/contractmanagement/procontract/confirmSubProValidForm";
+	}
+	
+	/**
 	 * 保存分包合同信息
 	 */
 	@ResponseBody
@@ -163,15 +189,15 @@ public class SubProContractController extends BaseController{
 		
 		Date beforeDate = subProContract.getStartDate();
 		Date afterDate = subProContract.getCompleteDate();
-		Date subProContractDate = subProContract.getSubProContractDate();
+//		Date subProContractDate = subProContract.getSubProContractDate();
 		if(beforeDate.after(afterDate)){//保存前处理1：开工日期不得晚于竣工日期
 			j.setSuccess(false);
 			j.setMsg("开工日期不得晚于竣工日期!");
 			return j;
-		}else if(subProContractDate.after(beforeDate)){//保存前处理2：签订日期不得晚于开工日期
-			j.setSuccess(false);
-			j.setMsg("签订日期不得晚于开工日期!");
-			return j;
+//		}else if(subProContractDate.after(beforeDate)){//保存前处理2：签订日期不得晚于开工日期
+//			j.setSuccess(false);
+//			j.setMsg("签订日期不得晚于开工日期!");
+//			return j;
 		}else{//保存前处理3：设置工期为开工日期与竣工日期间隔天数
 			Double buildDate= DateUtils.getDistanceOfTwoDate(beforeDate, afterDate);//调用日期工具类方法实现工期计算
 			Integer i = (int) Math.round(buildDate);
@@ -182,6 +208,8 @@ public class SubProContractController extends BaseController{
 //		if(StringUtils.isBlank(subProContract.getId())){
 		SubpackageProgram subPro = subProContract.getSubpackageProgram();
 		ProContract proContract = new ProContract();
+		Integer contractStatus = subProContract.getContractStatus();
+		Date contractDate = subProContract.getSubProContractDate();
 		if(subPro != null){//分包项目非空，获取整个分包项目信息
 			subPro = subpackageProgramService.get(subPro);
 			if(subPro != null){
@@ -195,6 +223,12 @@ public class SubProContractController extends BaseController{
 				}
 			}
 		}
+		//若为生效且生效时间为空，则设置生效时间为当前时间
+		if(contractStatus!=null){
+			if(contractDate==null && contractStatus == 1){
+				subProContract.setSubProContractDate(new Date());
+			}
+		}
 //		}
 		subProContractService.save(subProContract);//保存
 		j.setSuccess(true);
@@ -206,17 +240,106 @@ public class SubProContractController extends BaseController{
 	 * 通过子项目id获取分包合同对象
 	 */
 	@ResponseBody
-	@RequestMapping(value="getSubProContractBySubProId",method=RequestMethod.POST)
-	public String getSubProContractBySubProId(@RequestBody SubpackageProgram subPro){
+	@RequestMapping(value="getSubProContractBySubCompId",method=RequestMethod.POST)
+	public String getSubProContractBySubCompId(@RequestBody SubpackageProgram subPro){
 		SubProContract subProContract = new SubProContract();
 		subProContract.setSubpackageProgram(subPro);
 		subProContract = subProContractService.getSubProContractBySubProId(subProContract);
+		
 		if(subProContract!=null){
 			return "true";
 		}else{
 			return "false";
 		}
 	}
+	/**
+	 * 通过分包项目id获取分包中的已中标参投单位
+	 * @param subPro
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getCompBySubIsBid", method = RequestMethod.POST)
+	public List<Company> getCompBySubIsBid(@RequestBody SubpackageProgram subPro){
+		String subProId = subPro.getId();
+		return companyService.getCompListBySubIsBid(subProId);
+	}
+	/**
+	 * 终止
+	 * @param subProContract
+	 * @param model
+	 * @param redirectAttributes
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "shutdown")
+	public AjaxJson shutdown(SubProContract subProContract, String reason, Model model, RedirectAttributes redirectAttributes) throws Exception{
+		AjaxJson j = new AjaxJson();
+		if (!beanValidator(model, subProContract)){
+			j.setSuccess(false);
+			j.setMsg("非法参数！");
+			return j;
+		}
+		Integer status = subProContract.getApprovalStatus();
+		String procInsId="";
+		if(status != null && !status.equals("")){
+			if(status==1){
+				subProContract.setContractStatus(3);
+				subProContract.setApprovalStatus(4);//审批终止
+				//将当前合同审批流程也终止
+				subProContractService.save(subProContract);
+				//将当前合同审批流程也终止
+				//1.利用合同id查询到部署的流程实例id
+				ActSubContract actSubContract = actSubContractService.getBySubContract(subProContract);//通过proId获取部署的流程实例id
+				if(actSubContract != null){
+					procInsId = actSubContract.getProcInsId();
+				}
+				//2.再利用流程实例id和原因进行终止操作
+				actProcessService.deleteProcIns(procInsId, reason);
+				j.setSuccess(true);
+				j.setMsg("已终止合同!");
+			}else{
+				j.setSuccess(false);
+				j.setMsg("当前合同非审批中，不允许终止！");
+			}
+			return j;
+		}
+		return j;
+	}
+	
+	/**
+	 * 结案
+	 * @param subProContract
+	 * @param model
+	 * @param redirectAttributes
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "closeCase")
+	public AjaxJson closeCase(SubProContract subProContract, Model model, RedirectAttributes redirectAttributes) throws Exception{
+		AjaxJson j = new AjaxJson();
+		if (!beanValidator(model, subProContract)){
+			j.setSuccess(false);
+			j.setMsg("非法参数！");
+			return j;
+		}
+		Integer status = subProContract.getApprovalStatus();
+		if(status != null && !status.equals("")){
+			if(status==2){
+				subProContract.setContractStatus(2);
+				subProContractService.save(subProContract);
+				j.setSuccess(true);
+				j.setMsg("保存成功！");
+			}else{
+				j.setSuccess(false);
+				j.setMsg("当前合同非审批通过，不允许结案！");
+			}
+			return j;
+		}
+		return j;
+	}
+
 	
 	/**
 	 * 删除分包合同

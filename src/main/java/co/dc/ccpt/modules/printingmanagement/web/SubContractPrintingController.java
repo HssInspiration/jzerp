@@ -4,7 +4,6 @@
 package co.dc.ccpt.modules.printingmanagement.web;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
-import co.dc.ccpt.modules.printingmanagement.entity.ContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.entity.SubContractPrinting;
 import co.dc.ccpt.modules.printingmanagement.service.SubContractPrintingService;
 
@@ -190,9 +188,9 @@ public class SubContractPrintingController extends BaseController {
 		if(StringUtils.isNotBlank(subProContract.getId())){
 			subContractPrinting.setSubProContract(subProContract);
 		}
-		List<SubContractPrinting> contractPrintList = new ArrayList<SubContractPrinting>();
-		contractPrintList = subContractPrintingService.getSubContractPrintingBySubId(subContractPrinting);
-		return contractPrintList;
+		List<SubContractPrinting> subContractPrintList = new ArrayList<SubContractPrinting>();
+		subContractPrintList = subContractPrintingService.getSubContractPrintingBySubId(subContractPrinting);
+		return subContractPrintList;
 	}
 	
 	/**

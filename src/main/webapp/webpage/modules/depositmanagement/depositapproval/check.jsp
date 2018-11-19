@@ -91,14 +91,14 @@
 		   		    <tr>
 						<td class="width-15 active"><label class="pull-right">分管负责人(审批)：</label></td>
 						<td class="width-35">
-<%--  								  --%>
-							<c:if test="${num2 ne 2}">
- 								<form:radiobuttons path="managingDirector"  
- 								items="${fns:getDictList('check_deposit')}"  
- 								itemLabel="label" itemValue="value" disabled="true"  
-								htmlEscape="false" class="i-checks "/>
+							
+							<c:if test="${num2 ne 2 || empty depositApproval.operator}">
+	 								<form:radiobuttons path="managingDirector"  
+	 								items="${fns:getDictList('check_deposit')}"
+	 								itemLabel="label" itemValue="value" disabled="true"
+									htmlEscape="false" class="i-checks"/>
 							</c:if>
-							<c:if test="${num2 eq 2}">
+							<c:if test="${num2 eq 2 && not empty depositApproval.operator}">
  								<form:radiobuttons path="managingDirector"  
  								items="${fns:getDictList('check_deposit')}"  
  								itemLabel="label" itemValue="value"  
@@ -114,13 +114,14 @@
  		    		<tr>
 						<td class="width-15 active"><label class="pull-right">总经理(审批)：</label></td>
 						<td class="width-35">
-							<c:if test="${num3 ne 3}">
- 								<form:radiobuttons path="topManager"  
- 								items="${fns:getDictList('check_deposit')}"  
- 								itemLabel="label" itemValue="value"  disabled="true"
- 								htmlEscape="false" class="i-checks "/> 
+							<c:if test="${num3 ne 3 || empty depositApproval.operator || empty depositApproval.managingDirector }">
+								<form:radiobuttons path="topManager"  
+								items="${fns:getDictList('check_deposit')}"  
+								itemLabel="label" itemValue="value"  disabled="true"
+								htmlEscape="false" class="i-checks "/> 
 							</c:if>
-							<c:if test="${num3 eq 3}">
+							<c:if test="${num3 eq 3 && not empty depositApproval.operator 
+													&& not empty depositApproval.managingDirector}">
  								<form:radiobuttons path="topManager"  
  								items="${fns:getDictList('check_deposit')}"  
  								itemLabel="label" itemValue="value"  
@@ -133,19 +134,22 @@
 					<tr>
 						<td class="width-15 active"><label class="pull-right">董事长(审批)：</label></td>
 						<td class="width-35">
- 							<c:if test="${num4 ne 4}"> 
- 								<form:radiobuttons path="chairman"  
- 								items="${fns:getDictList('check_deposit')}"  
- 								itemLabel="label" itemValue="value"  disabled="true"
- 								htmlEscape="false" class="i-checks "/> 
+ 							<c:if test="${num4 ne 4 || empty depositApproval.operator
+													|| empty depositApproval.managingDirector
+													|| empty depositApproval.topManager}"> 
+	 								<form:radiobuttons path="chairman"  
+	 								items="${fns:getDictList('check_deposit')}"  
+	 								itemLabel="label" itemValue="value" disabled="true"
+	 								htmlEscape="false" class="i-checks "/>
 							</c:if>
- 							<c:if test="${num4 eq 4}"> 
+ 							<c:if test="${num4 eq 4 && not empty depositApproval.operator
+													&& not empty depositApproval.managingDirector
+													&& not empty depositApproval.topManager}"> 
  								<form:radiobuttons path="chairman"  
  								items="${fns:getDictList('check_deposit')}"  
  								itemLabel="label" itemValue="value"  
  								htmlEscape="false" class="i-checks "/> 
 							</c:if>
-							
 						</td>
 					</tr>
 				</c:if>
@@ -154,13 +158,19 @@
 					<tr>
 						<td class="width-15 active"><label class="pull-right">集团董事长(审批)：</label></td>
 						<td class="width-35">
- 							<c:if test="${num5 ne 5}"> 
+ 							<c:if test="${num5 ne 5 || empty depositApproval.operator
+													|| empty depositApproval.managingDirector
+													|| empty depositApproval.topManager
+													|| empty depositApproval.chairman}"> 
  								<form:radiobuttons path="groupChairman" 
 								items="${fns:getDictList('check_deposit')}"  
  								itemLabel="label" itemValue="value" disabled="true"
  								htmlEscape="false" class="i-checks "/> 
  							</c:if> 
- 							<c:if test="${num5 eq 5}"> 
+ 							<c:if test="${num5 eq 5 && not empty depositApproval.operator
+													&& not empty depositApproval.managingDirector
+													&& not empty depositApproval.topManager
+													&& not empty depositApproval.chairman}"> 
  								<form:radiobuttons path="groupChairman" 
 								items="${fns:getDictList('check_deposit')}"  
  								itemLabel="label" itemValue="value"   

@@ -18,13 +18,13 @@
 		a.del_flag,
 		a.contract_id AS "proContract.id",
 		pc.contract_name AS "proContract.contractName",
-<!-- 		e.enclosure_cont AS "enclosure.enclosureCont", -->
-		a.enclosure_cont AS "enclosureCont"
+		a.enclosure_cont AS "enclosureCont",
+		a.contracttext_cont AS "contractTextCont"
 	</sql>
 	
 	<sql id="actContractJoins">
-		LEFT JOIN ccpt.program_contract pc ON pc.id = a.contract_id
-<!-- 		LEFT JOIN ccpt.enclosure_tab e ON e.foregin_id = a.contract_id -->
+		LEFT JOIN program_contract pc ON pc.id = a.contract_id
+<!-- 		LEFT JOIN enclosure_tab e ON e.foregin_id = a.contract_id -->
     </sql>
     
     <select id="get" resultType="ActContract">
@@ -41,6 +41,15 @@
 		FROM oa_act_contract a
 		<include refid="actContractJoins"/>
 		WHERE a.proc_ins_id = #{procInsId}
+	</select>
+	
+    <select id="getByContractId" resultType="ActContract">
+		SELECT 
+			<include refid="actContractColumns"/>
+		FROM oa_act_contract a
+		<include refid="actContractJoins"/>
+		WHERE a.contract_id = #{contractId}
+		AND a.update_date=(SELECT max(a.update_date) FROM oa_act_contract a WHERE a.contract_id = #{contractId})
 	</select>
 	
 	<select id="findList" resultType="ActContract">
@@ -72,7 +81,8 @@
 			remarks, 
 			contract_id,
 			enclosure_cont,
-			del_flag
+			del_flag,
+			contracttext_cont
 		) VALUES (
 			#{id}, 
 			#{exeDate},
@@ -83,7 +93,8 @@
 			#{remarks}, 
 			#{proContract.id},
 			#{enclosureCont},
-			#{delFlag}
+			#{delFlag},
+			#{contractTextCont}
 		)
 	</insert>
 	
@@ -92,7 +103,9 @@
 			exe_date = #{exeDate},
 			update_by = #{updateBy.id}, 
 			update_date = #{updateDate}, 
-			remarks = #{remarks}
+			remarks = #{remarks},
+			enclosure_cont = #{enclosureCont},
+			contracttext_cont = #{contractTextCont}
 		WHERE id = #{id}
 	</update>
 	

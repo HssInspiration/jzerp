@@ -23,10 +23,12 @@
 		$("#no").focus();
 		validateForm = $("#inputForm").validate({
 			rules: {
-					loginName: {remote: "${ctx}/sys/user/checkLoginName?oldLoginName=" + encodeURIComponent('${user.loginName}')}
+					loginName: {remote: "${ctx}/sys/user/checkLoginName?oldLoginName=" + encodeURIComponent('${user.loginName}')},
+					idCardNum: {remote: "${ctx}/sys/user/checkIdCardNum?oldIdCardNum=" + encodeURIComponent('${user.idCardNum}')}
 				},
 			messages: {
 					loginName: {remote: "用户登录名已存在"},
+					idCardNum: {remote: "证件号码已存在"},
 					confirmNewPassword: {equalTo: "输入与上面相同的密码"}
 				},
 			submitHandler : function(form) {
@@ -90,7 +92,6 @@
 					 <form:input path="loginName" htmlEscape="false" maxlength="50" class="form-control required userName"/></td>
 		      </tr>
 		      
-		      
 		      <tr>
 		         <td class="active"><label class="pull-right"><c:if test="${empty user.id}"><font color="red">*</font></c:if>密码:</label></td>
 		         <td><input id="newPassword" name="newPassword" type="password" value="" maxlength="50" minlength="3" class="form-control ${empty user.id?'required':''}"/>
@@ -114,7 +115,15 @@
 					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select></td>
 		      </tr>
-		      
+		      <tr>
+		         <td class="active"><label class="pull-right"><font color="red">*</font>身份证号码:</label></td>
+		         <td>
+		         	<input id="oldIdCardNum" name="oldIdCardNum" type="hidden" value="${user.idCardNum}">
+		         	<form:input path="idCardNum" htmlEscape="false" maxlength="18" class="form-control"/>
+		         </td>
+		         <td class="active"></td>
+		         <td></td>
+		      </tr>
 		      <tr>
 		         <td class="active"><label class="pull-right"><font color="red">*</font>用户角色:</label></td>
 		         <td>
@@ -126,12 +135,12 @@
 		      </tr>
 		      
 		      <c:if test="${not empty user.id}">
-		       <tr>
-		         <td class=""><label class="pull-right">创建时间:</label></td>
-		         <td><span class="lbl"><fmt:formatDate value="${user.createDate}" type="both" dateStyle="full"/></span></td>
-		         <td class=""><label class="pull-right">最后登陆:</label></td>
-		         <td><span class="lbl">IP: ${user.loginIp}&nbsp;&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.loginDate}" type="both" dateStyle="full"/></span></td>
-		      </tr>
+			       <tr>
+			         <td class=""><label class="pull-right">创建时间:</label></td>
+			         <td><span class="lbl"><fmt:formatDate value="${user.createDate}" type="both" dateStyle="full"/></span></td>
+			         <td class=""><label class="pull-right">最后登陆:</label></td>
+			         <td><span class="lbl">IP: ${user.loginIp}&nbsp;&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.loginDate}" type="both" dateStyle="full"/></span></td>
+			       </tr>
 		     </c:if>
 		      </tbody>
 		      </table>

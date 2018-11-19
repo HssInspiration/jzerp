@@ -4684,7 +4684,8 @@ public class ConcurrentHashMapV8<K,V> extends AbstractMap<K,V>
      * class Traverser, because we need to subclass CountedCompleter.
      */
     abstract static class BulkTask<K,V,R> extends CountedCompleter<R> {
-        Node<K,V>[] tab;        // same as Traverser
+		private static final long serialVersionUID = 1L;
+		Node<K,V>[] tab;        // same as Traverser
         Node<K,V> next;
         int index;
         int baseIndex;

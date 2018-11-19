@@ -88,7 +88,6 @@
 			</a>
 	    </div><!-- 工具栏结束 -->
 	    
-	    
 	    <!-- 表格 -->
 	    <table id="table"
 	           data-toolbar="#toolbar"

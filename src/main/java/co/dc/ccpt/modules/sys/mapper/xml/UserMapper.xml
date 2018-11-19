@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="co.dc.ccpt.modules.sys.mapper.UserMapper">
     <sql id="userColumns">
-    distinct
+<!--     distinct -->
     	a.id AS "id",
     	a.company_id AS "company.id",
     	a.office_id AS "office.id",
@@ -20,6 +20,7 @@
 		a.photo,
 		a.qrcode,
 		a.sign,
+		a.idcard_num AS "idCardNum",
 		a.create_by AS "createBy.id",
 		a.create_date,
 		a.update_by AS "updateBy.id",
@@ -46,9 +47,8 @@
     	ou.id AS "office.primaryPerson.id",
     	ou.name AS "office.primaryPerson.name",
     	ou2.id AS "office.deputyPerson.id",
-    	ou2.name AS "office.deputyPerson.name",
-    	
-    	r.id AS "role.id"
+    	ou2.name AS "office.deputyPerson.name"
+<!--     	count(distinct r.id AS "role.id") -->
     </sql>
     
     <sql id="userJoins">
@@ -60,8 +60,8 @@
 		LEFT JOIN sys_user cu2 ON cu2.id = c.deputy_person
 		LEFT JOIN sys_user ou ON ou.id = o.primary_person
 		LEFT JOIN sys_user ou2 ON ou2.id = o.deputy_person 
-		LEFT JOIN sys_user_role ur ON ur.user_id = a.id
-        LEFT JOIN sys_role r ON r.id = ur.role_id 
+<!-- 		LEFT JOIN sys_user_role ur ON ur.user_id = a.id -->
+<!--         LEFT JOIN sys_role r ON r.id = ur.role_id  -->
     </sql>
 	
 	
@@ -111,6 +111,7 @@
 			AND a.id <![CDATA[ <> ]]>1 
 			AND a.id <![CDATA[ <> ]]> '2d060dc2ca454e85af471dc0e29bde99' 
 			AND a.id <![CDATA[ <> ]]> '69b8d18b1b204598b8d5bf577adb44dc'
+			AND a.id NOT in (SELECT user_id FROM core_staff)
 		</where>
 	</select>
 	
@@ -121,6 +122,15 @@
 		FROM sys_user a
 			<include refid="userJoins"/>
 		WHERE a.login_name = #{loginName} AND a.del_flag = #{DEL_FLAG_NORMAL}
+	</select>
+	
+	<!-- 根据证件号码查询用户 -->
+	<select id="getByIdCardNum" resultType="User" parameterType="User">
+		SELECT
+			<include refid="userColumns"/>
+		FROM sys_user a
+			<include refid="userJoins"/>
+		WHERE a.idcard_num = #{idCardNum} AND a.del_flag = #{DEL_FLAG_NORMAL}
 	</select>
 
 	<!-- 通过当前机构id获取父级机构负责人对象 -->
@@ -137,37 +147,41 @@
 		SELECT
 			<include refid="userColumns"/>
 		FROM sys_user a
-		<include refid="userJoins"/>
-		<if test="role != null and role.id != null and role.id != ''">
-			JOIN sys_user_role ur ON ur.user_id = a.id AND ur.role_id = #{role.id}
-		</if>
-		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-		<if test="company != null and company.id != null and company.id != ''">
-			AND (c.id = #{company.id} OR c.parent_ids LIKE 
-					<if test="dbName == 'oracle'">'%,'||#{company.id}||',%')</if>
-					<if test="dbName == 'mysql'">CONCAT('%,', #{company.id}, ',%'))</if>
-		</if>
-		<if test="office != null and office.id != null and office.id != ''">
-			AND (o.id = #{office.id} OR o.parent_ids LIKE 
-					<if test="dbName == 'oracle'">'%,'||#{office.id}||',%')</if>
-					<if test="dbName == 'mysql'">CONCAT('%,', #{office.id}, ',%'))</if>
-		</if>
-		<!-- 如果不是超级管理员，则不显示超级管理员用户 -->
-		<if test="!currentUser.admin">
-			AND a.id != '1'
-		</if>
-		<if test="loginName != null and loginName != ''">
-			AND a.login_name like 
-					<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
-					<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
-		</if>
-		<if test="name != null and name != ''">
-			AND a.name like 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
-		</if>
+			<include refid="userJoins"/>
+			<if test="role != null and role.id != null and role.id != ''">
+				JOIN sys_user_role ur ON ur.user_id = a.id AND ur.role_id = #{role.id}
+<!-- 				 AND ur.role_id = #{role.id} -->
+			</if>
+		<where> 
+		a.del_flag = #{DEL_FLAG_NORMAL}
+			
+			<if test="company != null and company.id != null and company.id != ''">
+				AND (c.id = #{company.id} OR c.parent_ids LIKE 
+						<if test="dbName == 'oracle'">'%,'||#{company.id}||',%')</if>
+						<if test="dbName == 'mysql'">CONCAT('%,', #{company.id}, ',%'))</if>
+			</if>
+			<if test="office != null and office.id != null and office.id != ''">
+				AND (o.id = #{office.id} OR o.parent_ids LIKE 
+						<if test="dbName == 'oracle'">'%,'||#{office.id}||',%')</if>
+						<if test="dbName == 'mysql'">CONCAT('%,', #{office.id}, ',%'))</if>
+			</if>
+			<!-- 如果不是超级管理员，则不显示超级管理员用户 -->
+			<if test="!currentUser.admin">
+				AND a.id != '1'
+			</if>
+			<if test="loginName != null and loginName != ''">
+				AND a.login_name like 
+						<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+						<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name like 
+						<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+						<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+			</if>
+			${dataScope}
+		</where>
 		<!-- 数据范围过滤 -->
-		${dataScope}
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
@@ -186,32 +200,33 @@
 		FROM sys_user a
 		<include refid="userJoins"/>
 
-		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-		<if test="company != null and company.id != null and company.id != ''">
-			AND c.id = #{company.id} 
-		</if>
-		<if test="office != null and office.id != null and office.id != ''">
-			AND o.id = #{office.id} 
-		</if>
-		<if test="office == null">
-			AND (o.id = ''  or o.id is null)
-		</if>
-		
-		<if test="loginName != null and loginName != ''">
-			AND a.login_name like 
-					<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
-					<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
-		</if>
-		<if test="name != null and name != ''">
-			AND a.name like 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
-		</if>
-		<!-- 数据范围过滤 -->
-		${dataScope}
-		<!-- 排序 -->
-		ORDER BY  a.name
-	
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="company != null and company.id != null and company.id != ''">
+				AND c.id = #{company.id} 
+			</if>
+			<if test="office != null and office.id != null and office.id != ''">
+				AND o.id = #{office.id} 
+			</if>
+			<if test="office == null">
+				AND (o.id = ''  or o.id is null)
+			</if>
+			
+			<if test="loginName != null and loginName != ''">
+				AND a.login_name like 
+						<if test="dbName == 'oracle'">'%'||#{loginName}||'%'</if>
+						<if test="dbName == 'mysql'">CONCAT('%', #{loginName}, '%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name like 
+						<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+						<if test="dbName == 'mysql'">CONCAT('%', #{name}, '%')</if>
+			</if>
+			<!-- 数据范围过滤 -->
+			${dataScope}
+		</where>
+			<!-- 排序 -->
+			ORDER BY  a.name
 	</select>
 	
 	<!-- 根据OfficeId获取用户（树查询用户时用） -->
@@ -271,6 +286,7 @@
 			login_flag, 
 			photo, 
 			qrcode,
+			idcard_num,
 			del_flag
 		) VALUES (
 			#{id}, 
@@ -291,6 +307,7 @@
 			#{loginFlag}, 
 			#{photo}, 
 			#{qrCode},
+			#{idCardNum},
 			#{delFlag}
 		)
 	</insert>
@@ -312,6 +329,7 @@
 			remarks = #{remarks},
 			login_flag = #{loginFlag},
 			photo = #{photo},
+			idcard_num = #{idCardNum},
 			qrcode = #{qrCode}
 		WHERE id = #{id}
 	</update>
@@ -341,6 +359,7 @@
 			remarks = #{remarks},
 			photo = #{photo},
 			qrcode = #{qrCode},
+<!-- 			idcard_num = #{idCardNum}, -->
 			sign = #{sign}
 		WHERE id = #{id}
 	</update>

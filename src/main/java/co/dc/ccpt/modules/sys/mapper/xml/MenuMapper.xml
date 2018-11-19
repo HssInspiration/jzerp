@@ -29,7 +29,6 @@
 		<association property="hasChildren" column="id" select="hasChildren" />
 	</resultMap>
 	
-	
 	<resultMap id="menuDataRuleResult" type="Menu">
 		<id property="id" column="id" />
 		<result property="parentIds" column="parentIds" />
@@ -45,8 +44,6 @@
                 ofType="DataRule" select="findDataRuleList"/>
 	</resultMap>
 	
-
-    
 	<sql id="menuColumns">
 		a.id,
 		a.parent_id AS "parent.id",

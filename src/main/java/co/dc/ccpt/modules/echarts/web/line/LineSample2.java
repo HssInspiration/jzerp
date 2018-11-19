@@ -12,7 +12,6 @@ import com.github.abel533.echarts.code.Trigger;
 import com.github.abel533.echarts.feature.MagicType;
 import com.github.abel533.echarts.json.GsonOption;
 import com.github.abel533.echarts.series.Line;
-import org.junit.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -40,17 +40,17 @@ import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.entity.Bidtable;
 import co.dc.ccpt.modules.biddingmanagement.bid.bidmanage.service.BidtableService;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.BidStatistics;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Bidcompany;
-import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Worker;
 import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.BidcompanyService;
-import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.WorkerService;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.CorePerson;
 import co.dc.ccpt.modules.coreperson.basicinfo.entity.PersonCertificate;
 import co.dc.ccpt.modules.coreperson.basicinfo.service.CorePersonService;
 import co.dc.ccpt.modules.programmanage.entity.Company;
 import co.dc.ccpt.modules.programmanage.entity.Program;
+import co.dc.ccpt.modules.programmanage.entity.SubpackageProgram;
 import co.dc.ccpt.modules.programmanage.service.CompanyService;
 import co.dc.ccpt.modules.programmanage.service.ProgramService;
+import co.dc.ccpt.modules.programmanage.service.SubpackageProgramService;
 import co.dc.ccpt.modules.sys.entity.User;
 
 /**
@@ -68,8 +68,6 @@ public class BidcompanyController extends BaseController {
 	@Autowired
 	private BidtableService bidtableService;
 	
-	@Autowired
-	private WorkerService workerService;
 	
 	@Autowired
 	private ProgramService programService;
@@ -82,6 +80,9 @@ public class BidcompanyController extends BaseController {
 	
 	@Autowired
 	private CorePersonService corePersonService;
+	
+	@Autowired
+	private SubpackageProgramService subProgramService;
 	
 	@ModelAttribute
 	public Bidcompany get(@RequestParam(required=false) String id) {
@@ -117,12 +118,27 @@ public class BidcompanyController extends BaseController {
 		}
 		return entity;
 	}
+	
 	/**
 	 * 参投单位管理列表页面
+	 * @param corePersonId
+	 * @param isBid首页中已中标项目传入的参数
+	 * @param companyName首页中已中标项目传入的参数
+	 * @param model
+	 * @return
 	 */
 	//@RequiresPermissions("companymanage:bidcompany:list")
-	@RequestMapping(value = {"list", ""})
-	public String list(Bidcompany bidcompany, Company company, Model model) {
+	@RequestMapping(value = {"list", "","showList"})
+	public String list(String corePersonId, Integer isBid, String companyName, Model model) {
+		Company comp = new Company();
+		Bidcompany bidcomp= new Bidcompany();
+		if(StringUtils.isNotBlank(companyName) && isBid != null){
+			comp.setCompanyName(companyName);
+			bidcomp.setCompany(comp);
+			bidcomp.setIsBid(isBid);
+		}
+		model.addAttribute("bidcompany", bidcomp);
+		model.addAttribute("corePersonId", corePersonId);
 		return "modules/biddingmanagement/bid/companymanage/bidcompanyList";
 	}
 	
@@ -133,8 +149,14 @@ public class BidcompanyController extends BaseController {
 	@ResponseBody
 	//@RequiresPermissions("companymanage:bidcompany:list")
 	@RequestMapping(value = "data")
-	public Map<String, Object> data(Bidcompany bidcompany, Company company, Program program, HttpServletRequest request, HttpServletResponse response, Model model) throws ParseException {
-		Page<Bidcompany> page = bidcompanyService.findPage(new Page<Bidcompany>(request, response), bidcompany); 
+	public Map<String, Object> data(String corePersonId, Bidcompany bidcompany, Company company, Program program, HttpServletRequest request, HttpServletResponse response, Model model) throws ParseException {
+		Page<Bidcompany> page = new Page<Bidcompany>();
+		if(StringUtils.isNotBlank(corePersonId)){
+			bidcompany.setCorePersonId(corePersonId);
+			page = bidcompanyService.findNewPage(new Page<Bidcompany>(request, response), bidcompany); 
+		}else{
+			page = bidcompanyService.findPage(new Page<Bidcompany>(request, response), bidcompany); 
+		}
 		return getBootstrapData(page);
 	}
 	
@@ -152,7 +174,7 @@ public class BidcompanyController extends BaseController {
 		Page<Bidcompany> page = bidcompanyService.findPage(new Page<Bidcompany>(request, response), bidcompany); 
 		return getBootstrapData(page);
 	}
-
+	
 	/**
 	 * 查看，增加，编辑参投单位管理表单页面
 	 */
@@ -373,9 +395,9 @@ public class BidcompanyController extends BaseController {
 				j.setMsg("保存参投单位成功！");
 			}
 			//保存参投之后先获取参投的id，再获取是否中标的状态，若id为金卓继续判断状态是否中标，若状态为已中标，将项目的状态自由更改为施工，若未中标则显示未中标
+			String bidCompanyId = bidcompany.getCompany().getId();
 			if(isBid==1){//判断是否已中标
 			//2.获取参投的id
-			   String bidCompanyId = bidcompany.getCompany().getId();
 			   if(bidCompanyId.equals("03ae459404284f17bbd25e78a13397a6")){//若为金卓将对应项目状态更改为施工
 				   program = programService.get(program);
 				   if(program!=null){
@@ -394,12 +416,19 @@ public class BidcompanyController extends BaseController {
 				  }
 			   }else{
 					if(program!=null){
-						   program.setStatus(6);
-						   programService.save(program);
+					   program.setStatus(6);
+					   programService.save(program);
 					}
+			   }
+			}else if(isBid==0){
+				if(bidCompanyId.equals("03ae459404284f17bbd25e78a13397a6")){
+				   program = programService.get(program);
+				   if(program!=null){
+					   program.setStatus(6);
+					   programService.save(program);
+				   }
 				}
 			}
-			
 		return j;
 	}
 	
@@ -542,17 +571,6 @@ public class BidcompanyController extends BaseController {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value = "getAllWorkerListByName")
-	public List<Worker> getAllWorkerListByName(@RequestParam  String workerName) {
-		System.out.println(workerName);
-		Worker worker = new Worker();
-		worker.setWorkerName(workerName);
-		List<Worker> workerList = new ArrayList<Worker>();
-		workerList = workerService.getAllWorkerList(worker);
-		return workerList;
-	}
-	
-	@ResponseBody
 	@RequestMapping(value = "getAllCorePersonListByName")
 	public List<CorePerson> getAllCorePersonListByName(@RequestParam  String name) {
 		CorePerson corePerson = new CorePerson();
@@ -642,13 +660,21 @@ public class BidcompanyController extends BaseController {
 								j.setMsg("项目已结案，不可删除!");
 								return j;
 							}else if(programId!=null && !programId.equals("")){
-								bidcompanyService.delete(bidcompany);
-								enclosuretabService.deleteEnclosureByForeginId(bidcompany.getId());//同步删除对应附件
-								program = programService.get(programId);
-								program.setStatus(1);//参投删除项目状态更改为投标
-								programService.save(program);
-								j.setMsg("删除参投单位信息成功!");
-								return j;
+								//查询分包中是否有记录
+								List<SubpackageProgram> subProList = subProgramService.getByParentId(programId);
+								if(subProList.size()>0){
+									j.setSuccess(false);
+									j.setMsg("分包项目中已登记相关信息，不可删除!");
+									return j;
+								}else{
+									bidcompanyService.delete(bidcompany);
+									enclosuretabService.deleteEnclosureByForeginId(bidcompany.getId());//同步删除对应附件
+									program = programService.get(programId);
+									program.setStatus(1);//参投删除项目状态更改为投标
+									programService.save(program);
+									j.setMsg("删除参投单位信息成功!");
+									return j;
+								}
 							}
 						}
 					}

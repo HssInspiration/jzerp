@@ -44,8 +44,9 @@ public class BidCompanyManage extends DataEntity<BidCompanyManage> {
 	private String saverId;		         // 安全员
 	private String tecBid;		         // 技术标
 	
-	private Program program;             //项目工程对象
-	private Company company;             //单位对象
+	private Program program;             // 项目工程对象
+	private Company company;             // 单位对象
+	private Integer buildDate;           // 工期
 	
 	/*人员名称*/
 	private CorePerson tecBidName;      // 技术标负责人
@@ -59,6 +60,7 @@ public class BidCompanyManage extends DataEntity<BidCompanyManage> {
 	private CorePerson inspector;       // 质检员名称
 	private CorePerson meterialer;      // 材料员名称
 	private CorePerson coster;          // 造价员名称
+	private String quality;    			// 质量
 //	private Worker tecBidName;      // 技术标负责人
 //	private Worker comBidName;      // 商务标负责人
 //	private Worker ecoBidName;      // 经济标负责人
@@ -146,6 +148,14 @@ public class BidCompanyManage extends DataEntity<BidCompanyManage> {
 		return constructorId;
 	}
 
+	public String getQuality() {
+		return quality;
+	}
+
+	public void setQuality(String quality) {
+		this.quality = quality;
+	}
+
 	@ExcelField(title="施工员", dictType="", align=2, sort=13)
 	public String getConstrworkerId() {
 		return constrworkerId;
@@ -174,6 +184,14 @@ public class BidCompanyManage extends DataEntity<BidCompanyManage> {
 	@ExcelField(title="经济标", dictType="", align=2, sort=9)
 	public String getEcoBid() {
 		return ecoBid;
+	}
+
+	public Integer getBuildDate() {
+		return buildDate;
+	}
+
+	public void setBuildDate(Integer buildDate) {
+		this.buildDate = buildDate;
 	}
 
 	@ExcelField(title="质检员", dictType="", align=2, sort=14)

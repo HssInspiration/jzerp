@@ -31,11 +31,18 @@ import co.dc.ccpt.common.utils.excel.ExportExcel;
 import co.dc.ccpt.common.utils.excel.ImportExcel;
 import co.dc.ccpt.core.persistence.Page;
 import co.dc.ccpt.core.web.BaseController;
+import co.dc.ccpt.modules.act.service.ActProcessService;
+import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.entity.Bidcompany;
+import co.dc.ccpt.modules.biddingmanagement.bid.companymanage.service.BidcompanyService;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.service.EnclosuretabService;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.ProContractService;
 import co.dc.ccpt.modules.contractmanagement.procontract.service.SubProContractService;
+import co.dc.ccpt.modules.oa.entity.ActContract;
+import co.dc.ccpt.modules.oa.entity.AttachContract;
+import co.dc.ccpt.modules.oa.service.ActContractService;
+import co.dc.ccpt.modules.oa.service.AttachContractService;
 import co.dc.ccpt.modules.programmanage.entity.Program;
 import co.dc.ccpt.modules.programmanage.service.ProgramService;
 import co.dc.ccpt.modules.sys.entity.User;
@@ -49,13 +56,25 @@ public class ProContractController extends BaseController{
 	public ProContractService proContractService;
 	
 	@Autowired
+	public ActContractService actContractService;
+
+	@Autowired
+	public AttachContractService attachContractService;
+	
+	@Autowired
 	public ProgramService programService;
+
+	@Autowired
+	public BidcompanyService bidcompanyService;
 	
 	@Autowired
 	public EnclosuretabService enclosuretabService;
 	
 	@Autowired
 	public SubProContractService subContractService;
+	
+	@Autowired
+	private ActProcessService actProcessService;
 	
 	@Autowired
 	public SystemService userService;
@@ -126,7 +145,10 @@ public class ProContractController extends BaseController{
 	}
 	
 	/**
-	 * 查看，增加，编辑总包合同表单页面
+	 * 更改生效状态
+	 * @param proContract
+	 * @param model
+	 * @return
 	 */
 	@RequestMapping(value = "confirmValid")
 	public String confirmValid(ProContract proContract, Model model) {
@@ -134,6 +156,9 @@ public class ProContractController extends BaseController{
 		return "modules/contractmanagement/procontract/confirmValidForm";
 	}
 	
+	/**
+	 * 查看，增加，编辑总包合同表单页面
+	 */
 	@RequestMapping(value = {"checkForm"})
 	public String checkForm(ProContract proContract, Model model) {
 		String view = "actContractForm";
@@ -193,6 +218,28 @@ public class ProContractController extends BaseController{
 			return "true";
 		}else{
 			return "false";
+		}
+	}
+	
+	/**
+	 * 通过项目id查询项目
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getBidPriceByProId",method = RequestMethod.POST)
+	public Bidcompany getBidPriceByProId(@RequestBody Program program) {
+		Bidcompany bidcomp = new Bidcompany();
+		program = programService.get(program);
+		if(program != null){
+			Integer getMethod = program.getGetMethod(); 
+			if(getMethod != null && getMethod == 1){//市场投标
+				bidcomp.setProgram(program);
+				bidcomp = bidcompanyService.getBidPriceByProId(bidcomp);
+			}
+		}
+		if(bidcomp != null){
+			return bidcomp;
+		}else{
+			return new Bidcompany();
 		}
 	}
 	
@@ -314,6 +361,80 @@ public class ProContractController extends BaseController{
 		}
 			return j;
     }
+	
+	@ResponseBody
+	@RequestMapping(value = "shutdown")
+	public AjaxJson shutdown(ProContract proContract, Integer getMethod, String reason, Model model, RedirectAttributes redirectAttributes) throws Exception{
+		AjaxJson j = new AjaxJson();
+		if (!beanValidator(model, proContract)){
+			j.setSuccess(false);
+			j.setMsg("非法参数！");
+			return j;
+		}
+		Integer status = proContract.getApprovalStatus();
+		String procInsId="";
+		if(status != null && !status.equals("")){
+			if(status==1){
+				if (StringUtils.isBlank(reason)){
+					j.setSuccess(false);
+					j.setMsg("请填写终止原因");
+					return j;
+				}else{
+					//将当前合同审批流程终止
+					//1.利用合同id查询到部署的流程实例id
+					if(getMethod != null && getMethod == 0){//区分投标和业主指定
+						AttachContract attachContract = attachContractService.getByProContract(proContract);
+						if(attachContract != null){
+							procInsId = attachContract.getProcInsId();
+						}
+					}else{
+						ActContract actContract = actContractService.getByProContract(proContract);//通过proId获取部署的流程实例id
+						if(actContract != null){
+							procInsId = actContract.getProcInsId();
+						}
+					}
+					//更新合同中的状态
+					proContract.setContractStatus(3);//合同终止
+					proContract.setApprovalStatus(4);//审批终止
+					proContractService.save(proContract);
+					//2.再利用流程实例id和原因进行终止操作
+					actProcessService.deleteProcIns(procInsId, reason);
+					j.setSuccess(true);
+					j.setMsg("已终止合同!");
+				}
+			}else{
+				j.setSuccess(false);
+				j.setMsg("当前合同非审批中，不允许终止！");
+			}
+			return j;
+		}
+		return j;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "closeCase")
+	public AjaxJson closeCase(ProContract proContract, Model model, RedirectAttributes redirectAttributes) throws Exception{
+		AjaxJson j = new AjaxJson();
+		if (!beanValidator(model, proContract)){
+			j.setSuccess(false);
+			j.setMsg("非法参数！");
+			return j;
+		}
+		Integer status = proContract.getApprovalStatus();
+		if(status != null && !status.equals("")){
+			if(status==2){
+				proContract.setContractStatus(2);
+				proContractService.save(proContract);
+				j.setSuccess(true);
+				j.setMsg("保存成功！");
+			}else{
+				j.setSuccess(false);
+				j.setMsg("当前合同非审批通过，不允许结案！");
+			}
+			return j;
+		}
+		return j;
+	}
 
 	/**
 	 * 导入Excel数据

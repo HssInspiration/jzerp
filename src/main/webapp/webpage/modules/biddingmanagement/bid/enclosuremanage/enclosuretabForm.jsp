@@ -135,6 +135,10 @@
 						<c:if test="${not empty contractTemp.id}">
 							<form:input path="foreginId" type="hidden" class="form-control" value = "${contractTemp.id}"/>
 						</c:if>
+						
+						<c:if test="${not empty depositStatement.id}">
+							<form:input path="foreginId" type="hidden" class="form-control" value = "${depositStatement.id}"/>
+						</c:if>
 					</c:if>
 					<c:if test = "${edit}">
 						<form:input path="foreginId" type="hidden" class="form-control" value = "${enclosuretab.foreginId}"/>

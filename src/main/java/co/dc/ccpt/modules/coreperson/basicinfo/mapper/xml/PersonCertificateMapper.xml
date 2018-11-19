@@ -33,11 +33,11 @@
 	
 	<sql id="personCertificateJoins">
 		LEFT JOIN core_staff c ON c.id = a.core_staff_id
-		LEFT JOIN ccpt.sys_dict_value sv1 ON sv1.dict_type_id='3be1ff691bd44028b306043031fa5cf1' AND sv1.value = a.certificate_name
+		LEFT JOIN sys_dict_value sv1 ON sv1.dict_type_id='3be1ff691bd44028b306043031fa5cf1' AND sv1.value = a.certificate_name
 		
-		LEFT JOIN ccpt.sys_dict_value sv2 ON sv2.dict_type_id='998e41a406ab4f44ba87c3c160176ebe' AND sv2.value = a.certificate_class
+		LEFT JOIN sys_dict_value sv2 ON sv2.dict_type_id='998e41a406ab4f44ba87c3c160176ebe' AND sv2.value = a.certificate_class
 		
-		LEFT JOIN ccpt.sys_dict_value sv3 ON sv3.dict_type_id='f34b6aca05df4b358667bafb2d900962' AND sv3.value = a.certificate_major
+		LEFT JOIN sys_dict_value sv3 ON sv3.dict_type_id='f34b6aca05df4b358667bafb2d900962' AND sv3.value = a.certificate_major
 		
 	</sql>
 	
@@ -116,8 +116,8 @@
 			registration_num,
 			regis_date,
 			invalid_date,
-			invalid_reason,
-			is_invalid
+			invalid_reason
+<!-- 			is_invalid -->
 		) VALUES (
 			#{id},
 			#{createBy.id},
@@ -135,8 +135,8 @@
 			#{registrationNum},
 			#{regisDate},
 			#{invalidDate},
-			#{invalidReason},
-			#{isInvalid}
+			#{invalidReason}
+<!-- 			#{isInvalid} -->
 		)
 	</insert>
 	

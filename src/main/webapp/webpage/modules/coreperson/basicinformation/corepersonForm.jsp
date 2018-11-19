@@ -26,7 +26,7 @@
 				  idField : "id\" style=\"display:none\"",
 				  keyField : "word",
 				  getDataMethod : "url",
-				  url : "${ctx}/basicinfo/getAllUserList?name=",
+				  url : "${ctx}/basicinformation/getAllUserList?name=",
 				  processData : function(json) {
 				      var i, len, data = {
 				          value : []
@@ -44,39 +44,39 @@
 				          return data
 				  }
 			  });
-			$("#test_data").on('onSetSelectValue', function (e, keyword) {
-				console.log('onSetSelectValue: ', keyword);
-				//思路：
-				//1.下拉变化时获取id;
-				var id = keyword.id;
-				console.log(id);
-				var jsonData = JSON.stringify({"id":id});
-				//2.获取完id传入后台获取对应的类型集合;
-				$.ajax({
-					url:"${ctx}/basicinfo/getCoreStaffByUserId",
-					async:false,
-					data:jsonData,
-					type:"post",
-					contentType:"application/json;charset=utf-8",
-					dataType:"json",
-					success:function(data){
-						console.log("获取成功！"+data);
-						if(data==true){
-							$("#repeatObj").html("×当前人员已登记，请重新选择！");
-							$("#repeatObj").css("color","red");
-						}else if(data==false){
-							$("#repeatObj").html("√OK!");
-							$("#repeatObj").css("color","green");
-						}
-					},
-					error:function(){
-						console.log("获取失败！");
-					}
-				});
-			});//下拉框值选中时调用
+// 			$("#test_data").on('onSetSelectValue', function (e, keyword) {
+// 				console.log('onSetSelectValue: ', keyword);
+// 				//思路：
+// 				//1.下拉变化时获取id;
+// 				var id = keyword.id;
+// 				console.log(id);
+// 				var jsonData = JSON.stringify({"id":id});
+// 				//2.获取完id传入后台获取对应的类型集合;
+// 				$.ajax({
+// 					url:"${ctx}/basicinformation/getCoreStaffByUserId",
+// 					async:false,
+// 					data:jsonData,
+// 					type:"post",
+// 					contentType:"application/json;charset=utf-8",
+// 					dataType:"json",
+// 					success:function(data){
+// 						console.log("获取成功！"+data);
+// 						if(data==true){
+// 							$("#repeatObj").html("×当前人员已登记，请重新选择！");
+// 							$("#repeatObj").css("color","red");
+// 						}else if(data==false){
+// 							$("#repeatObj").html("√OK!");
+// 							$("#repeatObj").css("color","green");
+// 						}
+// 					},
+// 					error:function(){
+// 						console.log("获取失败！");
+// 					}
+// 				});
+// 			});//下拉框值选中时调用
 			
 			
-// 			$("#value").focus();
+			$("#identityNum").focus();
 			 validateForm = $("#inputForm").validate({
 				 rules: {
 				 	identityNum: {remote: "${ctx}/basicinformation/checkIdentityNum?identityOldNum=" + encodeURIComponent("${corePerson.identityNum}")},//设置了远程验证，在初始化时必须预先调用一次。
@@ -89,19 +89,21 @@
 					console.log("00000:"+userId)
 					if(userId != null && userId != ""){
 						$("#userId").val(userId);
+						jp.loading();
+						$.post("${ctx}/basicinformation/save",$('#inputForm').serialize(),function(data){
+			                    if(data.success){
+			                    	$table.bootstrapTable('refresh');
+			                    	jp.success(data.msg);
+			                    	jp.close($topIndex);//关闭dialog
+		            	  			
+			                    }else{
+		            	  			jp.error(data.msg);
+			                    }
+			                    
+			            });
+					}else{
+						jp.info("用户不存在！")
 					}
-					jp.loading();
-					$.post("${ctx}/basicinformation/save",$('#inputForm').serialize(),function(data){
-		                    if(data.success){
-		                    	$table.bootstrapTable('refresh');
-		                    	jp.success(data.msg);
-		                    	jp.close($topIndex);//关闭dialog
-	            	  			
-		                    }else{
-	            	  			jp.error(data.msg);
-		                    }
-		                    
-		            });
 				},
 				errorContainer: "#messageBox",
 				errorPlacement: function(error, element) {
@@ -126,7 +128,7 @@
 		   	   <tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>人员姓名：</label></td>
 					<td class="width-35">
-						<input type="hidden" class="form-control" name= "user.id" id = "userId" value = "${corePerson.user.id}">
+						<input type="hidden" class="form-control required" name= "user.id" id = "userId" value = "${corePerson.user.id}">
 						<c:if test="${isAdd }">
 							<div class="row">
 				                <div class="col-lg-12">
@@ -150,13 +152,13 @@
 			            <span id="repeatObj" style = "font-weight:bold;"></span>
 					</td>
 			   </tr>
-		       <tr>
-		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font>证件号码:</label></td>
-		         <td class="width-35" >
-			         <input id="identityOldNum" name="identityOldNum" type="hidden" value="${corePerson.identityNum}">
-			         <form:input path="identityNum" htmlEscape="false" maxlength="50" class="form-control required abc"/>
-			     </td>
-		      </tr>
+<!-- 		       <tr> -->
+<!-- 		         <td  class="width-15 active"><label class="pull-right"><font color="red">*</font>身份证号码:</label></td> -->
+<!-- 		         <td class="width-35" > -->
+<%-- 			         <input id="identityOldNum" name="identityOldNum" type="hidden" value="${corePerson.identityNum}"> --%>
+<%-- 			         <form:input path="identityNum" htmlEscape="false" maxlength="18" minlength="18" class="form-control required abc"/> --%>
+<!-- 			     </td> -->
+<!-- 		      </tr> -->
 <!-- 		       <tr> -->
 <!-- 		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>手机号码:</label></td> -->
 <%-- 		          <td  class="width-35" ><form:input path="phoneNum" htmlEscape="false" maxlength="50" class="form-control required"/></td> --%>

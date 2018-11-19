@@ -1,14 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <script type="text/javascript">
 		$(document).ready(function() {
-		//zTree初始化
+		// zTree初始化
 			$.getJSON("${ctx}/sys/office/bootstrapTreeData",function(data){
 				$('#jstree').treeview({
 					data: data,
 					levels: 5,
 		            onNodeSelected: function(event, treeNode) {
 		            	var id = treeNode.id == '0' ? '' :treeNode.id;
-						if(treeNode.level == 1){//level=0 代表公司
+						if(treeNode.level == 1){// level=0 代表公司
 							$("#companyId").val(id);
 							$("#companyName").val(treeNode.text);
 							$("#officeId").val("");
@@ -24,33 +24,33 @@
 		            },
 		         });
 			});
-			
-						
-			  //表格初始化
-			  $('#table').bootstrapTable({
+			var $table;
+			  // 表格初始化
+			$table = $('#table').bootstrapTable({
 				  
-				  //请求方法
+				  	// 请求方法
 	                method: 'get',
 	                dataType: "json",
-	                 //是否显示行间隔色
+	                 // 是否显示行间隔色
 	                striped: true,
-	                //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+	                // 是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
 	                cache: false,    
-	                //是否显示分页（*）  
-	                pagination: true,   
-	                 //排序方式 
+	                // 是否显示分页（*）
+	                pagination: true,  
+	                // 排序方式
 	                sortOrder: "asc",    
-	                //初始化加载第一页，默认第一页
+	                // 初始化加载第一页，默认第一页
 	                pageNumber:1,   
-	                //每页的记录行数（*）   
+	                // 每页的记录行数（*）
 	                pageSize: 10,  
-	                //可供选择的每页的行数（*）    
-	                pageList: [10, 25, 50, 100],
-	                //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+	                // 可供选择的每页的行数（*）
+	                pageList: [10, 25, 50,"ALL"],
+	                // 这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据
 	                url: "${ctx}/sys/user/list",
-	                //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
-	                //queryParamsType:'',   
-	                ////查询参数,每次调用是会带上这个参数，可自定义                         
+	                // 默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order
+					// Else
+	                // queryParamsType:'',
+	                // //查询参数,每次调用是会带上这个参数，可自定义
 	                queryParams : function(params) {
 	                	var searchParam = $("#searchForm").serializeJSON();
 	                	searchParam.pageNo = params.limit === undefined? "1" :params.offset/params.limit+1;
@@ -58,10 +58,11 @@
 	                	searchParam.orderBy = params.sort === undefined? "" : params.sort+ " "+  params.order;
 	                    return searchParam;
 	                },
-	                //分页方式：client客户端分页，server服务端分页（*）
+	                // 分页方式：client客户端分页，server服务端分页（*）
 	                sidePagination: "server",
-	                contextMenuTrigger:"right",//pc端 按右键弹出菜单
-	                contextMenuTriggerMobile:"press",//手机端 弹出菜单，click：单击， press：长按。
+	                contextMenuTrigger:"right",// pc端 按右键弹出菜单
+	                contextMenuTriggerMobile:"press",// 手机端 弹出菜单，click：单击，
+														// press：长按。
 	                contextMenu: '#context-menu',
 	                onContextMenuItem: function(row, $el){
 	                    if($el.data("item") == "edit"){
@@ -105,7 +106,12 @@
 				        field: 'mobile',
 				        title: '手机',
 				        sortable: true
-				    }, {
+				    }, 
+				    {
+				        field: 'idCardNum',
+				        title: '身份证号码',
+				        sortable: true
+				    },{
 				        field: 'company.name',
 				        title: '归属公司'
 				    }, {
@@ -116,7 +122,7 @@
 				});
 			
 			  
-			  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
+			  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){// 如果是移动端
 				  $('#table').bootstrapTable("toggleView");
 				}
 			  
@@ -138,8 +144,8 @@
 						  },
 					    btn2: function(index, layero){
 						        var inputForm =top.$("#importForm");
-						        var top_iframe = top.getActiveTab().attr("name");//获取当前active的tab的iframe 
-						        inputForm.attr("target",top_iframe);//表单提交成功后，从服务器返回的url在当前tab中展示
+						        var top_iframe = top.getActiveTab().attr("name");// 获取当前active的tab的iframe
+						        inputForm.attr("target",top_iframe);// 表单提交成功后，从服务器返回的url在当前tab中展示
 						        inputForm.onsubmit = function(){
 						        	jp.info('  正在导入，请稍等...');
 						        }
@@ -176,7 +182,7 @@
 		            return row.id
 		        });
 		    }
-		  
+			
 		  function deleteAll(ids){
 			    if(!ids){
 			    	ids =  getIdSelections();

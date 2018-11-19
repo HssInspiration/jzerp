@@ -20,4 +20,5 @@ public interface CorePersonMapper extends BaseMapper<CorePerson>{
 	public CorePerson getCorePersonByUserId(CorePerson corePerson);//通过用户id查询核心人员信息
 	
 	public CorePerson getCorePersonByIdNum(CorePerson corePerson); // 通过身份证号查询一条信息
+	
 }

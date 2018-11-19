@@ -14,4 +14,6 @@ import co.dc.ccpt.modules.contractmanagement.contracttemp.entity.ContractTemp;
 public interface ContractTempMapper extends BaseMapper<ContractTemp> {
 
 	public String getLastContractTempNum();// 获取最后一个创建的合同模板编号
+
+	public ContractTemp getByTempName(ContractTemp contractTemp);// 通过模板名称查询一条项目信息
 }

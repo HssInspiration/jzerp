@@ -2,8 +2,11 @@ package co.dc.ccpt.modules.printingmanagement.entity;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import co.dc.ccpt.common.utils.excel.annotation.ExcelField;
 import co.dc.ccpt.core.persistence.DataEntity;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 
@@ -15,7 +18,8 @@ public class ContractPrinting extends DataEntity<ContractPrinting> {
 	private String isStamp;// 是否用章
 	private Date printDate;// 用章日期
 	private String printNum;// 用章编号
-	private Integer printType;// 用章类别
+	private String printDetailType;// 用章详细类别
+	private Integer printType;// 用章类型
 	private ProContract proContract;// 总包合同对象
 	private String times;// 用章次数
 
@@ -100,6 +104,16 @@ public class ContractPrinting extends DataEntity<ContractPrinting> {
 
 	public void setTimes(String times) {
 		this.times = times;
+	}
+
+	@NotNull(message="用章类别不能为空")
+	@ExcelField(title="用章类别", dictType="print_detail_type")
+	public String getPrintDetailType() {
+		return printDetailType;
+	}
+
+	public void setPrintDetailType(String printDetailType) {
+		this.printDetailType = printDetailType;
 	}
 
 }

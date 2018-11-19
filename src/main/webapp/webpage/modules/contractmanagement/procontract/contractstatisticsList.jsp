@@ -119,15 +119,16 @@
 						</div>
 						<!-- 工具栏 -->
 						<div id="toolbar">
-							<button id="subStatistics" class="btn btn-info" disabled
-								onclick="subStatistics()">
-								<i class="glyphicon glyphicon-stats"></i> 查看对应分包统计
-							</button>
+						  <shiro:hasPermission name="contractstatistics:subStatistics">
+							  	<button id="subStatistics" class="btn btn-info" disabled
+									onclick="subStatistics()">
+									<i class="glyphicon glyphicon-stats"></i> 查看对应分包统计
+								</button>
+						  </shiro:hasPermission>
 							<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
 								<i class="fa fa-search"></i> 检索
 							</a>
 						</div>
-
 						<!-- 表格 -->
 						<table id="table" data-toolbar="#toolbar"></table>
 					</div>

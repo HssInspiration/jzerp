@@ -27,6 +27,14 @@
 		WHERE a.id = #{id}
 	</select>
 	
+	<select id="getByTempName" resultType="contractTemp" >
+		SELECT 
+			<include refid="contractTempColumns"/>
+		FROM contract_temp a
+			<include refid="contractTempJoins"/>
+		WHERE a.contract_temp_name = #{tempName}
+	</select>
+	
 	<select id="getLastContractTempNum" resultType="String" >
 		SELECT
 			a.contract_temp_num AS "tempNum"

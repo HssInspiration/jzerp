@@ -117,6 +117,7 @@ public class OaNotifyController extends BaseController {
 				ServletContext context = SpringContextHolder
 						.getBean(ServletContext.class);
 				new SystemInfoSocketHandler().sendMessageToUser(UserUtils.get(o.getUser().getId()).getLoginName(), "收到一条新通知，请到我的通知查看！");
+				System.out.println(context);
 			}
 		}
 		addMessage(redirectAttributes, "保存通知'" + oaNotify.getTitle() + "'成功");

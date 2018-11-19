@@ -26,7 +26,7 @@
 			 <div class="col-xs-12 col-sm-6 col-md-4">
 				<label class="label-item single-overflow pull-left" title="流程分类：">流程分类：</label>
 				 <select id="category" name="category" class="form-control">
-					 <option value="">全部分类1</option>
+					 <option value="">全部分类</option>
 					 <c:forEach items="${fns:getDictList('act_category')}" var="dict">
 						 <option value="${dict.value}" ${dict.value==category?'selected':''}>${dict.label}</option>
 					 </c:forEach>

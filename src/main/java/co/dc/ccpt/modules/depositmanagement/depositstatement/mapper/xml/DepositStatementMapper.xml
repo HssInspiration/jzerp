@@ -34,16 +34,16 @@
 	</sql>
 	
 	<sql id="depositStatementJoins">
-		LEFT JOIN ccpt.deposit_approval da ON da.id = a.deposit_approval_id
-		LEFT JOIN ccpt.deposit_tab dt ON dt.id = da.deposit_id
-		LEFT JOIN ccpt.program_tab p ON dt.program_id = p.id
+		LEFT JOIN deposit_approval da ON da.id = a.deposit_approval_id
+		LEFT JOIN deposit_tab dt ON dt.id = da.deposit_id
+		LEFT JOIN program_tab p ON dt.program_id = p.id
 	</sql>
     
 	<select id="get" resultType="DepositStatement" >
 		SELECT 
 			<include refid="depositStatementColumns"/>
 		FROM deposit_statement a
-		<include refid="depositStatementJoins"/>
+			<include refid="depositStatementJoins"/>
 		WHERE a.id = #{id}
 	</select>
 	

@@ -150,20 +150,25 @@
 		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>项目工程名称:</label></td>
 		          <td  class="width-35" >
 				    <input type="hidden" class="form-control" name= "program.id" id = "programId" value = "${bidtable.program.id}">
-					<div class="row">
-		                <div class="col-lg-2">
-		                    <div class="input-group">
-		                        <input type="text" class="form-control" <c:if test="${edit}" >readOnly="true"</c:if>  id="test_data" value = "${bidtable.program.programName}">
-		                        <div class="input-group-btn">
-		                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-		                                <span class="caret"></span>
-		                            </button>
-		                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
-		                            </ul>
-		                        </div>
-		                    </div>
-		                </div>
-		            </div>
+					<c:if test="${isAdd }">
+						<div class="row">
+			                <div class="col-lg-2">
+			                    <div class="input-group">
+			                        <input type="text" class="form-control" <c:if test="${edit}" >readOnly="true"</c:if>  id="test_data" value = "${bidtable.program.programName}">
+			                        <div class="input-group-btn">
+			                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			                                <span class="caret"></span>
+			                            </button>
+			                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+			                            </ul>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+		            </c:if>
+		            <c:if test="${edit }">
+	                     <input type="text" class="form-control required" readOnly="true" id="test_data" value = "${bidtable.program.programName}">
+		            </c:if>
 		          </td>
 		          <td  class="width-15 active">	<label class="pull-right">开标地点:</label></td>
 		          <td  class="width-35" >
@@ -173,21 +178,21 @@
 		      <tr>
 		          <td  class="width-15 active">	<label class="pull-right"><font color="red">*</font>投标保证金(万元):</label></td>
 		          <td  class="width-35" >
-					<form:input path="deposit" htmlEscape="false"  placeholder = "单位：万元"  class="form-control required"/>
+					<form:input path="deposit" htmlEscape="false"  placeholder = "单位：万元"  class="form-control required isFloatGteZero"/>
 				  </td>							
 				  <td  class="width-15 active">	<label class="pull-right">控制价(万元):</label></td>
 		          <td  class="width-35" >
-		            <form:input path="ctrlPrice" htmlEscape="false"  placeholder = "单位：万元"  class="form-control "/>
+		            <form:input path="ctrlPrice" htmlEscape="false"  placeholder = "单位：万元"  class="form-control isFloatGteZero"/>
 		          </td>	         
 		      </tr> 
 		      <tr>
 		          <td  class="width-15 active">	<label class="pull-right">标底价(万元):</label></td>
 		          <td  class="width-35" >
-		            <form:input path="floorPrice" htmlEscape="false"  placeholder = "单位：万元"  class="form-control "/>
+		            <form:input path="floorPrice" htmlEscape="false"  placeholder = "单位：万元"  class="form-control isFloatGteZero"/>
 		          </td>
 		           <td  class="width-15 active">	<label class="pull-right">暂列金额(万元):</label></td>
 		          <td  class="width-35" >
-		           <form:input path="provisionPrice" htmlEscape="false"  placeholder = "单位：万元"  class="form-control "/>
+		           <form:input path="provisionPrice" htmlEscape="false"  placeholder = "单位：万元"  class="form-control isFloatGteZero"/>
 		          </td>
 		      </tr>
 		      <tr>
@@ -202,9 +207,13 @@
 		          </td>
 		      </tr>
 		      <tr>
+		      	  <td  class="width-15 active">	<label class="pull-right">评标方法:</label></td>
+		          <td  class="width-35" >
+		            <form:textarea path="evaluateMethod" htmlEscape="false" rows="4" class="form-control "/>
+		          </td>
 		          <td  class="width-15 active">	<label class="pull-right">备注信息:</label></td>
 		          <td  class="width-35" >
-		            <form:textarea path="remarks" htmlEscape="false" rows="4"    class="form-control "/>
+		            <form:textarea path="remarks" htmlEscape="false" rows="4" class="form-control "/>
 		          </td>
 		      </tr>
 		   </tbody>

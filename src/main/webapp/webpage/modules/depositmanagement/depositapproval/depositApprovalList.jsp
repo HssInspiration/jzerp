@@ -105,28 +105,29 @@
 	
 	<!-- 工具栏 -->
 	<div id="toolbar">
-<%-- 			<shiro:hasPermission name="depositapproval:depositApproval:add"> --%>
+			<shiro:hasPermission name="depositApproval:add">
 				<a id="add" class="btn btn-primary" onclick="add()"><i class="glyphicon glyphicon-plus"></i> 新建</a>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 			<shiro:hasPermission name="depositapproval:depositApproval:edit"> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="depositApproval:edit">
 			    <button id="edit" class="btn btn-success" disabled onclick="edit()">
 	            	<i class="glyphicon glyphicon-edit"></i> 修改
 	        	</button>
-<%-- 			</shiro:hasPermission> --%>
-<%-- 				<shiro:hasPermission name="depositapproval:del"> --%>
-					<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
-		            	<i class="glyphicon glyphicon-remove"></i> 删除
-		        	</button>
-<%-- 	        	</shiro:hasPermission> --%>
-<%-- 	        	<shiro:hasPermission name="depositapproval:check"> --%>
-		        	<button id="check" class="btn btn-info" disabled onclick="check()">
-		            	<i class="glyphicon glyphicon-check"></i> 审批
-		        	</button>
-<%-- 	        	</shiro:hasPermission> --%>
+			</shiro:hasPermission>
+			<shiro:hasPermission name="depositapproval:del">
+				<button id="remove" class="btn btn-danger" disabled onclick="deleteAll()">
+	            	<i class="glyphicon glyphicon-remove"></i> 删除
+	        	</button>
+        	</shiro:hasPermission>
+        	<shiro:hasPermission name="depositapproval:check">
+	        	<button id="check" class="btn btn-info" disabled onclick="check()">
+	            	<i class="glyphicon glyphicon-check"></i> 审批
+	        	</button>
+        	</shiro:hasPermission>
+        	<shiro:hasPermission name="depositapproval:statement">
 	        	<button id="statement" class="btn btn-info" disabled onclick="statement()">
 	            	<i class="glyphicon glyphicon-hand-up"></i> 确认出账
 	        	</button>
-<%-- 			</shiro:hasPermission> --%>
+			</shiro:hasPermission>
 	        	<a class="accordion-toggle btn btn-default" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
 					<i class="fa fa-search"></i> 检索
 				</a>
@@ -134,17 +135,6 @@
 		
 	<!-- 表格 -->
 	<table id="table"   data-toolbar="#toolbar"></table>
-
-    <!-- context menu -->
-<!--     <ul id="context-menu" class="dropdown-menu"> -->
-<%--     	<shiro:hasPermission name="depositapproval:depositApproval:edit"> --%>
-<!--         <li data-item="edit"><a>编辑</a></li> -->
-<%--         </shiro:hasPermission> --%>
-<%--         <shiro:hasPermission name="depositapproval:depositApproval:del"> --%>
-<!--         <li data-item="delete"><a>删除</a></li> -->
-<%--         </shiro:hasPermission> --%>
-<!--         <li data-item="action1"><a>取消</a></li> -->
-<!--     </ul>   -->
 	</div>
 	</div>
 	</div>

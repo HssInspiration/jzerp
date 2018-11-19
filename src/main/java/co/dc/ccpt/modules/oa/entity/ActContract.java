@@ -2,6 +2,7 @@ package co.dc.ccpt.modules.oa.entity;
 
 import co.dc.ccpt.core.persistence.ActEntity;
 import co.dc.ccpt.modules.biddingmanagement.bid.enclosuremanage.entity.Enclosuretab;
+import co.dc.ccpt.modules.contractmanagement.contracttext.entity.ContractText;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 
 public class ActContract extends ActEntity<ActContract> {
@@ -12,6 +13,9 @@ public class ActContract extends ActEntity<ActContract> {
 	private String leadText;// 经营部领导意见
 	private String mainLeadText;// 总经理意见
 	private ProContract proContract;// 合同对象
+	private ContractText contractText;// 合同正文对象
+	private String contractTextCont;// 合同正文内容
+	private String contractContToPdf;//合同正文pdf
 
 	public ActContract() {
 		super();
@@ -69,4 +73,28 @@ public class ActContract extends ActEntity<ActContract> {
 		this.proContract = proContract;
 	}
 
+	public ContractText getContractText() {
+		return contractText;
+	}
+
+	public void setContractText(ContractText contractText) {
+		this.contractText = contractText;
+	}
+
+	public String getContractTextCont() {
+		return contractTextCont;
+	}
+
+	public void setContractTextCont(String contractTextCont) {
+		this.contractTextCont = contractTextCont;
+	}
+
+	public String getContractContToPdf() {
+		return contractContToPdf;
+	}
+
+	public void setContractContToPdf(String contractContToPdf) {
+		this.contractContToPdf = contractContToPdf;
+	}
+	
 }

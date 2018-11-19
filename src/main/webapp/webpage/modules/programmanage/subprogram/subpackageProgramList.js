@@ -138,6 +138,13 @@ $(document).ready(function() {
 		        title: '分包工程地址'
 		    }
 			,{
+				field: 'isTender',
+				title: '是否招标',
+		        formatter:function(value, row , index){
+		        	return jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-");
+		        }
+			}
+			,{
 		        field: 'remarks',
 		        title: '备注信息'
 		       
@@ -241,8 +248,6 @@ $(document).ready(function() {
 		  $("#searchForm  .select-item").html("");
 		  $('#table').bootstrapTable('refresh');
 		});
-		
-		
 	});
 		
   function getIdSelections() {

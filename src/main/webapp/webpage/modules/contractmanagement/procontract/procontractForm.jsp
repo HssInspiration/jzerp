@@ -75,6 +75,24 @@
 						console.log("获取失败！");
 					}
 				});
+				//3若为市场投标项目则代入参投模块的投标价
+				$.ajax({
+					url:"${ctx}/procontract/getBidPriceByProId",
+					data:jsonData,
+					type:"post",
+					contentType:"application/json;charset=utf-8",
+					dataType:"json",
+					success:function(data){
+						console.log("getBidPriceByProId获取成功0！"+data);
+						console.log("getBidPriceByProId获取成功2！"+data.bidPrice);
+						if(data.bidPrice != null){
+							$("#contractTotalPrice").val(data.bidPrice);
+						}
+					},
+					error:function(){
+						console.log("获取失败！");
+					}
+				});
 			});
 			
 			validateForm = $("#inputForm").validate({
@@ -127,22 +145,22 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同编号：</label></td>
 					<td class="width-35">
-						<form:input path="contractNum" htmlEscape="false" readOnly="true" value="${proContract.contractNum }"  class="form-control "/>
+						<form:input path="contractNum" htmlEscape="false" readOnly="true" value="${proContract.contractNum }"  class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同名称：</label></td>
 					<td class="width-35">
 					<c:if test = "${proContract.approvalStatus eq 1 || proContract.approvalStatus eq 2 }"> 
-						<form:input path="contractName" htmlEscape="false"  readOnly="true"  class="form-control "/>	
+						<form:input path="contractName" htmlEscape="false"  readOnly="true"  class="form-control required"/>	
 					</c:if>	
-					<c:if test = "${proContract.approvalStatus eq 0 }"> 
-						<form:input path="contractName" htmlEscape="false"   class="form-control "/>	
-					</c:if>	;
+					<c:if test = "${proContract.approvalStatus eq 0 || isAdd}"> 
+						<form:input path="contractName" htmlEscape="false"   class="form-control required"/>	
+					</c:if>	
 					</td>
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>项目名称：</label></td>
 					<td class="width-35">
-						<input type="hidden" class="form-control" name= "program.id" id = "programId" value = "${proContract.program.id}">
+						<input type="hidden" class="form-control required" name= "program.id" id = "programId" value = "${proContract.program.id}">
 						<c:if test="${isAdd}">
 							<div class="row">
 				                <div class="col-lg-2">
@@ -167,18 +185,18 @@
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同拟草人：</label></td>
 					<td class="width-35">
 						<input type="hidden" class="form-control" name="user.id" value = "${proContract.user.id}">
-						<form:input path="user.name" htmlEscape="false" value="${proContract.user.name}" readOnly="true"  class="form-control "/>
+						<form:input path="user.name" htmlEscape="false" value="${proContract.user.name}" readOnly="true"  class="form-control required"/>
 					</td>
 					
 				</tr>
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>工程联系人：</label></td>
 					<td class="width-35">
-						<form:input path="programConnector" htmlEscape="false"    class="form-control "/>
+						<form:input path="programConnector" htmlEscape="false"    class="form-control required"/>
 					</td>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>联系人号码：</label></td>
 					<td class="width-35">
-						<form:input path="phoneNum" htmlEscape="false"    class="form-control "/>
+						<form:input path="phoneNum" htmlEscape="false"    class="form-control required"/>
 					</td>
 				</tr>
 				<tr>
@@ -211,7 +229,7 @@
 				<tr>
 					<td class="width-15 active"><label class="pull-right"><font color="red">*</font>合同总价(万元)：</label></td>
 					<td class="width-35">
-						<form:input path="contractTotalPrice" htmlEscape="false" class="form-control "/>
+						<form:input path="contractTotalPrice" htmlEscape="false" class="form-control required isFloatGteZero"/>
 					</td>
 <!-- 					<td class="width-15 active"><label class="pull-right">生效签订日期：</label></td> -->
 <!-- 					<td class="width-35"> -->
@@ -224,11 +242,8 @@
 <!-- 					</td> -->
 					<td class="width-15 active"><label class="pull-right">备注信息：</label></td>
 					<td class="width-35">		
-						<form:textarea path="remarks"  htmlEscape="false"  rows="4" class="form-control "/>
+						<form:textarea path="remarks"  htmlEscape="false"  rows="4" class="form-control"/>
 					</td>
-<!-- 					<td class="width-15 active"></td> -->
-<!-- 					<td class="width-35">		 -->
-<!-- 					</td> -->
 				</tr>
 		 	</tbody>
 		</table>

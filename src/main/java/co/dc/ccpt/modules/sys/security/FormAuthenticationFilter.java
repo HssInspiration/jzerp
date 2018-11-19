@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import co.dc.ccpt.common.json.AjaxJson;
 import co.dc.ccpt.common.json.PrintJSON;
 import co.dc.ccpt.common.utils.StringUtils;
-import co.dc.ccpt.core.mapper.JsonMapper;
 import co.dc.ccpt.modules.sys.security.SystemAuthorizingRealm.Principal;
 import co.dc.ccpt.modules.sys.utils.UserUtils;
 

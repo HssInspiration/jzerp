@@ -30,7 +30,7 @@
 				  url : "${ctx}/tendermanage/clearevaluate/getTenderList?subpackageProgramName=",
 				  contentType: "application/json;charset = utf-8",
 				  processData : function(json) {
-					  console.log(json);
+// 					  console.log(json);
 				      var i, len, data = {
 				          value : []
 				      };
@@ -39,7 +39,7 @@
 				      } 
 				      len = json.length;
 				      for (i = 0; i < len; i++) {
-				    	  console.log(json[i].id);
+// 				    	  console.log(json[i].id);
 				          data.value.push({
 				        	  "id\" style=\"display:none\"":json[i].id,
 				              "word":json[i].subpackageProgram.subpackageProgramName
@@ -257,13 +257,13 @@
 				<tbody id="evaluateUserList">
 				</tbody>
 			</table>
-			<script type="text/template" id="evaluateUserTpl">//<!--
-				<tr id="evaluateUserList{{idx}}">
+			<script type="text/template" id="evaluateUserTpl">
+				//<!--<tr id="evaluateUserList{{idx}}">
 					<td class="hide">
 						<input id="evaluateUserList{{idx}}_id" name="evaluateUserList[{{idx}}].id" type="hidden" value="{{row.id}}"/>
 						<input id="evaluateUserList{{idx}}_delFlag" name="evaluateUserList[{{idx}}].delFlag" type="hidden" value="0"/>
 					</td>
-
+					
 					<td>
 						<select id="evaluateUserList{{idx}}_user" name="evaluateUserList[{{idx}}].user.id" data-value="{{row.user.id}}" class="form-control  required">
 							<option value=""></option>

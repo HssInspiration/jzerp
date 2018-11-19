@@ -187,10 +187,14 @@ public class DepositController extends BaseController {
 	}
 	
 	/**
+	 * 原来：
 	 * 通过项目id查询当前所选项目状态
 	 * 若为自由、招标--不申请保证金，
 	 * 若为施工、竣工、停工、结案--可申请所有类型保证金，
 	 * 若为未中标--只申请投标保证金
+	 * 
+	 * 现在：
+	 * 取消所有控制，前端已实现此方式暂时保留如客户要求更改在前端做更改即可
 	 */
 	@ResponseBody
 	@RequestMapping(value = "getProgramById",method = RequestMethod.POST)
@@ -199,7 +203,7 @@ public class DepositController extends BaseController {
 		if(program != null){//排除空指针异常
 			programId = program.getId();
 		}
-		program = programService.get(programId);
+		program = programService.get(programId);//获取所有项目
 		return program;
 	}
 	

@@ -101,25 +101,26 @@
 			
 			//绑定输入框文本变化事件（）：
 			var requestUrl1 = "${ctx}/companymanage/bidcompany/getAllCorePersonListByName?name=";
-			var requestUrl = "${ctx}/companymanage/bidcompany/getAppointCorePersonListByName?name=&certificateName="
+// 			var requestUrl = "${ctx}/companymanage/bidcompany/getAppointCorePersonListByName?certificateName="++"&name="
+			var requestUrl = "${ctx}/companymanage/bidcompany/getAppointCorePersonListByName?certificateName=";
 			//建造师模糊匹配
-			autoFillData("constructoor",requestUrl,1);
+			autoFillData("constructoor",requestUrl+1+"&name=");
 			//技术负责人模糊匹配
-			autoFillData("director",requestUrl,2);
+			autoFillData("director",requestUrl+2+"&name=");
 			//施工员模糊匹配
-			autoFillData("constrworker",requestUrl,4);
+			autoFillData("constrworker",requestUrl+4+"&name=");
 			//安全员模糊匹配
-			autoFillData("saver",requestUrl,6);
+			autoFillData("saver",requestUrl+6+"&name=");
 			//质检员模糊匹配
-			autoFillData("inspector",requestUrl,3);
+			autoFillData("inspector",requestUrl+3+"&name=");
 			//技术标模糊匹配
 			autoFillData1("tecBidName",requestUrl1);
 			//商务标模糊匹配
 			autoFillData1("comBidName",requestUrl1);
 			//材料员模糊匹配
-			autoFillData("meterialer",requestUrl,5);
+			autoFillData("meterialer",requestUrl+5+"&name=");
 			//造价员模糊匹配
-			autoFillData("coster",requestUrl,11);
+			autoFillData("coster",requestUrl+11+"&name=");
 			
 			//定义下拉选中时的变量（人员id）判断在本项目中不能重复
 			var constId;//建造师
@@ -327,18 +328,6 @@
 										$("#saverMessage").html("");
 										break;
 									}
-// 									if(status == 2){
-// 										$("#saverMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 										$("#saverMessage").css("color","red");
-// 										break;
-// 									}else if(status == 3){
-// 										$("#saverMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 										$("#saverMessage").css("color","red");
-// 										break;
-// 									}else {
-// 										$("#saverMessage").html("");
-// 										break;
-// 									}
 								}
 							}else {
 								$("#saverMessage").html("");
@@ -375,18 +364,6 @@
 										$("#inspectorMessage").html("");
 										break;
 									}
-// 									if(status == 2){
-// 										$("#inspectorMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 										$("#inspectorMessage").css("color","red");
-// 										break;
-// 									}else if(status == 3){
-// 										$("#inspectorMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 										$("#inspectorMessage").css("color","red");
-// 										break;
-// 									}else {
-// 										$("#inspectorMessage").html("");
-// 										break;
-// 									}
 								}
 							}else {
 								$("#inspectorMessage").html("");
@@ -469,18 +446,6 @@
 											$("#constructoorMessage").html("");
 											break;
 										}
-// 										if(status == 2){
-// 											$("#constructoorMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#constructoorMessage").css("color","red");
-// 											break;
-// 										}else if(status == 3){
-// 											$("#constructoorMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#constructoorMessage").css("color","red");
-// 											break;
-// 										}else {
-// 											$("#constructoorMessage").html("");
-// 											break;
-// 										}
 									}
 								}else {
 									$("#constructoorMessage").html("");
@@ -518,18 +483,6 @@
 											$("#directorMessage").html("");
 											break;
 										}
-// 										if(status == 2){
-// 											$("#directorMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#directorMessage").css("color","red");
-// 											break;
-// 										}else if(status == 3){
-// 											$("#directorMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#directorMessage").css("color","red");
-// 											break;
-// 										}else {
-// 											$("#directorMessage").html("");
-// 											break;
-// 										}
 									}
 								}else {
 									$("#directorMessage").html("");
@@ -560,18 +513,6 @@
 										var status = data[i].program.status;
 										console.log("项目状态"+status);
 										
-// 										if(status == 2){
-// 											$("#constrworkerMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在谨慎添加！");
-// 											$("#constrworkerMessage").css("color","red");
-// 											break;
-// 										}else if(status == 3){
-// 											$("#constrworkerMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#constrworkerMessage").css("color","red");
-// 											break;
-// 										}else {
-// 											$("#constrworkerMessage").html("");
-// 											break;
-// 										}
 										if(status!=null){
 											$("#constrworkerMessage").html("已在项目\""+data[i].program.programName+"\"中存在请谨慎添加！");
 											$("#constrworkerMessage").css("color","red");	
@@ -595,7 +536,6 @@
 				        console.log('onSetSelectValue: ', keyword);
 				        var workerid = keyword.id;
 				        console.log(workerid);
-				       //	获取建造师
 				        $.ajax({//验证安全员是否重复
 				        	url:"${ctx}/companymanage/bidcompany/validateWorker",
 							data:JSON.stringify({"saverId":workerid}),
@@ -616,18 +556,6 @@
 											$("#saverMessage").html("");
 											break;
 										}
-// 										if(status == 2){
-// 											$("#saverMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#saverMessage").css("color","red");
-// 											break;
-// 										}else if(status == 3){
-// 											$("#saverMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#saverMessage").css("color","red");
-// 											break;
-// 										}else {
-// 											$("#saverMessage").html("");
-// 											break;
-// 										}
 									}
 								}else {
 									$("#saverMessage").html("");
@@ -665,18 +593,6 @@
 											$("#inspectorMessage").html("");
 											break;
 										}
-// 										if(status == 2){
-// 											$("#inspectorMessage").html("已在施工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#inspectorMessage").css("color","red");
-// 											break;
-// 										}else if(status == 3){
-// 											$("#inspectorMessage").html("已在停工项目\""+data[i].program.programName+"\"中存在不可重复添加！");
-// 											$("#inspectorMessage").css("color","red");
-// 											break;
-// 										}else {
-// 											$("#inspectorMessage").html("");
-// 											break;
-// 										}
 									}
 								}else {
 									$("#inspectorMessage").html("");
@@ -878,30 +794,6 @@
 			if(deposit != "NaN"){
 				$('#deposit').val(deposit);//转换递交保证金
 			}	
-			
-			//技术标五大员重复验证:
-// 			$("#tec").bind("change",function(){
-// 				//change后发送ajax回调到后台
-// 				var tecBid = $("#tec").val();
-// 				var jsonData = JSON.stringify({"tecBid":tecBid});
-// 				$.ajax({
-// 					url:"${ctx}/companymanage/bidcompany/validateWorker",
-// 					data:jsonData,
-// 					type:"post",
-// 					dataType:"json",
-// 					contentType:"application/json;charset=utf-8",
-// 					success:function(data){
-// 						//添加提示信息:
-// 						if(data!=null){
-// 							$("#tecBidMessage").html("五大员重复,请谨慎添加！");
-// 							$("#tecBidMessage").css("color","red");
-// 						}
-// 					},
-// 					error:function(){
-// 						console.log("回调失败！");
-// 					}
-// 				});
-// 			});
 		});
 		function companyManage(){
         	
@@ -1235,10 +1127,19 @@
 		        </td>
 		      </tr>
 		      <tr>
-		        <td  class="width-15 active">	<label class="pull-right">其他人员:</label></td>
+		          <td  class="width-15 active">	<label class="pull-right">工期:</label></td>
 		          <td  class="width-35" >
-<%-- 						  <form:input path="otherWorkers.id" htmlEscape="false"  placeholder = "请填写其他人员，如：标准员:李三"  class="form-control"/> --%>
-		          			<form:textarea path="otherWorkers.id" htmlEscpe="false" rows="4" placeholder="可填写其他人员，如：标准员：李三" class="form-control"/>
+					  <form:input path="buildDate" htmlEscape="false"   class="form-control"/>
+		          </td>
+		          <td  class="width-15 active">	<label class="pull-right">质量:</label></td>
+		          <td  class="width-35" >
+		          	  <form:input path="quality" htmlEscape="false"   class="form-control"/>
+		          </td>
+		      </tr>
+		      <tr>
+		          <td  class="width-15 active">	<label class="pull-right">其他人员:</label></td>
+		          <td  class="width-35" >
+	          		  <form:textarea path="otherWorkers.id" htmlEscpe="false" rows="4" placeholder="可填写其他人员，如：标准员：张三" class="form-control"/>
 		          </td>
 		          <td  class="width-15 active">	<label class="pull-right"></label></td>
 		          <td  class="width-35" >

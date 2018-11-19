@@ -161,6 +161,8 @@ public class ActTaskController extends BaseController {
 		String formKey = actTaskService.getFormKey(act.getProcDefId(), act.getTaskDefKey());   
 		// 获取流程实例对象
 		if (act.getProcInsId() != null){
+			System.out.println("############################id:"+act.getProcInsId());
+			System.out.println("Object:"+actTaskService.getProcIns(act.getProcInsId()));
 			if(actTaskService.getProcIns(act.getProcInsId())!=null){
 				act.setProcIns(actTaskService.getProcIns(act.getProcInsId()));
 			}else{

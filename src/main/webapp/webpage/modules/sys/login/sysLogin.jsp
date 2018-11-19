@@ -54,10 +54,10 @@
 							<input type="password" id="password" name="password" value="" class="form-control input-underline input-lg required" placeholder="密码">
 						</div>
 						<c:if test="${isValidateCodeLogin}">
-						<div class="form-group  text-muted">
-								<label class="inline"><font color="white">验证码:</font></label>
-							<sys:validateCode name="validateCode" inputCssStyle="margin-bottom:5px;" buttonCssStyle="color:white"/>
-						</div>
+							<div class="form-group  text-muted">
+									<label class="inline"><font color="white">验证码:</font></label>
+								<sys:validateCode name="validateCode" inputCssStyle="margin-bottom:5px;" buttonCssStyle="color:white"/>
+							</div>
 						</c:if>
 							<ul class="pull-right btn btn-info btn-circle" style="background-color:white;height:45px;width:46px">	
 								<li class="dropdown color-picker" >

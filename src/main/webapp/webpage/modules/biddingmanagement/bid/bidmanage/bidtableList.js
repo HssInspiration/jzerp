@@ -143,6 +143,11 @@ $(document).ready(function() {
 		       
 		    }
 			,{
+				field: 'evaluateMethod',
+				title: '评标办法',
+				width:15
+			}
+			,{
 		        field: 'recordWorker',
 		        title: '开标记录人员',
 	        	width:15

@@ -139,4 +139,11 @@ public interface UserMapper extends BaseMapper<User> {
 	 * 通过当前机构id获取父级机构负责人对象
 	 */
 	public User getPrimaryPersonById(@Param("primaryId") String primaryId);
+
+	/**
+	 * 根据证件号码查询用户
+	 * @param idCardNum
+	 * @return
+	 */
+	public User getByIdCardNum(User user);
 }

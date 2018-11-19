@@ -49,7 +49,9 @@
 				checkCertificateName(url,jsonData);//src="${ctxStatic}/plugin/js/data.js"
 				setRegisNum.method(certificateName);
 			});
-			
+			$("#invalidDate").bind("change",function(){
+				alert("绑定成功！")
+			})
 			 validateForm = $("#inputForm").validate({
 				submitHandler: function(form){
 					$("#certificateName").each(function() {//移除disable,后台方可取值  
@@ -167,7 +169,7 @@
 			   	  </td>
 		          <td  class="width-35" >
 					<div class='input-group form_datetime' id='invalidDate'>
-	                    <input type='text'  name="invalidDate" class="form-control required"  value="<fmt:formatDate value="${personCertificate.invalidDate}" pattern="yyyy-MM-dd HH:mm"/>"/>
+	                    <input type='text' id='invalidDate1' name="invalidDate" class="form-control required"  value="<fmt:formatDate value="${personCertificate.invalidDate}" pattern="yyyy-MM-dd HH:mm"/>"/>
 	                    <span class="input-group-addon">
 	                        <span class="glyphicon glyphicon-calendar"></span>
 	                    </span>

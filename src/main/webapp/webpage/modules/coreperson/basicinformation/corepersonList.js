@@ -55,10 +55,16 @@ $(document).ready(function() {
 			        		return '<a  href="#" onclick="jp.openDialogView(\'查看人员信息\', \'${ctx}/basicinformation/form?id='+row.id+'\',\'1000px\', \'600px\')">'+value+'</a>';
 			        	}
 			        }
-			    }, {
-			        field: 'identityNum',
-			        title: '证件号码',
-			        sortable:true
+			    },
+//			    {
+//			        field: 'identityNum',
+//			        title: '身份证号码',
+//			        sortable:true
+//			    }
+			    {
+			    	field: 'user.idCardNum',
+			    	title: '身份证号码',
+			    	sortable:true
 			    }
 			    , {
 			        field: 'user.mobile',
@@ -70,11 +76,16 @@ $(document).ready(function() {
 			        title: '是否有在建项目',
 			        sortable:true,
 			        align:"center",
-			        formatter:function(value, row, index){
+			        events: {
+			        	'click .view': function (e, value, row, index) {
+			        		jp.openTab('${ctx}/companymanage/bidcompany/showList?corePersonId='+row.id,'查看具体项目',true);
+			        	}
+			        },
+			        formatter:function(value, row , index){
 			        	if(value == '0'){
 			        		return '<font color="red">'+jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-")+'</font>';
-			        	}else{
-			        		return '<font color="green">'+jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-")+'</font>';
+			        	}else if(value == '1'){
+			        		return '<a href="#" class="view" title="点击查看具体项目" ><font color="green">'+jp.getDictLabel(${fns:toJson(fns:getDictList('yes_no'))}, value, "-")+'</font></a>';
 			        	}
 			        }
 			    }
@@ -270,18 +281,24 @@ $(document).ready(function() {
 			        align:"center",
 			        events: {
 			        	'click .change': function (e, value, row, index) {
-				        	jp.confirm('确认要切换证书状态吗？', function(){//
-				    			jp.loading();  	
-					    		jp.get("${ctx}/basicinformation/change?personCertificateId=" + row.id, function(data){
-				           	  		if(data.success){
-				           	  			$('#table').bootstrapTable('refresh');
-				           	  			$('#personCertificateTable').bootstrapTable("refresh");
-				           	  			jp.success(data.msg);
-				           	  		}else{
-				           	  			jp.error(data.msg);
-				           	  		}
-					           	})
-				    		})
+			        		var d1 = new Date().getTime();
+			        		var d2 = new Date(row.invalidDate).getTime();
+			        		if(d1>d2){
+			        			jp.info("当前证书已过期！")
+			        		}else{
+			        			jp.confirm('确认要切换证书状态吗？', function(){//
+					    			jp.loading();  	
+						    		jp.get("${ctx}/basicinformation/change?personCertificateId=" + row.id, function(data){
+					           	  		if(data.success){
+					           	  			$('#table').bootstrapTable('refresh');
+					           	  			$('#personCertificateTable').bootstrapTable("refresh");
+					           	  			jp.success(data.msg);
+					           	  		}else{
+					           	  			jp.error(data.msg);
+					           	  		}
+						           	})
+					    		})
+			        		}
 			        	}
 			        },
 			        formatter:function(value, row , index){

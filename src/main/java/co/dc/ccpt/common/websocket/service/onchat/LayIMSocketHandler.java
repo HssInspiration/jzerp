@@ -103,7 +103,7 @@ public class LayIMSocketHandler implements WebSocketHandler {
 			
 			if("group".equals(type)){//如果是群聊
 				
-				List<LayGroupUser> layGroupUserlist = new ArrayList();
+				List<LayGroupUser> layGroupUserlist = new ArrayList<LayGroupUser>();
 				//群主
 				LayGroupUser owner = new LayGroupUser();
 				owner.setUser( layGroupService.get(receiver).getCreateBy());

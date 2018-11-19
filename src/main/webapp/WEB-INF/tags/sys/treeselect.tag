@@ -29,11 +29,8 @@
 	             </button> 
 	             <c:if test="${allowClear}">
 	             	 <button type="button" id="${id}DelButton" class="close" data-dismiss="alert" style="position: absolute; top: 5px; right: 53px; z-index: 999; display: block;">×</button>
-	             
 	             </c:if>
-	             
        		 </span>
-       		
     </div>
 	<label id="${id}Name-error" class="error" for="${id}Name" style="display:none"></label>
 <script type="text/javascript">

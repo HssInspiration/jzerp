@@ -10,7 +10,6 @@ import org.springframework.web.context.ContextLoader;
 
 import co.dc.ccpt.modules.sys.entity.Office;
 import co.dc.ccpt.modules.sys.entity.User;
-import co.dc.ccpt.modules.sys.service.OfficeService;
 import co.dc.ccpt.modules.sys.service.SystemService;
 
 public class LittleContractListener implements TaskListener {

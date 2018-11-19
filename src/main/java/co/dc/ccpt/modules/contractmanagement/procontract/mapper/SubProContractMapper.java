@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 import co.dc.ccpt.core.persistence.BaseMapper;
 import co.dc.ccpt.core.persistence.annotation.MyBatisMapper;
-import co.dc.ccpt.modules.contractmanagement.procontract.entity.ProContract;
 import co.dc.ccpt.modules.contractmanagement.procontract.entity.SubProContract;
 /**
  * 分包合同mapper
@@ -34,5 +33,7 @@ public interface SubProContractMapper extends BaseMapper<SubProContract>{
 	public List<SubProContract> getAppointSubProContractByName(SubProContract subProContract);//通过合同名称获得未审批的分包合同集合
 
 	public List<SubProContract> getSubProContractListById(SubProContract subProContract);//获取当前总包下的分包合同
+
+	public List<SubProContract> getSubProContractByName(SubProContract subProContract);//通过合同名称获得未审批或不通过的分包合同集合
 
 }

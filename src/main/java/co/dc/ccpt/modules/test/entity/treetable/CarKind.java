@@ -3,8 +3,6 @@
  */
 package co.dc.ccpt.modules.test.entity.treetable;
 
-import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.util.List;
 import com.google.common.collect.Lists;
 

@@ -13,7 +13,6 @@ import org.springframework.core.io.Resource;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 /**
  * FreeMarkers工具类

@@ -28,7 +28,7 @@ public class Bidcompany extends DataEntity<Bidcompany> {
 	private Date beginBidDate; // 开始投标时间
 	private Date bidDate; // 投标时间
 	private String bidOldCompanyId; // 参投单位原id
-	/* 空参构造 */
+	private Integer buildDate;      // 工期
 	private Double bidPrice; // 投标价
 	private Bidtable bidtable; // 投标对象
 	private String comBid; // 商务标
@@ -83,6 +83,8 @@ public class Bidcompany extends DataEntity<Bidcompany> {
 	private String standarderId; // 标准员
 	private String tecBid; // 技术标
 	private CorePerson tecBidName; // 技术标负责人
+	private String corePersonId; //人员id---方便查询具体的人员在建项目
+	private String quality;//质量
 
 	public Bidcompany() {
 		super();
@@ -506,6 +508,30 @@ public class Bidcompany extends DataEntity<Bidcompany> {
 
 	public void setTecBidName(CorePerson tecBidName) {
 		this.tecBidName = tecBidName;
+	}
+
+	public String getCorePersonId() {
+		return corePersonId;
+	}
+
+	public void setCorePersonId(String corePersonId) {
+		this.corePersonId = corePersonId;
+	}
+
+	public Integer getBuildDate() {
+		return buildDate;
+	}
+
+	public void setBuildDate(Integer buildDate) {
+		this.buildDate = buildDate;
+	}
+
+	public String getQuality() {
+		return quality;
+	}
+
+	public void setQuality(String quality) {
+		this.quality = quality;
 	}
 
 }
